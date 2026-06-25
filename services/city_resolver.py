@@ -16,6 +16,7 @@ from loguru import logger
 from pydantic import BaseModel
 
 from config import get_settings
+from services.autotrader_locations import location_slug
 from services.craigslist_sites import CraigslistSite, CraigslistSiteIndex
 from services.facebook_locations import FacebookLocationResolver
 from services.geocoder import Geocoder
@@ -41,6 +42,8 @@ class ResolvedRegion(BaseModel):
     facebook_query: str
     facebook_slug: str
     facebook_location_tokens: list[str] = []
+    autotrader_zip: str | None = None
+    autotrader_location_slug: str = ""
 
     # Backward-compatible aliases used elsewhere in the codebase.
     @property
@@ -97,6 +100,8 @@ class RegionResolver:
                 country=country,
             )
         )
+        at_zip = self._extract_us_zip(geocoded, state)
+        at_slug = location_slug(city, state, text)
 
         resolved = ResolvedRegion(
             raw_input=text,
@@ -113,13 +118,16 @@ class RegionResolver:
             facebook_query=text,
             facebook_slug=fb_slug,
             facebook_location_tokens=fb_tokens,
+            autotrader_zip=at_zip,
+            autotrader_location_slug=at_slug,
         )
         logger.info(
-            "Resolved region '{}' -> craigslist={} ({}) | facebook_slug={} | coords=({}, {}) radius={}km",
+            "Resolved region '{}' -> craigslist={} ({}) | facebook_slug={} | autotrader_zip={} | coords=({}, {}) radius={}km",
             text,
             resolved.craigslist_base_url,
             resolved.craigslist_area_name,
             resolved.facebook_slug,
+            resolved.autotrader_zip or "n/a",
             f"{latitude:.4f}" if latitude is not None else "n/a",
             f"{longitude:.4f}" if longitude is not None else "n/a",
             radius,
@@ -159,6 +167,16 @@ class RegionResolver:
         normalized = unicodedata.normalize("NFKD", value)
         ascii_only = normalized.encode("ascii", "ignore").decode("ascii")
         return re.sub(r"[^a-z0-9]", "", ascii_only.lower())
+
+    @staticmethod
+    def _extract_us_zip(geocoded, state: str | None) -> str | None:
+        if not geocoded or geocoded.country_code != "US":
+            return None
+        postcode = (geocoded.postcode or "").strip()
+        if not postcode:
+            return None
+        match = re.match(r"(\d{5})", postcode)
+        return match.group(1) if match else None
 
 
 # Backward compatibility: older code imports CityResolver.

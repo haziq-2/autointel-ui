@@ -142,6 +142,22 @@ class Settings(BaseModel):
         default_factory=lambda: _env_str("AUTOWATCH_FACEBOOK_BROWSER_CHANNEL", "chrome")
     )
 
+    # --- AutoTrader (US only) ---
+    autotrader_enabled: bool = Field(default_factory=lambda: _env_bool("AUTOWATCH_AUTOTRADER_ENABLED", True))
+    autotrader_max_listings: int = Field(default_factory=lambda: _env_int("AUTOWATCH_AUTOTRADER_MAX_LISTINGS", 100))
+    autotrader_max_pages: int = Field(default_factory=lambda: _env_int("AUTOWATCH_AUTOTRADER_MAX_PAGES", 4))
+    autotrader_results_per_page: int = Field(default_factory=lambda: _env_int("AUTOWATCH_AUTOTRADER_RESULTS_PER_PAGE", 25))
+    autotrader_headless: bool = Field(default_factory=lambda: _env_bool("AUTOWATCH_AUTOTRADER_HEADLESS", False))
+    autotrader_profile_dir: Path = Field(
+        default_factory=lambda: _resolve(_env_str("AUTOWATCH_AUTOTRADER_PROFILE_DIR", "data/at_profile"))
+    )
+    autotrader_browser_channel: str = Field(
+        default_factory=lambda: _env_str("AUTOWATCH_AUTOTRADER_BROWSER_CHANNEL", "chrome")
+    )
+    autotrader_page_wait_ms: int = Field(default_factory=lambda: _env_int("AUTOWATCH_AUTOTRADER_PAGE_WAIT_MS", 4000))
+    autotrader_min_delay: float = Field(default_factory=lambda: _env_float("AUTOWATCH_AUTOTRADER_MIN_DELAY", 2.0))
+    autotrader_max_delay: float = Field(default_factory=lambda: _env_float("AUTOWATCH_AUTOTRADER_MAX_DELAY", 4.0))
+
     # --- Database ---
     database_backend: str = Field(default_factory=lambda: _env_str("AUTOWATCH_DATABASE_BACKEND", "sqlite"))
 
@@ -157,6 +173,7 @@ class Settings(BaseModel):
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.facebook_profile_dir.mkdir(parents=True, exist_ok=True)
+        self.autotrader_profile_dir.mkdir(parents=True, exist_ok=True)
 
 
 @lru_cache(maxsize=1)

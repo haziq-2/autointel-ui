@@ -28,6 +28,7 @@ class GeocodedRegion:
     state: str | None = None
     country: str | None = None
     country_code: str | None = None
+    postcode: str | None = None
 
 
 class Geocoder:
@@ -70,6 +71,7 @@ class Geocoder:
         state = address.get("state") or address.get("region")
         country = address.get("country")
         country_code = (address.get("country_code") or "").upper() or None
+        postcode = address.get("postcode")
 
         result = GeocodedRegion(
             query=region,
@@ -80,6 +82,7 @@ class Geocoder:
             state=state,
             country=country,
             country_code=country_code,
+            postcode=postcode,
         )
         logger.info(
             "Geocoded '{}' -> {:.4f}, {:.4f} ({})",

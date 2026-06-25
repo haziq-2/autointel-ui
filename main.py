@@ -23,6 +23,7 @@ from loguru import logger
 from config import Settings, get_settings
 from database import Database
 from models import VehicleListing
+from scrapers.autotrader import AutotraderScraper
 from scrapers.craigslist import CraigslistScraper
 from scrapers.facebook import FacebookScraper
 from services.city_resolver import RegionResolver, ResolvedRegion
@@ -48,7 +49,7 @@ def configure_logging(settings: Settings) -> None:
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="autowatch",
-        description="Monitor newly listed vehicles on Facebook Marketplace and Craigslist.",
+        description="Monitor newly listed vehicles on Facebook Marketplace, Craigslist, and AutoTrader.",
     )
     parser.add_argument(
         "--region",
@@ -64,7 +65,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--source",
-        choices=("craigslist", "facebook"),
+        choices=("craigslist", "facebook", "autotrader"),
         default=None,
         help="Filter --list output by source.",
     )
@@ -102,6 +103,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
     parser.add_argument("--no-facebook", action="store_true", help="Skip Facebook Marketplace this run.")
     parser.add_argument("--no-craigslist", action="store_true", help="Skip Craigslist this run.")
+    parser.add_argument("--no-autotrader", action="store_true", help="Skip AutoTrader this run.")
 
     args = parser.parse_args(argv)
     if args.list:
@@ -142,6 +144,7 @@ class AutoWatch:
         if args.max_listings is not None:
             self.settings.craigslist_max_listings = args.max_listings
             self.settings.facebook_max_listings = args.max_listings
+            self.settings.autotrader_max_listings = args.max_listings
         self.db = Database(settings.db_path)
         self.deduplicator = Deduplicator(self.db)
         self.notifier = ConsoleNotifier()
@@ -153,6 +156,7 @@ class AutoWatch:
         )
         self.run_facebook = settings.facebook_enabled and not args.no_facebook
         self.run_craigslist = not args.no_craigslist
+        self.run_autotrader = settings.autotrader_enabled and not args.no_autotrader
 
     def run_once(self, region: ResolvedRegion) -> list[VehicleListing]:
         scraped: list[VehicleListing] = []
@@ -173,6 +177,12 @@ class AutoWatch:
                 logger.info("Facebook metrics: {}", fb_result.metrics.as_dict())
             except Exception as exc:  # noqa: BLE001
                 logger.error("Facebook scraper crashed: {}", exc)
+
+        if self.run_autotrader:
+            try:
+                scraped.extend(AutotraderScraper(self.settings).scrape(region))
+            except Exception as exc:  # noqa: BLE001
+                logger.error("AutoTrader scraper crashed: {}", exc)
 
         new_listings, stats = self.deduplicator.process(scraped, self.filters)
         self.notifier.notify_many(new_listings, stats=stats, db_total=self.db.count())

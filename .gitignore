@@ -5,5 +5,11 @@ venv/
 .env
 data/*.db
 data/fb_profile/
+data/at_profile/
 logs/*.log
 .DS_Store
+
+# Next.js web app
+web/node_modules/
+web/.next/
+web/out/

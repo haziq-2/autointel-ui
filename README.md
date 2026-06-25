@@ -1,8 +1,8 @@
 # AutoWatch
 
-AutoWatch monitors **newly listed vehicles** on **Facebook Marketplace** and
-**Craigslist** for a region you specify, and reports only listings it has not seen
-before. State is kept in a local SQLite database so "new" means new across runs.
+AutoWatch monitors **newly listed vehicles** on **Facebook Marketplace**,
+**Craigslist**, and **AutoTrader** for a region you specify, and reports only
+listings it has not seen before. State is kept in a local SQLite database so "new" means new across runs.
 
 ## Features
 
@@ -17,6 +17,8 @@ before. State is kept in a local SQLite database so "new" means new across runs.
   with optional detail-page enrichment (VIN, mileage, fuel, transmission).
 - Facebook Marketplace scraping via Playwright with a **persistent profile** so
   you log in only once; automatic Vehicles category selection when the feed is empty.
+- **AutoTrader** (US only) via Playwright + Chrome profile; parses search API/HTML
+  for used vehicles sorted by newest listings.
 - Accurate new-listing detection through a SQLite upsert keyed on
   `(source, listing_id)`.
 - Optional filters: `--make`, `--model`, `--max-price`, `--min-year`.
@@ -71,7 +73,13 @@ python main.py --region "Dallas, TX" --max-listings 200
 python main.py --region "Dallas, TX" --no-facebook
 
 # Facebook only
-python main.py --region "Dallas, TX" --no-craigslist
+python main.py --region "Dallas, TX" --no-craigslist --no-autotrader
+
+# AutoTrader only (US regions)
+python main.py --region "Dallas, TX" --no-craigslist --no-facebook
+
+# Craigslist + AutoTrader, skip Facebook
+python main.py --region "Dallas, TX" --no-facebook
 
 # View all stored vehicles from the database
 python main.py --list
@@ -140,6 +148,9 @@ All settings live in `config.py` and can be overridden via environment variables
 | `AUTOWATCH_FACEBOOK_HEADLESS` | `false` | Run Facebook browser headless |
 | `AUTOWATCH_FACEBOOK_PROFILE_DIR` | `data/fb_profile` | Persistent browser profile |
 | `AUTOWATCH_FACEBOOK_AUTH_TIMEOUT_SECONDS` | `300` | Interactive login wait timeout |
+| `AUTOWATCH_AUTOTRADER_MAX_LISTINGS` | `100` | Max AutoTrader listings per run |
+| `AUTOWATCH_AUTOTRADER_HEADLESS` | `false` | Run AutoTrader browser headless |
+| `AUTOWATCH_AUTOTRADER_BROWSER_CHANNEL` | `chrome` | Browser for AutoTrader (recommended) |
 | `AUTOWATCH_POLL_INTERVAL_SECONDS` | `300` | Watch mode base interval |
 | `AUTOWATCH_LOG_LEVEL` | `INFO` | Console log level |
 
@@ -154,6 +165,7 @@ All settings live in `config.py` and can be overridden via environment variables
 ├── utils.py                     # Delays, UA rotation, retries
 ├── scrapers/
 │   ├── craigslist.py            # requests + BeautifulSoup
+│   ├── autotrader.py            # Playwright + HTML/API parsing (US)
 │   └── facebook/                # Modular Playwright scraper
 │       ├── scraper.py           # Orchestrator
 │       ├── navigation.py        # Vehicles category + URL handling
@@ -219,6 +231,18 @@ python -m pytest tests/ -v
    rm -rf data/fb_profile
    python main.py --fb-login
    ```
+
+### AutoTrader blocked or 0 listings
+
+AutoTrader uses Akamai bot protection. Use a visible Chrome browser:
+
+```bash
+AUTOWATCH_AUTOTRADER_HEADLESS=false \
+AUTOWATCH_AUTOTRADER_BROWSER_CHANNEL=chrome \
+python main.py --region "Dallas, TX" --no-craigslist --no-facebook
+```
+
+AutoTrader is **US-only** and requires a ZIP code (resolved automatically via geocoding).
 
 ### Facebook returns 0 listings
 
