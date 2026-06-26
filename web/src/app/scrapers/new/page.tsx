@@ -13,10 +13,13 @@ import { MARKETPLACES } from "@/lib/constants";
 export default function NewScraperPage() {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
+  const [city, setCity] = useState("Dallas, TX");
 
   const handleStart = () => {
+    if (!city.trim()) return;
     setSaving(true);
-    setTimeout(() => router.push("/scrapers/job-1/live"), 500);
+    const q = encodeURIComponent(city.trim());
+    setTimeout(() => router.push(`/scrapers/job-1/live?city=${q}`), 400);
   };
 
   return (
@@ -33,8 +36,13 @@ export default function NewScraperPage() {
           </Select>
         </FormField>
 
-        <FormField label="Location">
-          <Input defaultValue="Dallas, TX" className="h-9 border-border text-[13px] shadow-none" />
+        <FormField label="City">
+          <Input
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            placeholder="e.g. Dallas, TX"
+            className="h-9 border-border text-[13px] shadow-none"
+          />
         </FormField>
 
         <FormField label="Radius (miles)">

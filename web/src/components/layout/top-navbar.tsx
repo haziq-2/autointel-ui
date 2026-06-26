@@ -1,6 +1,8 @@
 "use client";
 
-import { Search } from "lucide-react";
+import Link from "next/link";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Menu, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -11,11 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ORGANIZATIONS } from "@/lib/constants";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
-import Link from "next/link";
-import { NAV_ITEMS } from "@/lib/constants";
+import { ORGANIZATIONS, NAV_SECTIONS } from "@/lib/constants";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -30,15 +28,24 @@ export function TopNavbar() {
           <div className="border-b border-border px-4 py-3">
             <p className="text-[13px] font-semibold">AutoIntel</p>
           </div>
-          <nav className="space-y-0.5 p-2">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block rounded-md px-2.5 py-1.5 text-[13px] text-muted-foreground hover:bg-[#fafafa]"
-              >
-                {item.title}
-              </Link>
+          <nav className="space-y-3 overflow-y-auto p-2">
+            {NAV_SECTIONS.map((section, idx) => (
+              <div key={section.label ?? `m-${idx}`}>
+                {section.label && (
+                  <p className="mb-1 px-2.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                    {section.label}
+                  </p>
+                )}
+                {section.items.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="block rounded-md px-2.5 py-1.5 text-[13px] text-muted-foreground hover:bg-[#fafafa]"
+                  >
+                    {item.title}
+                  </Link>
+                ))}
+              </div>
             ))}
           </nav>
         </SheetContent>

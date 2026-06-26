@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { PageHeader, SectionTitle } from "@/components/shared/page-header";
 import { ScoreBadge, VehicleStatusBadge } from "@/components/shared/status-badge";
 import {
@@ -95,7 +94,6 @@ export default function VehiclesPage() {
       <DataTable maxHeight="calc(100vh - 320px)">
         <DataTableHead>
           <tr>
-            <DataTableHeaderCell className="w-14" />
             <DataTableHeaderCell>
               <span className="inline-flex items-center gap-1">Vehicle <ArrowUpDown className="h-3 w-3 opacity-40" /></span>
             </DataTableHeaderCell>
@@ -115,13 +113,6 @@ export default function VehiclesPage() {
         <tbody>
           {vehicles.map((v) => (
             <DataTableRow key={v.id}>
-              <DataTableCell>
-                <Link href={`/vehicles/${v.id}`}>
-                  <div className="relative h-8 w-11 overflow-hidden rounded border border-border bg-[#fafafa]">
-                    <Image src={v.image} alt="" fill className="object-cover" unoptimized />
-                  </div>
-                </Link>
-              </DataTableCell>
               <DataTableCell>
                 <Link href={`/vehicles/${v.id}`} className="font-medium text-foreground hover:underline">
                   {v.title}

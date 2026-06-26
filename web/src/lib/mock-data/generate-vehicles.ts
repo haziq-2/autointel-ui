@@ -1,5 +1,22 @@
 import type { VehicleListing, VehicleFilters } from "@/lib/types";
 
+const MODEL_BODY_STYLE: Record<string, Record<string, string>> = {
+  Ford: { "F-150": "Truck", Explorer: "SUV", Mustang: "Coupe", Escape: "SUV", Bronco: "SUV" },
+  Toyota: { Camry: "Sedan", RAV4: "SUV", Tacoma: "Truck", Corolla: "Sedan", Highlander: "SUV" },
+  Honda: { "CR-V": "SUV", Accord: "Sedan", Civic: "Sedan", Pilot: "SUV", "HR-V": "SUV" },
+  Chevrolet: { Silverado: "Truck", Equinox: "SUV", Tahoe: "SUV", Malibu: "Sedan", Traverse: "SUV" },
+  Ram: { "1500": "Truck", "2500": "Truck", ProMaster: "Van" },
+  Tesla: { "Model 3": "Electric", "Model Y": "Electric", "Model S": "Electric" },
+  BMW: { X5: "SUV", "3 Series": "Sedan", "5 Series": "Sedan" },
+  Jeep: { Wrangler: "SUV", "Grand Cherokee": "SUV", Compass: "SUV" },
+  Nissan: { Altima: "Sedan", Rogue: "SUV", Frontier: "Truck" },
+  Hyundai: { Tucson: "SUV", "Santa Fe": "SUV", Elantra: "Sedan" },
+};
+
+function getBodyStyleForModel(make: string, model: string): string {
+  return MODEL_BODY_STYLE[make]?.[model] ?? "Sedan";
+}
+
 const MAKES_MODELS: Record<string, string[]> = {
   Ford: ["F-150", "Explorer", "Mustang", "Escape", "Bronco"],
   Toyota: ["Camry", "RAV4", "Tacoma", "Corolla", "Highlander"],
@@ -17,9 +34,6 @@ const MARKETPLACES = [
   "Facebook Marketplace",
   "Craigslist",
   "AutoTrader",
-  "Cars.com",
-  "CarGurus",
-  "Dealer Websites",
 ];
 
 const LOCATIONS = [
@@ -37,18 +51,71 @@ const LOCATIONS = [
   "Orlando, FL",
 ];
 
-const IMAGES = [
-  "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1583121274602-3e2820c50d88?w=400&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=400&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=400&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=300&fit=crop",
-  "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=300&fit=crop",
+export const SCRAPE_CITIES = LOCATIONS;
+
+export function matchesCity(vehicleLocation: string, cityQuery: string): boolean {
+  const q = cityQuery.trim().toLowerCase();
+  if (!q) return false;
+  const loc = vehicleLocation.toLowerCase();
+  const cityName = q.split(",")[0].trim();
+  return loc.includes(cityName) || loc.includes(q);
+}
+
+export function getVehiclesByCity(city: string, limit = 80): VehicleListing[] {
+  return dedupeVehicles(getAllVehicles().filter((v) => matchesCity(v.location, city))).slice(0, limit);
+}
+
+export function countVehiclesByCity(city: string): number {
+  return getAllVehicles().filter((v) => matchesCity(v.location, city)).length;
+}
+
+const MODEL_VARIANTS = Object.entries(MAKES_MODELS).flatMap(([make, models]) =>
+  models.map((model) => ({ make, model }))
+);
+
+const EXTERIOR_COLORS = [
+  "Black",
+  "White",
+  "Silver",
+  "Gray",
+  "Blue",
+  "Red",
+  "Green",
+  "Brown",
 ];
 
-const BODY_STYLES = ["Sedan", "SUV", "Truck", "Coupe", "Van"];
+function vehicleCombo(index: number) {
+  const yearSpan = 9;
+  const locCount = LOCATIONS.length;
+  const marketCount = MARKETPLACES.length;
+  const modelCount = MODEL_VARIANTS.length;
+  const comboSize = modelCount * yearSpan * locCount * marketCount;
+  const i = index % comboSize;
+
+  const marketIdx = i % marketCount;
+  const afterMarket = Math.floor(i / marketCount);
+  const locIdx = afterMarket % locCount;
+  const afterLoc = Math.floor(afterMarket / locCount);
+  const yearIdx = afterLoc % yearSpan;
+  const modelIdx = Math.floor(afterLoc / yearSpan);
+
+  return {
+    ...MODEL_VARIANTS[modelIdx],
+    year: 2016 + yearIdx,
+    location: LOCATIONS[locIdx],
+    marketplace: MARKETPLACES[marketIdx],
+  };
+}
+
+export function dedupeVehicles(vehicles: VehicleListing[]): VehicleListing[] {
+  const seenIds = new Set<string>();
+  return vehicles.filter((v) => {
+    if (seenIds.has(v.id)) return false;
+    seenIds.add(v.id);
+    return true;
+  });
+}
+
 const FUEL_TYPES = ["Gasoline", "Diesel", "Electric", "Hybrid"];
 const STATUSES = ["new", "reviewed", "saved", "archived"] as const;
 const SELLER_TYPES = ["dealer", "private"] as const;
@@ -66,14 +133,11 @@ export const TOTAL_VEHICLES = 5247;
 
 export function generateVehicle(index: number): VehicleListing {
   const seed = index + 1;
-  const makes = Object.keys(MAKES_MODELS);
-  const make = pick(makes, seed);
-  const model = pick(MAKES_MODELS[make], seed * 2);
-  const year = 2016 + Math.floor(seededRandom(seed * 3) * 9);
+  const { make, model, year, location, marketplace } = vehicleCombo(index);
+  const bodyStyle = getBodyStyleForModel(make, model);
+  const color = pick(EXTERIOR_COLORS, seed * 18);
   const mileage = 8000 + Math.floor(seededRandom(seed * 4) * 120000);
   const basePrice = 12000 + Math.floor(seededRandom(seed * 5) * 48000);
-  const location = pick(LOCATIONS, seed * 6);
-  const marketplace = pick(MARKETPLACES, seed * 7);
   const sellerType = pick(SELLER_TYPES, seed * 8);
   const daysAgo = Math.floor(seededRandom(seed * 9) * 30);
   const dateFound = new Date(Date.now() - daysAgo * 86400000).toISOString().split("T")[0];
@@ -88,8 +152,7 @@ export function generateVehicle(index: number): VehicleListing {
 
   return {
     id: `v-${index + 1}`,
-    image: IMAGES[index % IMAGES.length],
-    title: `${year} ${make} ${model}`,
+    title: `${year} ${make} ${model} · ${color}`,
     make,
     model,
     year,
@@ -102,8 +165,8 @@ export function generateVehicle(index: number): VehicleListing {
     aiScore,
     opportunityScore,
     daysListed: daysAgo,
-    fuelType: pick(FUEL_TYPES, seed * 14),
-    bodyStyle: pick(BODY_STYLES, seed * 15),
+    fuelType: bodyStyle === "Electric" ? "Electric" : pick(FUEL_TYPES.filter((f) => f !== "Electric"), seed * 14),
+    bodyStyle,
     dateFound,
     status: pick([...STATUSES], seed * 16),
     fairMarketValue,
@@ -147,7 +210,7 @@ export function queryVehicles(
   page: number,
   pageSize: number
 ): { vehicles: VehicleListing[]; total: number } {
-  let items = getAllVehicles();
+  let items = dedupeVehicles(getAllVehicles());
 
   if (filters.search) {
     const q = filters.search.toLowerCase();
@@ -188,13 +251,13 @@ export function queryVehicles(
 }
 
 export function getRecentVehicles(count: number): VehicleListing[] {
-  return getAllVehicles()
-    .sort((a, b) => b.dateFound.localeCompare(a.dateFound))
-    .slice(0, count);
+  return dedupeVehicles(
+    getAllVehicles().sort((a, b) => b.dateFound.localeCompare(a.dateFound))
+  ).slice(0, count);
 }
 
 export function getSavedOpportunities(): VehicleListing[] {
-  return getAllVehicles()
-    .filter((v) => v.status === "saved" || v.opportunityScore >= 82)
-    .slice(0, 24);
+  return dedupeVehicles(
+    getAllVehicles().filter((v) => v.status === "saved" || v.opportunityScore >= 82)
+  ).slice(0, 24);
 }

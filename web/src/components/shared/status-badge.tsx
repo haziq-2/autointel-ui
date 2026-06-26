@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { JobStatus, SourceStatus, Recommendation, VehicleStatus } from "@/lib/types";
+import type { JobStatus, SourceStatus, Recommendation, VehicleStatus, AlertSeverity, AcquisitionRecommendation } from "@/lib/types";
 
 function Dot({ className }: { className?: string }) {
   return <span className={cn("inline-block h-1.5 w-1.5 rounded-full", className)} />;
@@ -70,5 +70,36 @@ export function RecommendationBadge({ recommendation }: { recommendation: Recomm
 export function VehicleStatusBadge({ status }: { status: VehicleStatus }) {
   return (
     <span className="text-table capitalize text-muted-foreground">{status}</span>
+  );
+}
+
+const alertDot: Record<AlertSeverity, string> = {
+  critical: "bg-[#dc2626]",
+  high: "bg-[#dc2626]",
+  medium: "bg-[#d97706]",
+  low: "bg-[#9ca3af]",
+};
+
+export function AlertSeverityBadge({ severity }: { severity: AlertSeverity }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 text-table capitalize text-foreground">
+      <Dot className={alertDot[severity]} />
+      {severity}
+    </span>
+  );
+}
+
+const acquisitionLabels: Record<AcquisitionRecommendation, string> = {
+  acquire_immediately: "Acquire immediately",
+  strong_candidate: "Strong candidate",
+  monitor: "Monitor",
+  avoid: "Avoid",
+};
+
+export function AcquisitionRecommendationBadge({ recommendation }: { recommendation: AcquisitionRecommendation }) {
+  return (
+    <span className="text-table font-medium text-foreground">
+      {acquisitionLabels[recommendation]}
+    </span>
   );
 }

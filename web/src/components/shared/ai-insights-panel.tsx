@@ -1,10 +1,15 @@
 import { Sparkles } from "lucide-react";
+import type { AiInsight } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 interface AiInsightsPanelProps {
-  insights: string[];
+  insights: AiInsight[] | string[];
   title?: string;
   className?: string;
+}
+
+function isStructured(insight: AiInsight | string): insight is AiInsight {
+  return typeof insight === "object";
 }
 
 export function AiInsightsPanel({
@@ -13,29 +18,41 @@ export function AiInsightsPanel({
   className,
 }: AiInsightsPanelProps) {
   return (
-    <div
-      className={cn(
-        "rounded-xl border border-cyan-500/20 bg-gradient-to-br from-cyan-500/10 via-card/80 to-blue-500/5 p-4 backdrop-blur-sm",
-        className
-      )}
-    >
+    <div className={cn("rounded-md border border-border bg-[#fafafa] p-4", className)}>
       <div className="mb-3 flex items-center gap-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-500/20">
-          <Sparkles className="h-4 w-4 text-cyan-400" />
-        </div>
-        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-        <span className="ml-auto rounded-full bg-cyan-500/20 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-cyan-400">
-          Live
-        </span>
+        <Sparkles className="h-3.5 w-3.5 text-muted-foreground" />
+        <h3 className="text-card-title">{title}</h3>
       </div>
-      <ul className="space-y-2.5">
-        {insights.map((insight, i) => (
-          <li key={i} className="flex gap-2.5 text-sm leading-relaxed text-muted-foreground">
-            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400" />
-            <span>{insight}</span>
-          </li>
-        ))}
-      </ul>
+      <div className="space-y-4">
+        {insights.map((insight, i) =>
+          isStructured(insight) ? (
+            <div key={i} className="border-t border-border pt-4 first:border-0 first:pt-0">
+              <p className="text-[13px] font-medium text-foreground">{insight.what}</p>
+              <dl className="mt-2 space-y-1.5 text-[13px] text-muted-foreground">
+                <div>
+                  <dt className="text-label inline">Why · </dt>
+                  <dd className="inline">{insight.why}</dd>
+                </div>
+                <div>
+                  <dt className="text-label inline">Impact · </dt>
+                  <dd className="inline">{insight.impact}</dd>
+                </div>
+                <div>
+                  <dt className="text-label inline">Action · </dt>
+                  <dd className="inline">{insight.action}</dd>
+                </div>
+              </dl>
+              <p className="mt-2 font-mono text-label tabular-nums">
+                Confidence {insight.confidence}%
+              </p>
+            </div>
+          ) : (
+            <p key={i} className="text-[13px] leading-relaxed text-muted-foreground">
+              {insight}
+            </p>
+          )
+        )}
+      </div>
     </div>
   );
 }

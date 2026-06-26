@@ -13,16 +13,15 @@ import {
   DataTableRow,
   DataTableCell,
 } from "@/components/shared/data-table";
-import { Plus, Pencil, Pause, Trash2 } from "lucide-react";
+import { Pencil, Pause, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function ScrapersPage() {
   return (
     <div>
       <PageHeader title="Scrapers" description="Configure and run marketplace scraping jobs">
-        <Link href="/scrapers/new" className={cn(buttonVariants({ size: "sm" }), "gap-1.5")}>
-          <Plus className="h-3.5 w-3.5" />
-          New scraper
+        <Link href="/scrapers/run-all" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
+          Run all (~6 min)
         </Link>
       </PageHeader>
 
@@ -41,11 +40,10 @@ export default function ScrapersPage() {
               <dl className="mt-4 space-y-2 border-t border-border pt-4">
                 <Row label="Last run" value={scraper.lastRun} />
                 <Row label="Vehicles found" value={scraper.vehiclesFound.toLocaleString()} mono />
-                <Row label="Success rate" value={`${scraper.successRate}%`} mono />
               </dl>
               <div className="mt-4 flex items-center gap-2">
                 <Link
-                  href="/scrapers/job-1/live"
+                  href={`/scrapers/${scraper.id}/live`}
                   className={cn(buttonVariants({ size: "sm" }), "flex-1")}
                 >
                   Start scraping

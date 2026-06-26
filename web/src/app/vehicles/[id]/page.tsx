@@ -1,9 +1,9 @@
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PageHeader, SectionTitle } from "@/components/shared/page-header";
 import { RecommendationBadge, ScoreBadge } from "@/components/shared/status-badge";
-import { getVehicleById, getAllVehicles } from "@/lib/mock-data/generate-vehicles";
+import { getVehicleById, getAllVehicles, dedupeVehicles } from "@/lib/mock-data/generate-vehicles";
+import { enrichAcquisition, getVehiclePricingIntelligence } from "@/lib/mock-data/intelligence";
 import { formatCurrency, formatMileage } from "@/lib/format";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -25,11 +25,18 @@ export default async function VehicleDetailPage({
   const vehicle = getVehicleById(id);
   if (!vehicle) notFound();
 
-  const similar = getAllVehicles()
-    .filter((v) => v.make === vehicle.make && v.id !== vehicle.id)
-    .slice(0, 4);
+  const similar = dedupeVehicles(
+    getAllVehicles().filter(
+      (v) =>
+        v.make === vehicle.make &&
+        v.model === vehicle.model &&
+        v.id !== vehicle.id
+    )
+  ).slice(0, 4);
 
   const marketDelta = (vehicle.fairMarketValue ?? vehicle.price) - vehicle.price;
+  const pricing = getVehiclePricingIntelligence(id);
+  const acquisition = enrichAcquisition(vehicle);
 
   return (
     <div>
@@ -42,19 +49,6 @@ export default async function VehicleDetailPage({
       </Link>
 
       <div className="mb-10 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_320px]">
-        <div>
-          <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-md border border-border bg-[#fafafa]">
-            <Image src={vehicle.image} alt={vehicle.title} fill className="object-cover" unoptimized priority />
-          </div>
-          <div className="mb-2 flex gap-2">
-            {[vehicle.image].map((src, i) => (
-              <div key={i} className="relative h-14 w-20 overflow-hidden rounded border border-border">
-                <Image src={src} alt="" fill className="object-cover opacity-80" unoptimized />
-              </div>
-            ))}
-          </div>
-        </div>
-
         <div className="space-y-6">
           <div>
             <h1 className="text-page-title">{vehicle.title}</h1>
@@ -65,6 +59,9 @@ export default async function VehicleDetailPage({
               {formatCurrency(vehicle.price)}
             </p>
           </div>
+        </div>
+
+        <div className="space-y-6">
           <button type="button" className={cn(buttonVariants({ variant: "outline", size: "sm" }), "w-full")}>
             Save opportunity
           </button>
@@ -112,11 +109,56 @@ export default async function VehicleDetailPage({
           </section>
 
           <section>
-            <SectionTitle>Market comparison</SectionTitle>
-            <p className="text-[13px] text-muted-foreground">
-              Listed {marketDelta > 0 ? `${formatCurrency(marketDelta)} below` : "at"} regional market average for {vehicle.year} {vehicle.make} {vehicle.model}.
-              Comparable units in {vehicle.location.split(",")[1]?.trim() ?? "region"} average {formatCurrency(vehicle.fairMarketValue ?? vehicle.price)}.
-            </p>
+            <SectionTitle>AI pricing intelligence</SectionTitle>
+            {pricing && (
+              <>
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                  <StatBlock label="Market value" value={formatCurrency(pricing.estimatedMarketValue)} />
+                  <StatBlock label="Suggested buy" value={formatCurrency(pricing.suggestedPurchasePrice)} />
+                  <StatBlock label="Suggested sell" value={formatCurrency(pricing.suggestedSellingPrice)} />
+                  <StatBlock label="Expected ROI" value={`${pricing.expectedRoi}%`} highlight />
+                  <StatBlock label="Gross profit" value={formatCurrency(pricing.expectedGrossProfit)} highlight />
+                  <StatBlock label="Days to sell" value={String(pricing.expectedDaysToSell)} />
+                  <StatBlock label="Confidence" value={`${pricing.confidenceScore}%`} />
+                  <StatBlock label="Risk" value={pricing.riskLevel} />
+                </div>
+                <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">{pricing.aiExplanation}</p>
+              </>
+            )}
+          </section>
+
+          <section>
+            <SectionTitle>Acquisition scores</SectionTitle>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              <StatBlock label="Acquisition" value={String(acquisition.acquisitionScore)} />
+              <StatBlock label="Margin" value={String(acquisition.marginScore)} />
+              <StatBlock label="Demand" value={String(acquisition.demandScore)} />
+              <StatBlock label="Seller trust" value={String(acquisition.sellerTrustScore)} />
+              <StatBlock label="Pricing" value={String(acquisition.pricingScore)} />
+              <StatBlock label="Negotiation" value={String(acquisition.negotiationPotential)} />
+            </div>
+            <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">{acquisition.aiExplanation}</p>
+          </section>
+
+          <section>
+            <SectionTitle>Comparable listings</SectionTitle>
+            {pricing?.comparables.length ? (
+              <div className="divide-y divide-border border-y border-border">
+                {pricing.comparables.map((c) => (
+                  <div key={`${c.title}-${c.price}`} className="flex items-center justify-between py-3">
+                    <div>
+                      <p className="text-[13px] font-medium">{c.title}</p>
+                      <p className="text-label">{c.location}</p>
+                    </div>
+                    <p className="font-mono text-[13px] tabular-nums">{formatCurrency(c.price)}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[13px] text-muted-foreground">
+                Listed {marketDelta > 0 ? `${formatCurrency(marketDelta)} below` : "at"} regional average.
+              </p>
+            )}
           </section>
 
           <section>
@@ -158,9 +200,6 @@ export default async function VehicleDetailPage({
                   href={`/vehicles/${v.id}`}
                   className="flex items-center gap-4 py-3 transition-colors hover:bg-[#fafafa]"
                 >
-                  <div className="relative h-10 w-14 overflow-hidden rounded border border-border">
-                    <Image src={v.image} alt="" fill className="object-cover" unoptimized />
-                  </div>
                   <div className="flex-1 min-w-0">
                     <p className="truncate text-[13px] font-medium">{v.title}</p>
                     <p className="text-label">{v.location}</p>
