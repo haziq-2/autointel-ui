@@ -29,7 +29,7 @@ export default function AiAnalysisPage() {
     {
       role: "assistant",
       content:
-        "I'm your AutoIntel copilot. Ask about acquisitions, pricing, inventory, competitors, or market trends.",
+        "I'm your AutoIntel assistant. Ask about acquisitions, pricing, inventory, competitors, or market trends.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -48,7 +48,7 @@ export default function AiAnalysisPage() {
 
   return (
     <div className="flex h-[calc(100vh-7rem)] flex-col">
-      <PageHeader title="AI Copilot" description="Natural language intelligence across your automotive data" />
+      <PageHeader title="AI Assistant" description="Natural language intelligence across your automotive data" />
 
       <div className="flex min-h-0 flex-1 gap-8">
         <div className="hidden w-56 shrink-0 md:block">
@@ -133,7 +133,7 @@ function getResponse(input: string): string {
   }
   if (lower.includes("summarize") || lower.includes("today")) {
     const today = getTodayScrapeCount();
-    return `Today's executive summary:\n\n· ${today} new vehicles discovered\n· 42 undervalued listings flagged\n· 17 acquisition opportunities\n· Truck demand up 18% in Southwest\n· Average listing price down 2.4%\n\n2 active scrapers · inventory health 78/100`;
+    return `Today's executive summary:\n\n· ${today} new vehicles discovered\n· 41 undervalued listings flagged\n· 17 acquisition opportunities\n· Truck demand up 18% in Southwest\n· Average listing price down 2.4%\n\n2 active scrapers · inventory health 78/100`;
   }
   return "Southwest pickup trucks show the strongest signals. I recommend reviewing the Acquisition page for scored opportunities and the Market Intelligence page for regional trends.";
 }

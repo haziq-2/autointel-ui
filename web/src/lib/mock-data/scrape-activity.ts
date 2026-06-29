@@ -35,3 +35,28 @@ export function getTodayScrapeCount(): number {
   const today = format(new Date(), "yyyy-MM-dd");
   return getDailyScrapeCounts(1).find((d) => d.date === today)?.count ?? 0;
 }
+
+export function getAverageDailyScrapeCount(days = 30): number {
+  const data = getDailyScrapeCounts(days);
+  if (data.length === 0) return 0;
+  return Math.round(data.reduce((sum, point) => sum + point.count, 0) / data.length);
+}
+
+export function getAverageDailyScrapeByMarketplace(days = 30): Record<string, number> {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const startDate = format(subDays(today, days - 1), "yyyy-MM-dd");
+
+  const totals: Record<string, number> = {};
+  for (const vehicle of getAllVehicles()) {
+    if (vehicle.dateFound >= startDate) {
+      totals[vehicle.marketplace] = (totals[vehicle.marketplace] ?? 0) + 1;
+    }
+  }
+
+  const averages: Record<string, number> = {};
+  for (const [marketplace, total] of Object.entries(totals)) {
+    averages[marketplace] = Math.round(total / days);
+  }
+  return averages;
+}

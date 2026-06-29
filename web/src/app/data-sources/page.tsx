@@ -1,5 +1,4 @@
 import { PageHeader, SectionTitle } from "@/components/shared/page-header";
-import { AiInsightsPanel } from "@/components/shared/ai-insights-panel";
 import { MetricsGrid } from "@/components/shared/metrics-grid";
 import { StatusBadge } from "@/components/shared/status-badge";
 import {
@@ -10,24 +9,29 @@ import {
   DataTableRow,
 } from "@/components/shared/data-table";
 import { DailyScrapeChart } from "@/components/dashboard/daily-scrape-chart";
-import { DATA_SOURCES, SYNC_LOGS, getPageInsights } from "@/lib/mock-data/intelligence";
-import { getDailyScrapeCounts } from "@/lib/mock-data/scrape-activity";
+import { DATA_SOURCES, SYNC_LOGS } from "@/lib/mock-data/intelligence";
+import {
+  getAverageDailyScrapeByMarketplace,
+  getAverageDailyScrapeCount,
+  getDailyScrapeCounts,
+} from "@/lib/mock-data/scrape-activity";
 
 export default function DataSourcesPage() {
   const syncChart = getDailyScrapeCounts(14);
   const totalRecords = DATA_SOURCES.reduce((s, d) => s + d.recordsImported, 0);
+  const avgDailyImports = getAverageDailyScrapeCount(30);
+  const dailyByMarketplace = getAverageDailyScrapeByMarketplace(30);
 
   return (
     <div>
-      <PageHeader title="Data Sources" description="Unified data layer — every connected source" />
+      <PageHeader title="Data Sources" description="Facebook Marketplace, Craigslist, and AutoTrader connectors" />
 
-      <div className="mb-10 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px]">
-        <div className="space-y-10">
+      <div className="mb-10 space-y-10">
           <MetricsGrid
             metrics={[
               { label: "Active sources", value: DATA_SOURCES.filter((d) => d.status === "running").length },
               { label: "Total records", value: totalRecords.toLocaleString() },
-              { label: "Avg daily imports", value: DATA_SOURCES.reduce((s, d) => s + d.avgDailyRecords, 0).toLocaleString() },
+              { label: "Avg daily imports", value: avgDailyImports.toLocaleString() },
               { label: "Degraded", value: DATA_SOURCES.filter((d) => d.connectionHealth === "degraded").length },
             ]}
           />
@@ -55,7 +59,7 @@ export default function DataSourcesPage() {
                     <DataTableCell align="right" className="font-mono tabular-nums">{s.recordsImported.toLocaleString()}</DataTableCell>
                     <DataTableCell className="text-muted-foreground">{s.syncFrequency}</DataTableCell>
                     <DataTableCell className="capitalize text-muted-foreground">{s.connectionHealth}</DataTableCell>
-                    <DataTableCell align="right" className="font-mono tabular-nums">{s.avgDailyRecords}</DataTableCell>
+                    <DataTableCell align="right" className="font-mono tabular-nums">{dailyByMarketplace[s.name] ?? 0}</DataTableCell>
                   </DataTableRow>
                 ))}
               </tbody>
@@ -94,9 +98,6 @@ export default function DataSourcesPage() {
               </tbody>
             </DataTable>
           </section>
-        </div>
-
-        <AiInsightsPanel insights={getPageInsights("data-sources")} />
       </div>
     </div>
   );

@@ -57,7 +57,7 @@ export function DailyScrapeChart({ data }: DailyScrapeChartProps) {
                 if (!active || !payload?.length) return null;
                 const point = payload[0].payload as DailyScrapePoint;
                 return (
-                  <div className="rounded-md border border-border bg-white px-3 py-2 shadow-sm">
+                  <div className="rounded-[10px] border border-border bg-white px-3 py-2 shadow-card">
                     <p className="text-[12px] text-muted-foreground">{point.date}</p>
                     <p className="font-mono text-[13px] font-medium tabular-nums">
                       {point.count.toLocaleString()} vehicles
@@ -66,7 +66,7 @@ export function DailyScrapeChart({ data }: DailyScrapeChartProps) {
                 );
               }}
             />
-            <Bar dataKey="count" fill="#111827" radius={[3, 3, 0, 0]} maxBarSize={28} />
+            <Bar dataKey="count" fill="#2563eb" radius={[4, 4, 0, 0]} maxBarSize={24} />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -19,31 +19,23 @@ import { getAllVehicles, getSavedOpportunities, getVehicleById } from "./generat
 import { getDailyScrapeCounts, getTodayScrapeCount } from "./scrape-activity";
 
 export const DATA_SOURCES: DataSource[] = [
-  { id: "facebook", name: "Facebook Marketplace", category: "marketplace", status: "running", lastSync: "2 min ago", recordsImported: 184200, syncFrequency: "Every 30 min", connectionHealth: "excellent", avgDailyRecords: 612 },
-  { id: "craigslist", name: "Craigslist", category: "marketplace", status: "idle", lastSync: "18 min ago", recordsImported: 92400, syncFrequency: "Every 1 hr", connectionHealth: "good", avgDailyRecords: 284 },
-  { id: "autotrader", name: "AutoTrader", category: "marketplace", status: "running", lastSync: "1 min ago", recordsImported: 321000, syncFrequency: "Every 30 min", connectionHealth: "excellent", avgDailyRecords: 890 },
-  { id: "carscom", name: "Cars.com", category: "marketplace", status: "idle", lastSync: "32 min ago", recordsImported: 156800, syncFrequency: "Every 2 hr", connectionHealth: "good", avgDailyRecords: 412 },
-  { id: "cargurus", name: "CarGurus", category: "marketplace", status: "paused", lastSync: "1 hr ago", recordsImported: 110400, syncFrequency: "Every 2 hr", connectionHealth: "degraded", lastError: "Rate limit exceeded", avgDailyRecords: 318 },
-  { id: "dealer", name: "Dealer Websites", category: "marketplace", status: "running", lastSync: "8 min ago", recordsImported: 64000, syncFrequency: "Every 4 hr", connectionHealth: "good", avgDailyRecords: 156 },
-  { id: "oem", name: "OEM Inventory Feeds", category: "oem", status: "running", lastSync: "12 min ago", recordsImported: 48200, syncFrequency: "Every 6 hr", connectionHealth: "excellent", avgDailyRecords: 94 },
-  { id: "auction", name: "Auction Feeds", category: "auction", status: "running", lastSync: "45 min ago", recordsImported: 28400, syncFrequency: "Daily", connectionHealth: "good", avgDailyRecords: 68 },
-  { id: "inventory", name: "Internal Inventory", category: "internal", status: "running", lastSync: "5 min ago", recordsImported: 1248, syncFrequency: "Real-time", connectionHealth: "excellent", avgDailyRecords: 12 },
-  { id: "crm", name: "CRM", category: "crm", status: "running", lastSync: "15 min ago", recordsImported: 8420, syncFrequency: "Every 1 hr", connectionHealth: "good", avgDailyRecords: 28 },
-  { id: "dms", name: "DMS", category: "dms", status: "running", lastSync: "10 min ago", recordsImported: 15600, syncFrequency: "Every 30 min", connectionHealth: "excellent", avgDailyRecords: 42 },
+  { id: "facebook", name: "Facebook Marketplace", category: "marketplace", status: "running", lastSync: "2 min ago", recordsImported: 1585, syncFrequency: "Every 30 min", connectionHealth: "excellent", avgDailyRecords: 57 },
+  { id: "craigslist", name: "Craigslist", category: "marketplace", status: "idle", lastSync: "18 min ago", recordsImported: 795, syncFrequency: "Every 1 hr", connectionHealth: "good", avgDailyRecords: 57 },
+  { id: "autotrader", name: "AutoTrader", category: "marketplace", status: "running", lastSync: "1 min ago", recordsImported: 2763, syncFrequency: "Every 30 min", connectionHealth: "excellent", avgDailyRecords: 57 },
 ];
 
 export const SYNC_LOGS: SyncLog[] = [
-  { id: "s1", source: "AutoTrader", timestamp: "Today, 9:14 AM", status: "success", records: 142, message: "Sync completed successfully" },
-  { id: "s2", source: "Facebook Marketplace", timestamp: "Today, 9:12 AM", status: "success", records: 98, message: "Sync completed successfully" },
-  { id: "s3", source: "CarGurus", timestamp: "Today, 8:45 AM", status: "warning", records: 0, message: "Rate limit exceeded — retry scheduled" },
-  { id: "s4", source: "DMS", timestamp: "Today, 8:30 AM", status: "success", records: 24, message: "Inventory records updated" },
-  { id: "s5", source: "Auction Feeds", timestamp: "Today, 7:00 AM", status: "success", records: 18, message: "New auction lots imported" },
-  { id: "s6", source: "CRM", timestamp: "Today, 6:30 AM", status: "success", records: 12, message: "Lead activity synced" },
+  { id: "s1", source: "AutoTrader", timestamp: "Today, 9:14 AM", status: "success", records: 139, message: "Sync completed successfully" },
+  { id: "s2", source: "Facebook Marketplace", timestamp: "Today, 9:12 AM", status: "success", records: 96, message: "Sync completed successfully" },
+  { id: "s3", source: "Craigslist", timestamp: "Today, 8:45 AM", status: "success", records: 63, message: "Sync completed successfully" },
+  { id: "s4", source: "Facebook Marketplace", timestamp: "Today, 8:42 AM", status: "success", records: 110, message: "Sync completed successfully" },
+  { id: "s5", source: "AutoTrader", timestamp: "Today, 8:14 AM", status: "success", records: 153, message: "Sync completed successfully" },
+  { id: "s6", source: "Craigslist", timestamp: "Today, 7:30 AM", status: "success", records: 47, message: "Sync completed successfully" },
 ];
 
 export const MARKET_TRENDS = [
   { metric: "Avg listing price", value: "$28,420", change: -2.4, explanation: "Average asking prices declined 2.4% over 30 days as supply increased in midsize SUVs." },
-  { metric: "Active inventory", value: "5,247", change: 6.2, explanation: "Total tracked listings rose 6.2% as spring selling season accelerates listing volume." },
+  { metric: "Active inventory", value: "5,143", change: 6.2, explanation: "Total tracked listings rose 6.2% as spring selling season accelerates listing volume." },
   { metric: "Days on market", value: "24.6", change: -8.1, explanation: "Vehicles are selling faster — average days listed fell 8.1% indicating stronger demand." },
   { metric: "Price reductions", value: "412", change: 14.3, explanation: "Sellers are adjusting prices more aggressively, up 14.3% week-over-week." },
 ];
@@ -58,6 +50,50 @@ export const SLOW_SELLING_MODELS = [
   { model: "Chevrolet Malibu", region: "Texas", daysToSell: 48, change: "-14% demand" },
   { model: "Nissan Altima", region: "Southwest", daysToSell: 42, change: "-9% demand" },
   { model: "Hyundai Elantra", region: "Southeast", daysToSell: 38, change: "-6% demand" },
+];
+
+export const MARKET_PRICE_HISTORY = [
+  { label: "Wk 1", date: "Apr 7", price: 29140, inventory: 4680, daysOnMarket: 27.2, newListings: 368, priceReductions: 26 },
+  { label: "Wk 2", date: "Apr 14", price: 29080, inventory: 4720, daysOnMarket: 26.9, newListings: 374, priceReductions: 28 },
+  { label: "Wk 3", date: "Apr 21", price: 29020, inventory: 4780, daysOnMarket: 26.5, newListings: 382, priceReductions: 30 },
+  { label: "Wk 4", date: "Apr 28", price: 28960, inventory: 4830, daysOnMarket: 26.2, newListings: 388, priceReductions: 31 },
+  { label: "Wk 5", date: "May 5", price: 28910, inventory: 4890, daysOnMarket: 25.8, newListings: 396, priceReductions: 34 },
+  { label: "Wk 6", date: "May 12", price: 28850, inventory: 4940, daysOnMarket: 25.5, newListings: 401, priceReductions: 36 },
+  { label: "Wk 7", date: "May 19", price: 28790, inventory: 4980, daysOnMarket: 25.2, newListings: 405, priceReductions: 38 },
+  { label: "Wk 8", date: "May 26", price: 28720, inventory: 5020, daysOnMarket: 25.0, newListings: 408, priceReductions: 40 },
+  { label: "Wk 9", date: "Jun 2", price: 28660, inventory: 5060, daysOnMarket: 24.8, newListings: 410, priceReductions: 43 },
+  { label: "Wk 10", date: "Jun 9", price: 28580, inventory: 5090, daysOnMarket: 24.7, newListings: 411, priceReductions: 45 },
+  { label: "Wk 11", date: "Jun 16", price: 28500, inventory: 5120, daysOnMarket: 24.6, newListings: 412, priceReductions: 47 },
+  { label: "Wk 12", date: "Jun 23", price: 28420, inventory: 5143, daysOnMarket: 24.6, newListings: 412, priceReductions: 48 },
+];
+
+export const REGIONAL_METRICS = [
+  { region: "Texas", avgPrice: 29840, supply: 1805, demandIndex: 88 },
+  { region: "Southwest", avgPrice: 28620, supply: 1420, demandIndex: 92 },
+  { region: "Southeast", avgPrice: 27240, supply: 1180, demandIndex: 84 },
+  { region: "Mountain", avgPrice: 30100, supply: 738, demandIndex: 76 },
+];
+
+export const SEASONALITY_DATA = [
+  { month: "Jan", index: 0.92 },
+  { month: "Feb", index: 0.96 },
+  { month: "Mar", index: 1.04 },
+  { month: "Apr", index: 1.1 },
+  { month: "May", index: 1.14 },
+  { month: "Jun", index: 1.12 },
+  { month: "Jul", index: 1.08 },
+  { month: "Aug", index: 1.05 },
+  { month: "Sep", index: 1.0 },
+  { month: "Oct", index: 0.94 },
+  { month: "Nov", index: 0.9 },
+  { month: "Dec", index: 0.88 },
+];
+
+export const BODY_STYLE_MIX = [
+  { segment: "Trucks", share: 32, demandChange: 18 },
+  { segment: "SUVs", share: 38, demandChange: 11 },
+  { segment: "Sedans", share: 22, demandChange: -6 },
+  { segment: "EVs", share: 8, demandChange: 12 },
 ];
 
 export const INVENTORY_UNITS: InventoryUnit[] = [
@@ -84,12 +120,9 @@ export const SELLER_PROFILES: SellerProfile[] = [
 ];
 
 export const MARKETPLACE_METRICS: MarketplaceMetrics[] = [
-  { id: "facebook", name: "Facebook Marketplace", listings: 1842, growthRate: 8.4, avgPriceChange: -1.2, qualityScore: 78, duplicateRate: 4.2, regionsCovered: 12, dailyVolume: 612, health: "excellent" },
-  { id: "autotrader", name: "AutoTrader", listings: 3210, growthRate: 5.1, avgPriceChange: -0.8, qualityScore: 91, duplicateRate: 1.8, regionsCovered: 12, dailyVolume: 890, health: "excellent" },
-  { id: "craigslist", name: "Craigslist", listings: 924, growthRate: 2.4, avgPriceChange: -2.1, qualityScore: 68, duplicateRate: 8.6, regionsCovered: 10, dailyVolume: 284, health: "good" },
-  { id: "carscom", name: "Cars.com", listings: 1568, growthRate: 3.8, avgPriceChange: -1.4, qualityScore: 86, duplicateRate: 2.4, regionsCovered: 11, dailyVolume: 412, health: "good" },
-  { id: "cargurus", name: "CarGurus", listings: 1104, growthRate: -1.2, avgPriceChange: 0.4, qualityScore: 84, duplicateRate: 3.1, regionsCovered: 11, dailyVolume: 318, health: "degraded" },
-  { id: "dealer", name: "Dealer Websites", listings: 640, growthRate: 4.6, avgPriceChange: -0.6, qualityScore: 93, duplicateRate: 0.8, regionsCovered: 8, dailyVolume: 156, health: "good" },
+  { id: "facebook", name: "Facebook Marketplace", listings: 1585, growthRate: 8.4, avgPriceChange: -1.2, qualityScore: 78, duplicateRate: 4.2, regionsCovered: 12, dailyVolume: 57, health: "excellent" },
+  { id: "autotrader", name: "AutoTrader", listings: 2763, growthRate: 5.1, avgPriceChange: -0.8, qualityScore: 91, duplicateRate: 1.8, regionsCovered: 12, dailyVolume: 57, health: "excellent" },
+  { id: "craigslist", name: "Craigslist", listings: 795, growthRate: 2.4, avgPriceChange: -2.1, qualityScore: 68, duplicateRate: 8.6, regionsCovered: 10, dailyVolume: 57, health: "good" },
 ];
 
 export const FLEET_VEHICLES: FleetVehicle[] = [
@@ -211,13 +244,13 @@ export function getExecutiveSummary() {
   return {
     highlights: [
       `${today} new vehicles discovered today`,
-      "42 undervalued listings detected",
+      "41 undervalued listings detected",
       "Truck demand increased 18% in Southwest",
       "Average listing price down 2.4%",
       "17 acquisition opportunities flagged",
     ],
-    estimatedAcquisitionValue: 1842000,
-    potentialGrossProfit: 428000,
+    estimatedAcquisitionValue: 1805000,
+    potentialGrossProfit: 420000,
     inventoryHealth: 78,
     marketCoverage: 12,
     highOpportunityCount: 17,
@@ -237,11 +270,11 @@ export function getPageInsights(page: string): AiInsight[] {
     ],
     "data-sources": [
       {
-        what: "CarGurus sync degraded",
-        why: "Rate limiting triggered during peak crawl window",
-        impact: "12% gap in Southwest listing coverage until restored",
-        action: "Reduce sync frequency to every 4 hours temporarily",
-        confidence: 96,
+        what: "AutoTrader highest sync volume",
+        why: "171 new listings indexed per day on average across all sources",
+        impact: "Best source for pricing intelligence calibration",
+        action: "Weight AutoTrader comparables at 40% in pricing model",
+        confidence: 94,
       },
     ],
     "market-intelligence": [
@@ -255,9 +288,9 @@ export function getPageInsights(page: string): AiInsight[] {
     ],
     pricing: [
       {
-        what: "38 listings priced 8%+ below market",
+        what: "37 listings priced 8%+ below market",
         why: "Private sellers adjusting faster than dealers in Texas metros",
-        impact: "$428K potential gross profit across flagged units",
+        impact: "$420K potential gross profit across flagged units",
         action: "Route top 10 to acquisition team for immediate review",
         confidence: 89,
       },
@@ -337,7 +370,7 @@ export function getPageInsights(page: string): AiInsight[] {
     reports: [
       {
         what: "Weekly acquisition report ready",
-        why: "17 opportunities and 42 undervalued units flagged",
+        why: "17 opportunities and 41 undervalued units flagged",
         impact: "Executive team briefing data current as of this morning",
         action: "Export PDF for Monday leadership review",
         confidence: 95,

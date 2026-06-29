@@ -10,9 +10,8 @@ import {
   CartesianGrid,
 } from "recharts";
 import { PageHeader, SectionTitle } from "@/components/shared/page-header";
-import { AiInsightsPanel } from "@/components/shared/ai-insights-panel";
 import { MetricsGrid } from "@/components/shared/metrics-grid";
-import { getDemandForecast, getPageInsights } from "@/lib/mock-data/intelligence";
+import { getDemandForecast } from "@/lib/mock-data/intelligence";
 
 const SEGMENTS = ["Pickup Trucks", "Mid-size SUVs", "Sedans", "EVs"];
 
@@ -23,8 +22,7 @@ export default function DemandPage() {
     <div>
       <PageHeader title="Demand Forecast" description="Predictive demand by segment and region" />
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px]">
-        <div className="space-y-10">
+      <div className="space-y-10">
           <MetricsGrid
             metrics={SEGMENTS.map((s) => ({
               label: s,
@@ -61,9 +59,6 @@ export default function DemandPage() {
               <li>· Expected slowdown: Sedans, Southeast, Q4 seasonal dip</li>
             </ul>
           </section>
-        </div>
-
-        <AiInsightsPanel insights={getPageInsights("demand")} />
       </div>
     </div>
   );

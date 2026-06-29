@@ -4,12 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { Square, RotateCcw } from "lucide-react";
+import { Check, RotateCcw, Square } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatCurrency, formatMileage } from "@/lib/format";
 import type { ScrapeContext } from "@/lib/scraping/scraper-config";
 import { useScrapeSimulation } from "@/lib/scraping/use-scrape-simulation";
 import { CityPrompt } from "@/components/scraping/city-prompt";
+import { Card } from "@/components/shared/card";
 
 interface LiveScrapePanelProps {
   context: ScrapeContext;
@@ -93,15 +94,17 @@ function LiveScrapeRunner({
   const runtime = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, "0")}`;
   const marketplaceShort = context.marketplace.split(" ")[0];
 
+  const recordsPerSec = elapsed > 0 ? (vehiclesFound / elapsed).toFixed(1) : "—";
+
   return (
     <>
-      <div className="mb-10 rounded-md border border-border p-6">
-        <div className="mb-3 flex items-baseline justify-between">
-          <div className="flex items-center gap-2">
+      <Card className="mb-10">
+        <div className="mb-4 flex items-baseline justify-between">
+          <div className="flex items-center gap-2.5">
             {phase === "running" && (
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#111827] opacity-20" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#111827]" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#2563eb] opacity-25" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#2563eb]" />
               </span>
             )}
             {phase === "completed" && (
@@ -110,7 +113,7 @@ function LiveScrapeRunner({
             {(phase === "stopped" || phase === "idle") && (
               <span className="inline-flex h-2 w-2 rounded-full bg-[#9ca3af]" />
             )}
-            <span className="text-card-title capitalize">{phase === "idle" ? "starting" : phase}</span>
+            <span className="text-card-title font-medium capitalize">{phase === "idle" ? "starting" : phase}</span>
           </div>
           <span className="font-mono text-[13px] tabular-nums text-muted-foreground">{progress}%</span>
         </div>
@@ -118,21 +121,23 @@ function LiveScrapeRunner({
           <div
             className={cn(
               "h-full rounded-full transition-all duration-500 ease-out",
-              phase === "completed" ? "bg-[#16a34a]" : "bg-[#111827]"
+              phase === "completed" ? "bg-[#16a34a]" : "bg-[#2563eb]"
             )}
             style={{ width: `${progress}%` }}
           />
         </div>
-        <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">
           <Metric label="Marketplace" value={marketplaceShort} />
           <Metric label="City" value={city.split(",")[0]} />
-          <Metric label="Vehicles found" value={String(vehiclesFound)} mono />
-          <Metric label="Runtime" value={runtime} mono />
+          <Metric label="Vehicles" value={String(vehiclesFound)} mono />
+          <Metric label="Pages" value={String(pagesScanned)} mono />
+          <Metric label="Speed" value={`${recordsPerSec}/s`} mono />
+          <Metric label="ETA" value={phase === "running" ? `${remainingSec}s` : "—"} mono />
         </div>
-        <p className="mt-6 text-label">
-          {phase === "running" && `${remainingSec}s remaining · ${pagesScanned} pages · ${city} only`}
-          {phase === "completed" && `Finished in ${runtime} · ${vehiclesFound} vehicles in ${city}`}
-          {phase === "stopped" && "Scrape stopped"}
+        <p className="mt-6 text-helper">
+          {phase === "running" && `Scanning ${marketplaceShort} · ${city} · ${pagesScanned} pages processed`}
+          {phase === "completed" && `Completed in ${runtime} · ${vehiclesFound} vehicles indexed`}
+          {phase === "stopped" && "Scrape stopped by user"}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           {phase === "running" ? (
@@ -164,12 +169,12 @@ function LiveScrapeRunner({
             </button>
           )}
         </div>
-      </div>
+      </Card>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-md border border-border">
-          <div className="border-b border-border px-4 py-3">
-            <h2 className="text-card-title">Event log</h2>
+        <Card padding={false} className="overflow-hidden">
+          <div className="border-b border-border px-5 py-3.5">
+            <h2 className="text-card-title font-medium">Event log</h2>
           </div>
           <ScrollArea className="h-[360px]">
             <ul>
@@ -177,21 +182,24 @@ function LiveScrapeRunner({
                 <li
                   key={`${item.time}-${item.msg}`}
                   className={cn(
-                    "border-b border-border px-4 py-2.5 text-[13px]",
-                    i === 0 ? "bg-[#fafafa] text-foreground" : "text-muted-foreground"
+                    "flex items-start gap-3 border-b border-border px-5 py-2.5 text-[13px] transition-colors",
+                    i === 0 ? "bg-[#fafafa]" : ""
                   )}
                 >
-                  <span className="mr-3 font-mono text-[11px] text-muted-foreground">{item.time}</span>
-                  {item.msg}
+                  <Check className={cn("mt-0.5 h-3.5 w-3.5 shrink-0", i === 0 ? "text-[#2563eb]" : "text-[#9ca3af]")} />
+                  <div className="min-w-0 flex-1">
+                    <span className="mr-2 font-mono text-[11px] text-[#9ca3af]">{item.time}</span>
+                    <span className={i === 0 ? "text-foreground" : "text-muted-foreground"}>{item.msg}</span>
+                  </div>
                 </li>
               ))}
             </ul>
           </ScrollArea>
-        </div>
+        </Card>
 
-        <div className="rounded-md border border-border">
-          <div className="border-b border-border px-4 py-3">
-            <h2 className="text-card-title">Incoming records · {city}</h2>
+        <Card padding={false} className="overflow-hidden">
+          <div className="border-b border-border px-5 py-3.5">
+            <h2 className="text-card-title font-medium">Incoming records · {city}</h2>
           </div>
           <ScrollArea className="h-[360px]">
             {liveVehicles.length === 0 ? (
@@ -202,7 +210,7 @@ function LiveScrapeRunner({
                   <Link
                     key={v.id}
                     href={`/vehicles/${v.id}`}
-                    className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[#fafafa]"
+                    className="flex items-center gap-3 px-5 py-3 transition-colors hover:bg-[#fafafa]"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[13px] font-medium">{v.title}</p>
@@ -216,7 +224,7 @@ function LiveScrapeRunner({
               </div>
             )}
           </ScrollArea>
-        </div>
+        </Card>
       </div>
     </>
   );

@@ -1,9 +1,9 @@
 import type { ScrapingJob, ScraperSource } from "@/lib/types";
 
 export const ACTIVE_SCRAPERS: ScraperSource[] = [
-  { id: "facebook", name: "Facebook Marketplace", status: "running", lastRun: "2 min ago", vehiclesFound: 1842, successRate: 98.2 },
-  { id: "craigslist", name: "Craigslist", status: "idle", lastRun: "18 min ago", vehiclesFound: 924, successRate: 96.4 },
-  { id: "autotrader", name: "AutoTrader", status: "running", lastRun: "1 min ago", vehiclesFound: 3210, successRate: 99.1 },
+  { id: "facebook", name: "Facebook Marketplace", status: "running", lastRun: "2 min ago", vehiclesFound: 1585, successRate: 98.2 },
+  { id: "craigslist", name: "Craigslist", status: "idle", lastRun: "18 min ago", vehiclesFound: 795, successRate: 96.4 },
+  { id: "autotrader", name: "AutoTrader", status: "running", lastRun: "1 min ago", vehiclesFound: 2763, successRate: 99.1 },
 ];
 
 export const SCRAPING_JOBS: ScrapingJob[] = [
@@ -15,7 +15,7 @@ export const SCRAPING_JOBS: ScrapingJob[] = [
     location: "Dallas, TX · 50 mi",
     frequency: "Every 30 min",
     status: "running",
-    vehiclesFound: 428,
+    vehiclesFound: 420,
     lastRun: "2 min ago",
     startedAt: "Today, 8:14 AM",
     duration: "12m 40s",
@@ -28,7 +28,7 @@ export const SCRAPING_JOBS: ScrapingJob[] = [
     location: "Austin, TX · 75 mi",
     frequency: "Every 1 hr",
     status: "completed",
-    vehiclesFound: 312,
+    vehiclesFound: 306,
     lastRun: "48 min ago",
     startedAt: "Today, 7:00 AM",
     duration: "8m 12s",
@@ -41,7 +41,7 @@ export const SCRAPING_JOBS: ScrapingJob[] = [
     location: "Houston, TX · 40 mi",
     frequency: "Every 2 hr",
     status: "scheduled",
-    vehiclesFound: 186,
+    vehiclesFound: 182,
     lastRun: "3 hr ago",
     startedAt: "Yesterday, 4:22 PM",
     duration: "15m 08s",

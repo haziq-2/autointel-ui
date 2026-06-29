@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { PageHeader } from "@/components/shared/page-header";
-import { AiInsightsPanel } from "@/components/shared/ai-insights-panel";
 import { AcquisitionRecommendationBadge, ScoreBadge } from "@/components/shared/status-badge";
-import { getAcquisitionOpportunities, getPageInsights } from "@/lib/mock-data/intelligence";
+import { getAcquisitionOpportunities } from "@/lib/mock-data/intelligence";
 import { formatCurrency } from "@/lib/format";
 import type { OpportunityStage } from "@/lib/types";
 
@@ -18,7 +17,6 @@ const STAGES: { id: OpportunityStage; label: string }[] = [
 
 export default function OpportunitiesPage() {
   const opportunities = getAcquisitionOpportunities();
-  const insights = getPageInsights("opportunities");
 
   const columns = STAGES.map((stage, colIdx) => ({
     ...stage,
@@ -32,8 +30,7 @@ export default function OpportunitiesPage() {
         description="AI-scored acquisition pipeline"
       />
 
-      <div className="mb-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px]">
-        <div className="flex gap-4 overflow-x-auto pb-2">
+      <div className="mb-8 flex gap-4 overflow-x-auto pb-2">
           {columns.map((col) => (
             <div key={col.id} className="w-[260px] shrink-0">
               <div className="mb-3 flex items-baseline justify-between border-b border-border pb-2">
@@ -71,8 +68,6 @@ export default function OpportunitiesPage() {
               </div>
             </div>
           ))}
-        </div>
-        <AiInsightsPanel insights={insights} />
       </div>
     </div>
   );

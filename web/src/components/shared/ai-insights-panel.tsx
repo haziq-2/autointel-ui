@@ -1,6 +1,7 @@
 import { Sparkles } from "lucide-react";
 import type { AiInsight } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { Card } from "./card";
 
 interface AiInsightsPanelProps {
   insights: AiInsight[] | string[];
@@ -18,33 +19,30 @@ export function AiInsightsPanel({
   className,
 }: AiInsightsPanelProps) {
   return (
-    <div className={cn("rounded-md border border-border bg-[#fafafa] p-4", className)}>
-      <div className="mb-3 flex items-center gap-2">
-        <Sparkles className="h-3.5 w-3.5 text-muted-foreground" />
-        <h3 className="text-card-title">{title}</h3>
+    <Card className={cn("sticky top-20", className)}>
+      <div className="mb-4 flex items-center gap-2">
+        <div className="flex h-7 w-7 items-center justify-center rounded-md bg-[#eff6ff]">
+          <Sparkles className="h-3.5 w-3.5 text-[#2563eb]" strokeWidth={1.75} />
+        </div>
+        <h3 className="text-card-title font-medium">{title}</h3>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-5">
         {insights.map((insight, i) =>
           isStructured(insight) ? (
-            <div key={i} className="border-t border-border pt-4 first:border-0 first:pt-0">
-              <p className="text-[13px] font-medium text-foreground">{insight.what}</p>
-              <dl className="mt-2 space-y-1.5 text-[13px] text-muted-foreground">
-                <div>
-                  <dt className="text-label inline">Why · </dt>
-                  <dd className="inline">{insight.why}</dd>
-                </div>
-                <div>
-                  <dt className="text-label inline">Impact · </dt>
-                  <dd className="inline">{insight.impact}</dd>
-                </div>
-                <div>
-                  <dt className="text-label inline">Action · </dt>
-                  <dd className="inline">{insight.action}</dd>
-                </div>
-              </dl>
-              <p className="mt-2 font-mono text-label tabular-nums">
-                Confidence {insight.confidence}%
-              </p>
+            <div key={i} className="border-t border-border pt-5 first:border-0 first:pt-0">
+              <p className="text-[13px] font-medium leading-snug text-foreground">{insight.what}</p>
+              <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{insight.why}</p>
+              <div className="mt-3 space-y-1.5">
+                <p className="text-[12px] text-muted-foreground">
+                  <span className="font-medium text-foreground/80">Impact</span> — {insight.impact}
+                </p>
+                <p className="text-[12px] text-muted-foreground">
+                  <span className="font-medium text-foreground/80">Action</span> — {insight.action}
+                </p>
+              </div>
+              <div className="mt-3 inline-flex items-center rounded-md bg-[#fafafa] px-2 py-0.5 font-mono text-[11px] tabular-nums text-muted-foreground">
+                {insight.confidence}% confidence
+              </div>
             </div>
           ) : (
             <p key={i} className="text-[13px] leading-relaxed text-muted-foreground">
@@ -53,6 +51,6 @@ export function AiInsightsPanel({
           )
         )}
       </div>
-    </div>
+    </Card>
   );
 }

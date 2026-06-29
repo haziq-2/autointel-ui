@@ -6,8 +6,8 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, description, children }: PageHeaderProps) {
   return (
-    <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-      <div className="space-y-1">
+    <div className="mb-12 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+      <div className="space-y-1.5">
         <h1 className="text-page-title">{title}</h1>
         {description && (
           <p className="text-body text-muted-foreground">{description}</p>
@@ -18,10 +18,21 @@ export function PageHeader({ title, description, children }: PageHeaderProps) {
   );
 }
 
-export function SectionTitle({ children, action }: { children: React.ReactNode; action?: React.ReactNode }) {
+export function SectionTitle({
+  children,
+  action,
+  description,
+}: {
+  children: React.ReactNode;
+  action?: React.ReactNode;
+  description?: string;
+}) {
   return (
-    <div className="mb-4 flex items-center justify-between">
-      <h2 className="text-card-title">{children}</h2>
+    <div className="mb-5 flex items-start justify-between gap-4">
+      <div>
+        <h2 className="text-section-title">{children}</h2>
+        {description && <p className="mt-1 text-helper">{description}</p>}
+      </div>
       {action}
     </div>
   );

@@ -1,8 +1,6 @@
 import { PageHeader } from "@/components/shared/page-header";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { AiInsightsPanel } from "@/components/shared/ai-insights-panel";
-import { getPageInsights } from "@/lib/mock-data/intelligence";
 
 const REPORTS = [
   { name: "Daily Market Report", description: "Market trends, price changes, and regional activity", lastRun: "Jun 24, 2026" },
@@ -19,8 +17,7 @@ export default function ReportsPage() {
     <div>
       <PageHeader title="Reports" description="Executive reporting center" />
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px]">
-        <div className="divide-y divide-border border-y border-border">
+      <div className="divide-y divide-border border-y border-border">
           {REPORTS.map((report) => (
             <div
               key={report.name}
@@ -44,9 +41,6 @@ export default function ReportsPage() {
               </div>
             </div>
           ))}
-        </div>
-
-        <AiInsightsPanel insights={getPageInsights("reports")} />
       </div>
     </div>
   );

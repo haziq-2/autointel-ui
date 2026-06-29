@@ -9,7 +9,10 @@ interface DataTableProps {
 export function DataTable({ children, className, maxHeight }: DataTableProps) {
   return (
     <div
-      className={cn("overflow-auto rounded-md border border-border", className)}
+      className={cn(
+        "overflow-auto rounded-[10px] border border-border bg-white shadow-card",
+        className
+      )}
       style={maxHeight ? { maxHeight } : undefined}
     >
       <table className="w-full caption-bottom text-table">{children}</table>
@@ -19,7 +22,7 @@ export function DataTable({ children, className, maxHeight }: DataTableProps) {
 
 export function DataTableHead({ children }: { children: React.ReactNode }) {
   return (
-    <thead className="sticky top-0 z-10 border-b border-border bg-[#fafafa] [&_tr]:border-0">
+    <thead className="sticky top-0 z-10 border-b border-border bg-[#fafafa]/95 backdrop-blur-sm [&_tr]:border-0">
       {children}
     </thead>
   );
@@ -37,7 +40,7 @@ export function DataTableHeaderCell({
   return (
     <th
       className={cn(
-        "h-9 px-3 text-label font-medium whitespace-nowrap",
+        "h-9 px-3 text-[13px] font-semibold tracking-tight text-muted-foreground whitespace-nowrap",
         align === "right" && "text-right",
         className
       )}
@@ -59,7 +62,7 @@ export function DataTableRow({
   return (
     <tr
       className={cn(
-        "border-b border-border transition-colors last:border-0 hover:bg-[#fafafa]",
+        "border-b border-border transition-colors duration-150 last:border-0 hover:bg-[#fafafa]/80",
         onClick && "cursor-pointer",
         className
       )}
@@ -82,7 +85,7 @@ export function DataTableCell({
   return (
     <td
       className={cn(
-        "px-3 py-2.5 align-middle text-table",
+        "px-3 py-2 align-middle text-table",
         align === "right" && "text-right",
         className
       )}

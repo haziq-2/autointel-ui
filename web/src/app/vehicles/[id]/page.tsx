@@ -4,6 +4,7 @@ import { PageHeader, SectionTitle } from "@/components/shared/page-header";
 import { RecommendationBadge, ScoreBadge } from "@/components/shared/status-badge";
 import { getVehicleById, getAllVehicles, dedupeVehicles } from "@/lib/mock-data/generate-vehicles";
 import { enrichAcquisition, getVehiclePricingIntelligence } from "@/lib/mock-data/intelligence";
+import { Card } from "@/components/shared/card";
 import { formatCurrency, formatMileage } from "@/lib/format";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -65,7 +66,7 @@ export default async function VehicleDetailPage({
           <button type="button" className={cn(buttonVariants({ variant: "outline", size: "sm" }), "w-full")}>
             Save opportunity
           </button>
-          <div className="rounded-md border border-border p-4">
+          <Card>
             <p className="text-label">Acquisition recommendation</p>
             <div className="mt-2">
               {vehicle.recommendation && <RecommendationBadge recommendation={vehicle.recommendation} />}
@@ -76,11 +77,11 @@ export default async function VehicleDetailPage({
               {vehicle.recommendation === "monitor" && "Track listing for price movement over 48–72 hours."}
               {vehicle.recommendation === "ignore" && "Limited margin at current price point."}
             </p>
-          </div>
+          </Card>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-10 lg:grid-cols-3 animate-fade-in">
         <div className="space-y-10 lg:col-span-2">
           <section>
             <SectionTitle>Vehicle information</SectionTitle>
@@ -212,7 +213,7 @@ export default async function VehicleDetailPage({
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-md border border-border p-5">
+          <Card>
             <SectionTitle>AI insights</SectionTitle>
             <div className="mt-4 grid grid-cols-2 gap-4 border-b border-border pb-4">
               <div>
@@ -230,7 +231,7 @@ export default async function VehicleDetailPage({
                 : "Pricing aligns with current market conditions."}
               {vehicle.opportunityScore >= 80 && " Demand velocity supports a short hold period."}
             </p>
-          </div>
+          </Card>
         </div>
       </div>
     </div>
@@ -250,9 +251,9 @@ function Field({ label, value, mono }: { label: string; value: string; mono?: bo
 
 function StatBlock({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <div className="rounded-md border border-border p-3">
-      <p className="text-label">{label}</p>
-      <p className={cn("mt-1 font-mono text-[15px] font-semibold tabular-nums", highlight && "text-[#16a34a]")}>
+    <div className="rounded-[10px] border border-border bg-white p-4 shadow-card">
+      <p className="text-helper">{label}</p>
+      <p className={cn("mt-1.5 font-mono text-[15px] font-semibold tabular-nums", highlight && "text-[#16a34a]")}>
         {value}
       </p>
     </div>

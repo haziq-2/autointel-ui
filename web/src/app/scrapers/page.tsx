@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PageHeader, SectionTitle } from "@/components/shared/page-header";
 import { StatusBadge, JobStatusBadge } from "@/components/shared/status-badge";
 import { MarketplaceMark } from "@/components/shared/marketplace-mark";
+import { Card } from "@/components/shared/card";
 import { ACTIVE_SCRAPERS, SCRAPING_JOBS } from "@/lib/mock-data/scrapers";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -18,50 +19,52 @@ import { cn } from "@/lib/utils";
 
 export default function ScrapersPage() {
   return (
-    <div>
+    <div className="animate-fade-in">
       <PageHeader title="Scrapers" description="Configure and run marketplace scraping jobs">
         <Link href="/scrapers/run-all" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
-          Run all (~6 min)
+          Run all (~3 min)
         </Link>
       </PageHeader>
 
-      <section className="mb-12">
-        <SectionTitle>Sources</SectionTitle>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="mb-14">
+        <SectionTitle description="Active marketplace connectors">Sources</SectionTitle>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {ACTIVE_SCRAPERS.map((scraper) => (
-            <div key={scraper.id} className="rounded-md border border-border p-4">
+            <Card key={scraper.id} className="flex flex-col transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
               <div className="flex items-start gap-3">
                 <MarketplaceMark id={scraper.id} name={scraper.name} />
                 <div className="min-w-0 flex-1">
-                  <p className="text-card-title truncate">{scraper.name}</p>
-                  <div className="mt-1"><StatusBadge status={scraper.status} /></div>
+                  <p className="text-card-title font-medium truncate">{scraper.name}</p>
+                  <div className="mt-2"><StatusBadge status={scraper.status} /></div>
                 </div>
               </div>
-              <dl className="mt-4 space-y-2 border-t border-border pt-4">
+              <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-border pt-4">
                 <Row label="Last run" value={scraper.lastRun} />
-                <Row label="Vehicles found" value={scraper.vehiclesFound.toLocaleString()} mono />
+                <Row label="Today" value={Math.round(scraper.vehiclesFound * 0.08).toLocaleString()} mono />
+                <Row label="Total found" value={scraper.vehiclesFound.toLocaleString()} mono />
+                <Row label="Success" value={`${scraper.successRate}%`} mono />
               </dl>
-              <div className="mt-4 flex items-center gap-2">
+              <div className="mt-5 flex items-center gap-2">
                 <Link
                   href={`/scrapers/${scraper.id}/live`}
                   className={cn(buttonVariants({ size: "sm" }), "flex-1")}
                 >
                   Start scraping
                 </Link>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                <Button variant="outline" size="sm" className="h-8 w-8 p-0" title="Edit">
                   <Pencil className="h-3.5 w-3.5" />
                 </Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0">
+                <Button variant="outline" size="sm" className="h-8 w-8 p-0" title="Pause">
                   <Pause className="h-3.5 w-3.5" />
                 </Button>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </section>
 
       <section>
-        <SectionTitle>Jobs</SectionTitle>
+        <SectionTitle description="Scheduled and on-demand jobs">Jobs</SectionTitle>
         <DataTable>
           <DataTableHead>
             <tr>
@@ -88,13 +91,12 @@ export default function ScrapersPage() {
                 <DataTableCell align="right" className="font-mono tabular-nums">{job.vehiclesFound}</DataTableCell>
                 <DataTableCell className="text-muted-foreground">{job.lastRun}</DataTableCell>
                 <DataTableCell>
-                  <div className="flex items-center justify-end gap-1">
-                    <Link href={`/scrapers/${job.id}/live`} className="text-[13px] font-medium hover:underline">
+                  <div className="flex items-center justify-end gap-2">
+                    <Link href={`/scrapers/${job.id}/live`} className="text-[13px] font-medium text-[#2563eb] hover:underline">
                       Run
                     </Link>
-                    <span className="text-border">·</span>
-                    <button type="button" className="text-[13px] text-muted-foreground hover:text-foreground">Pause</button>
-                    <button type="button" className="p-1 text-muted-foreground hover:text-foreground">
+                    <button type="button" className="text-[13px] text-muted-foreground transition-colors hover:text-foreground">Pause</button>
+                    <button type="button" className="p-1 text-muted-foreground transition-colors hover:text-foreground">
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -110,9 +112,9 @@ export default function ScrapersPage() {
 
 function Row({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div className="flex justify-between text-[13px]">
-      <dt className="text-label">{label}</dt>
-      <dd className={cn("text-foreground", mono && "font-mono tabular-nums")}>{value}</dd>
+    <div>
+      <dt className="text-helper">{label}</dt>
+      <dd className={cn("mt-0.5 text-[13px] text-foreground", mono && "font-mono tabular-nums")}>{value}</dd>
     </div>
   );
 }

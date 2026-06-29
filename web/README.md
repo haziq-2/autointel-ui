@@ -31,4 +31,4 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Next.js · React · TypeScript · Tailwind CSS · shadcn/ui · Lucide
 
-Mock data: `src/lib/mock-data/` — 5,247 procedurally generated vehicles with pagination and filters.
+Mock data: `src/lib/mock-data/` — 5,143 procedurally generated vehicles with pagination and filters.

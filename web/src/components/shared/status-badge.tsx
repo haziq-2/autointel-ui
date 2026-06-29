@@ -1,52 +1,72 @@
 import { cn } from "@/lib/utils";
 import type { JobStatus, SourceStatus, Recommendation, VehicleStatus, AlertSeverity, AcquisitionRecommendation } from "@/lib/types";
 
-function Dot({ className }: { className?: string }) {
-  return <span className={cn("inline-block h-1.5 w-1.5 rounded-full", className)} />;
+function Pill({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[12px] font-medium",
+        className
+      )}
+    >
+      {children}
+    </span>
+  );
 }
 
-const jobDot: Record<JobStatus, string> = {
-  running: "bg-[#111827]",
-  completed: "bg-[#16a34a]",
-  paused: "bg-[#d97706]",
-  failed: "bg-[#dc2626]",
-  scheduled: "bg-[#9ca3af]",
-  idle: "bg-[#9ca3af]",
+function Dot({ className }: { className?: string }) {
+  return <span className={cn("h-1.5 w-1.5 rounded-full", className)} />;
+}
+
+const jobStyles: Record<JobStatus, string> = {
+  running: "bg-[#eff6ff] text-[#1d4ed8]",
+  completed: "bg-[#f0fdf4] text-[#15803d]",
+  paused: "bg-[#fffbeb] text-[#b45309]",
+  failed: "bg-[#fef2f2] text-[#dc2626]",
+  scheduled: "bg-[#f4f4f5] text-[#6b7280]",
+  idle: "bg-[#f4f4f5] text-[#6b7280]",
 };
 
 export function JobStatusBadge({ status }: { status: JobStatus }) {
   return (
-    <span className="inline-flex items-center gap-1.5 text-table text-foreground">
-      <Dot className={jobDot[status]} />
+    <Pill className={jobStyles[status]}>
+      <Dot className={status === "running" ? "bg-[#2563eb] animate-pulse" : "bg-current opacity-60"} />
       <span className="capitalize">{status}</span>
-    </span>
+    </Pill>
   );
 }
 
-const sourceDot: Record<SourceStatus, string> = {
-  running: "bg-[#111827]",
-  healthy: "bg-[#16a34a]",
-  idle: "bg-[#9ca3af]",
-  paused: "bg-[#d97706]",
-  degraded: "bg-[#d97706]",
-  offline: "bg-[#dc2626]",
-  syncing: "bg-[#111827] animate-pulse",
+const sourceStyles: Record<SourceStatus, string> = {
+  running: "bg-[#eff6ff] text-[#1d4ed8]",
+  healthy: "bg-[#f0fdf4] text-[#15803d]",
+  idle: "bg-[#f4f4f5] text-[#6b7280]",
+  paused: "bg-[#fffbeb] text-[#b45309]",
+  degraded: "bg-[#fffbeb] text-[#b45309]",
+  offline: "bg-[#fef2f2] text-[#dc2626]",
+  syncing: "bg-[#eff6ff] text-[#1d4ed8]",
 };
 
 export function StatusBadge({ status }: { status: SourceStatus }) {
-  const dot = sourceDot[status] ?? sourceDot.idle;
   const label = status === "healthy" ? "Active" : status.charAt(0).toUpperCase() + status.slice(1);
   return (
-    <span className="inline-flex items-center gap-1.5 text-table text-foreground">
-      <Dot className={dot} />
+    <Pill className={sourceStyles[status] ?? sourceStyles.idle}>
+      <Dot className={status === "syncing" || status === "running" ? "bg-[#2563eb] animate-pulse" : "bg-current opacity-60"} />
       {label}
-    </span>
+    </Pill>
   );
 }
 
 export function ScoreBadge({ score }: { score: number }) {
+  const tone =
+    score >= 85 ? "text-[#15803d]" : score >= 70 ? "text-foreground" : "text-muted-foreground";
   return (
-    <span className="font-mono text-table font-medium tabular-nums text-foreground">
+    <span className={cn("font-mono text-[12px] font-medium tabular-nums", tone)}>
       {score}
     </span>
   );
@@ -59,33 +79,41 @@ const recLabels: Record<Recommendation, string> = {
   ignore: "Ignore",
 };
 
+const recStyles: Record<Recommendation, string> = {
+  buy_now: "bg-[#f0fdf4] text-[#15803d]",
+  negotiate: "bg-[#eff6ff] text-[#1d4ed8]",
+  monitor: "bg-[#f4f4f5] text-[#6b7280]",
+  ignore: "bg-[#fef2f2] text-[#9ca3af]",
+};
+
 export function RecommendationBadge({ recommendation }: { recommendation: Recommendation }) {
-  return (
-    <span className="text-table font-medium text-foreground">
-      {recLabels[recommendation]}
-    </span>
-  );
+  return <Pill className={recStyles[recommendation]}>{recLabels[recommendation]}</Pill>;
 }
+
+const vehicleStatusStyles: Record<VehicleStatus, string> = {
+  new: "bg-[#eff6ff] text-[#1d4ed8]",
+  reviewed: "bg-[#f4f4f5] text-[#6b7280]",
+  saved: "bg-[#f0fdf4] text-[#15803d]",
+  archived: "bg-[#f4f4f5] text-[#9ca3af]",
+};
 
 export function VehicleStatusBadge({ status }: { status: VehicleStatus }) {
-  return (
-    <span className="text-table capitalize text-muted-foreground">{status}</span>
-  );
+  return <Pill className={vehicleStatusStyles[status]}>{status}</Pill>;
 }
 
-const alertDot: Record<AlertSeverity, string> = {
-  critical: "bg-[#dc2626]",
-  high: "bg-[#dc2626]",
-  medium: "bg-[#d97706]",
-  low: "bg-[#9ca3af]",
+const alertStyles: Record<AlertSeverity, string> = {
+  critical: "bg-[#fef2f2] text-[#dc2626]",
+  high: "bg-[#fef2f2] text-[#dc2626]",
+  medium: "bg-[#fffbeb] text-[#b45309]",
+  low: "bg-[#f4f4f5] text-[#6b7280]",
 };
 
 export function AlertSeverityBadge({ severity }: { severity: AlertSeverity }) {
   return (
-    <span className="inline-flex items-center gap-1.5 text-table capitalize text-foreground">
-      <Dot className={alertDot[severity]} />
-      {severity}
-    </span>
+    <Pill className={alertStyles[severity]}>
+      <Dot className="bg-current opacity-60" />
+      <span className="capitalize">{severity}</span>
+    </Pill>
   );
 }
 
@@ -96,10 +124,13 @@ const acquisitionLabels: Record<AcquisitionRecommendation, string> = {
   avoid: "Avoid",
 };
 
+const acquisitionStyles: Record<AcquisitionRecommendation, string> = {
+  acquire_immediately: "bg-[#f0fdf4] text-[#15803d]",
+  strong_candidate: "bg-[#eff6ff] text-[#1d4ed8]",
+  monitor: "bg-[#f4f4f5] text-[#6b7280]",
+  avoid: "bg-[#fef2f2] text-[#9ca3af]",
+};
+
 export function AcquisitionRecommendationBadge({ recommendation }: { recommendation: AcquisitionRecommendation }) {
-  return (
-    <span className="text-table font-medium text-foreground">
-      {acquisitionLabels[recommendation]}
-    </span>
-  );
+  return <Pill className={acquisitionStyles[recommendation]}>{acquisitionLabels[recommendation]}</Pill>;
 }

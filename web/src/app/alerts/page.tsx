@@ -1,5 +1,4 @@
 import { PageHeader, SectionTitle } from "@/components/shared/page-header";
-import { AiInsightsPanel } from "@/components/shared/ai-insights-panel";
 import { AlertSeverityBadge } from "@/components/shared/status-badge";
 import {
   DataTable,
@@ -8,7 +7,7 @@ import {
   DataTableHeaderCell,
   DataTableRow,
 } from "@/components/shared/data-table";
-import { ALERTS, getPageInsights } from "@/lib/mock-data/intelligence";
+import { ALERTS } from "@/lib/mock-data/intelligence";
 
 export default function AlertsPage() {
   const unread = ALERTS.filter((a) => !a.read).length;
@@ -17,8 +16,7 @@ export default function AlertsPage() {
     <div>
       <PageHeader title="Alerts" description={`${unread} unread · intelligent monitoring`} />
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_300px]">
-        <div className="space-y-10">
+      <div className="space-y-10">
           <section>
             <SectionTitle>Notification channels</SectionTitle>
             <div className="flex flex-wrap gap-2 text-[13px] text-muted-foreground">
@@ -58,9 +56,6 @@ export default function AlertsPage() {
               </tbody>
             </DataTable>
           </section>
-        </div>
-
-        <AiInsightsPanel insights={getPageInsights("alerts")} />
       </div>
     </div>
   );
