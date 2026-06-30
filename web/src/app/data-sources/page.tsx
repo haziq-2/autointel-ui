@@ -32,7 +32,6 @@ export default function DataSourcesPage() {
               { label: "Active sources", value: DATA_SOURCES.filter((d) => d.status === "running").length },
               { label: "Total records", value: totalRecords.toLocaleString() },
               { label: "Avg daily imports", value: avgDailyImports.toLocaleString() },
-              { label: "Degraded", value: DATA_SOURCES.filter((d) => d.connectionHealth === "degraded").length },
             ]}
           />
 

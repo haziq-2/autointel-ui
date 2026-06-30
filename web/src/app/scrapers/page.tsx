@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 export default function ScrapersPage() {
   return (
     <div className="animate-fade-in">
-      <PageHeader title="Scrapers" description="Configure and run marketplace scraping jobs">
+      <PageHeader title="Data Collection" description="Configure and run marketplace scraping jobs">
         <Link href="/scrapers/run-all" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
           Run all (~3 min)
         </Link>
@@ -49,7 +49,7 @@ export default function ScrapersPage() {
                   href={`/scrapers/${scraper.id}/live`}
                   className={cn(buttonVariants({ size: "sm" }), "flex-1")}
                 >
-                  Start scraping
+                  Collect Data
                 </Link>
                 <Button variant="outline" size="sm" className="h-8 w-8 p-0" title="Edit">
                   <Pencil className="h-3.5 w-3.5" />

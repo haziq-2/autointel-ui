@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/select";
 import { MARKETPLACES } from "@/lib/constants";
 import { ChevronLeft, ChevronRight, Search, ArrowUpDown, Car } from "lucide-react";
+import { OpportunityLabelBadge } from "@/components/intelligence/opportunity-label-badge";
+import { getOpportunityLabel } from "@/lib/mock-data/ai-intelligence";
 import { cn } from "@/lib/utils";
 import type { VehicleStatus } from "@/lib/types";
 
@@ -79,22 +81,22 @@ export default function VehiclesPage() {
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             />
           </div>
-          <FilterSelect value={marketplace} onChange={(v) => { setMarketplace(v); setPage(1); }} placeholder="Source" width="w-[140px]">
+          <FilterSelect value={marketplace} onChange={(v) => { setMarketplace(v); setPage(1); }} label="Source" width="w-[148px]">
             <SelectItem value="all">All sources</SelectItem>
             {MARKETPLACES.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
           </FilterSelect>
-          <FilterSelect value={make} onChange={(v) => { setMake(v); setPage(1); }} placeholder="Make" width="w-[108px]">
+          <FilterSelect value={make} onChange={(v) => { setMake(v); setPage(1); }} label="Make" width="w-[128px]">
             <SelectItem value="all">All makes</SelectItem>
             {VEHICLE_MAKES.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
           </FilterSelect>
-          <FilterSelect value={status} onChange={(v) => { setStatus(v as VehicleStatus | "all"); setPage(1); }} placeholder="Status" width="w-[108px]">
+          <FilterSelect value={status} onChange={(v) => { setStatus(v as VehicleStatus | "all"); setPage(1); }} label="Status" width="w-[128px]">
             <SelectItem value="all">All status</SelectItem>
             <SelectItem value="new">New</SelectItem>
             <SelectItem value="reviewed">Reviewed</SelectItem>
             <SelectItem value="saved">Saved</SelectItem>
             <SelectItem value="archived">Archived</SelectItem>
           </FilterSelect>
-          <FilterSelect value={sortBy} onChange={(v) => setSortBy(v as typeof sortBy)} placeholder="Sort" width="w-[128px]">
+          <FilterSelect value={sortBy} onChange={(v) => setSortBy(v as typeof sortBy)} label="Sort" width="w-[148px]">
             <SelectItem value="dateFound">Date found</SelectItem>
             <SelectItem value="price">Price</SelectItem>
             <SelectItem value="opportunityScore">Opportunity</SelectItem>
@@ -138,6 +140,7 @@ export default function VehiclesPage() {
               <DataTableHeaderCell>Found</DataTableHeaderCell>
               <DataTableHeaderCell align="right">AI</DataTableHeaderCell>
               <DataTableHeaderCell align="right">Opp</DataTableHeaderCell>
+              <DataTableHeaderCell>Label</DataTableHeaderCell>
               <DataTableHeaderCell>Status</DataTableHeaderCell>
             </tr>
           </DataTableHead>
@@ -162,6 +165,9 @@ export default function VehiclesPage() {
                 <DataTableCell className="font-mono text-muted-foreground tabular-nums">{v.dateFound}</DataTableCell>
                 <DataTableCell align="right"><ScoreBadge score={v.aiScore} /></DataTableCell>
                 <DataTableCell align="right"><ScoreBadge score={v.opportunityScore} /></DataTableCell>
+                <DataTableCell>
+                  <OpportunityLabelBadge label={getOpportunityLabel(v.opportunityScore)} className="text-[10px] px-2 py-0.5" />
+                </DataTableCell>
                 <DataTableCell><VehicleStatusBadge status={v.status} /></DataTableCell>
               </DataTableRow>
             ))}
@@ -204,20 +210,24 @@ export default function VehiclesPage() {
 function FilterSelect({
   value,
   onChange,
-  placeholder,
+  label,
   width,
   children,
 }: {
   value: string;
   onChange: (v: string) => void;
-  placeholder: string;
+  label: string;
   width: string;
   children: React.ReactNode;
 }) {
   return (
     <Select value={value} onValueChange={(v) => onChange(v ?? "all")}>
       <SelectTrigger className={cn("h-8 rounded-[10px] border-border bg-white text-[13px] shadow-none", width)}>
-        <SelectValue placeholder={placeholder} />
+        <span className="flex w-full items-center gap-1.5 overflow-hidden">
+          <span className="shrink-0 text-muted-foreground">{label}</span>
+          <span className="shrink-0 text-border">·</span>
+          <SelectValue />
+        </span>
       </SelectTrigger>
       <SelectContent>{children}</SelectContent>
     </Select>

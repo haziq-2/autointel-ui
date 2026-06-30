@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PageHeader, SectionTitle } from "@/components/shared/page-header";
-import { RecommendationBadge, ScoreBadge } from "@/components/shared/status-badge";
+import { SectionTitle } from "@/components/shared/page-header";
+import { RecommendationBadge } from "@/components/shared/status-badge";
 import { getVehicleById, getAllVehicles, dedupeVehicles } from "@/lib/mock-data/generate-vehicles";
-import { enrichAcquisition, getVehiclePricingIntelligence } from "@/lib/mock-data/intelligence";
-import { Card } from "@/components/shared/card";
+import { getVehiclePricingIntelligence } from "@/lib/mock-data/intelligence";
+import { VehicleIntelligenceSection } from "@/components/intelligence/vehicle-intelligence-section";
 import { formatCurrency, formatMileage } from "@/lib/format";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -37,10 +37,9 @@ export default async function VehicleDetailPage({
 
   const marketDelta = (vehicle.fairMarketValue ?? vehicle.price) - vehicle.price;
   const pricing = getVehiclePricingIntelligence(id);
-  const acquisition = enrichAcquisition(vehicle);
 
   return (
-    <div>
+    <div className="animate-fade-in">
       <Link
         href="/vehicles"
         className="mb-8 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
@@ -49,39 +48,29 @@ export default async function VehicleDetailPage({
         Vehicles
       </Link>
 
-      <div className="mb-10 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_320px]">
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-page-title">{vehicle.title}</h1>
-            <p className="mt-2 text-body text-muted-foreground">
-              {vehicle.marketplace} · Found {vehicle.dateFound}
-            </p>
-            <p className="mt-4 font-mono text-2xl font-semibold tracking-tight tabular-nums">
-              {formatCurrency(vehicle.price)}
-            </p>
-          </div>
+      <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-page-title">{vehicle.title}</h1>
+          <p className="mt-2 text-body text-muted-foreground">
+            {vehicle.marketplace} · Found {vehicle.dateFound}
+          </p>
+          <p className="mt-4 font-mono text-2xl font-semibold tracking-tight tabular-nums">
+            {formatCurrency(vehicle.price)}
+          </p>
         </div>
-
-        <div className="space-y-6">
-          <button type="button" className={cn(buttonVariants({ variant: "outline", size: "sm" }), "w-full")}>
+        <div className="flex gap-2">
+          <Link href={`/pricing-intelligence`} className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
+            Pricing intel
+          </Link>
+          <button type="button" className={cn(buttonVariants({ size: "sm" }))}>
             Save opportunity
           </button>
-          <Card>
-            <p className="text-label">Acquisition recommendation</p>
-            <div className="mt-2">
-              {vehicle.recommendation && <RecommendationBadge recommendation={vehicle.recommendation} />}
-            </div>
-            <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
-              {vehicle.recommendation === "buy_now" && "Strong margin and demand signals. Prioritize contact."}
-              {vehicle.recommendation === "negotiate" && "Viable opportunity. Target 3–5% below asking."}
-              {vehicle.recommendation === "monitor" && "Track listing for price movement over 48–72 hours."}
-              {vehicle.recommendation === "ignore" && "Limited margin at current price point."}
-            </p>
-          </Card>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-10 lg:grid-cols-3 animate-fade-in">
+      <VehicleIntelligenceSection vehicleId={id} />
+
+      <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-3">
         <div className="space-y-10 lg:col-span-2">
           <section>
             <SectionTitle>Vehicle information</SectionTitle>
@@ -93,82 +82,22 @@ export default async function VehicleDetailPage({
               <Field label="Days listed" value={String(vehicle.daysListed)} />
               <Field label="VIN" value={vehicle.vin ?? "—"} mono />
             </dl>
-          </section>
-
-          <section>
-            <SectionTitle>Price analysis</SectionTitle>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              <StatBlock label="Asking price" value={formatCurrency(vehicle.price)} />
-              <StatBlock label="Fair market value" value={formatCurrency(vehicle.fairMarketValue ?? 0)} />
-              <StatBlock label="Est. resale" value={formatCurrency(vehicle.estimatedResale ?? 0)} />
-              <StatBlock
-                label="Margin potential"
-                value={`+${formatCurrency(vehicle.marginPotential ?? 0)}`}
-                highlight={marketDelta > 0}
-              />
-            </div>
-          </section>
-
-          <section>
-            <SectionTitle>AI pricing intelligence</SectionTitle>
-            {pricing && (
-              <>
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                  <StatBlock label="Market value" value={formatCurrency(pricing.estimatedMarketValue)} />
-                  <StatBlock label="Suggested buy" value={formatCurrency(pricing.suggestedPurchasePrice)} />
-                  <StatBlock label="Suggested sell" value={formatCurrency(pricing.suggestedSellingPrice)} />
-                  <StatBlock label="Expected ROI" value={`${pricing.expectedRoi}%`} highlight />
-                  <StatBlock label="Gross profit" value={formatCurrency(pricing.expectedGrossProfit)} highlight />
-                  <StatBlock label="Days to sell" value={String(pricing.expectedDaysToSell)} />
-                  <StatBlock label="Confidence" value={`${pricing.confidenceScore}%`} />
-                  <StatBlock label="Risk" value={pricing.riskLevel} />
-                </div>
-                <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">{pricing.aiExplanation}</p>
-              </>
+            {vehicle.description && (
+              <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">{vehicle.description}</p>
             )}
           </section>
 
-          <section>
-            <SectionTitle>Acquisition scores</SectionTitle>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-              <StatBlock label="Acquisition" value={String(acquisition.acquisitionScore)} />
-              <StatBlock label="Margin" value={String(acquisition.marginScore)} />
-              <StatBlock label="Demand" value={String(acquisition.demandScore)} />
-              <StatBlock label="Seller trust" value={String(acquisition.sellerTrustScore)} />
-              <StatBlock label="Pricing" value={String(acquisition.pricingScore)} />
-              <StatBlock label="Negotiation" value={String(acquisition.negotiationPotential)} />
-            </div>
-            <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">{acquisition.aiExplanation}</p>
-          </section>
-
-          <section>
-            <SectionTitle>Comparable listings</SectionTitle>
-            {pricing?.comparables.length ? (
-              <div className="divide-y divide-border border-y border-border">
-                {pricing.comparables.map((c) => (
-                  <div key={`${c.title}-${c.price}`} className="flex items-center justify-between py-3">
-                    <div>
-                      <p className="text-[13px] font-medium">{c.title}</p>
-                      <p className="text-label">{c.location}</p>
-                    </div>
-                    <p className="font-mono text-[13px] tabular-nums">{formatCurrency(c.price)}</p>
-                  </div>
-                ))}
+          {pricing && (
+            <section>
+              <SectionTitle>Quick pricing summary</SectionTitle>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <StatBlock label="Market value" value={formatCurrency(pricing.estimatedMarketValue)} />
+                <StatBlock label="Suggested buy" value={formatCurrency(pricing.suggestedPurchasePrice)} />
+                <StatBlock label="Expected ROI" value={`${pricing.expectedRoi}%`} highlight />
+                <StatBlock label="Gross profit" value={formatCurrency(pricing.expectedGrossProfit)} highlight />
               </div>
-            ) : (
-              <p className="text-[13px] text-muted-foreground">
-                Listed {marketDelta > 0 ? `${formatCurrency(marketDelta)} below` : "at"} regional average.
-              </p>
-            )}
-          </section>
-
-          <section>
-            <SectionTitle>Seller details</SectionTitle>
-            <dl className="grid grid-cols-2 gap-4">
-              <Field label="Seller" value={vehicle.seller} />
-              <Field label="Type" value={vehicle.sellerType} />
-            </dl>
-          </section>
+            </section>
+          )}
 
           <section>
             <SectionTitle>Price history</SectionTitle>
@@ -201,7 +130,7 @@ export default async function VehicleDetailPage({
                   href={`/vehicles/${v.id}`}
                   className="flex items-center gap-4 py-3 transition-colors hover:bg-[#fafafa]"
                 >
-                  <div className="flex-1 min-w-0">
+                  <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-medium">{v.title}</p>
                     <p className="text-label">{v.location}</p>
                   </div>
@@ -213,25 +142,28 @@ export default async function VehicleDetailPage({
         </div>
 
         <div className="space-y-6">
-          <Card>
-            <SectionTitle>AI insights</SectionTitle>
-            <div className="mt-4 grid grid-cols-2 gap-4 border-b border-border pb-4">
-              <div>
-                <p className="text-label">AI score</p>
-                <p className="mt-1"><ScoreBadge score={vehicle.aiScore} /></p>
-              </div>
-              <div>
-                <p className="text-label">Opportunity score</p>
-                <p className="mt-1"><ScoreBadge score={vehicle.opportunityScore} /></p>
-              </div>
+          <div className="rounded-2xl border border-border bg-white p-5 shadow-card">
+            <p className="text-label">Recommendation</p>
+            <div className="mt-2">
+              {vehicle.recommendation && <RecommendationBadge recommendation={vehicle.recommendation} />}
             </div>
-            <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">
-              {vehicle.marginPotential && vehicle.marginPotential > 2000
-                ? "Pricing indicates acquisition upside relative to market comparables."
-                : "Pricing aligns with current market conditions."}
-              {vehicle.opportunityScore >= 80 && " Demand velocity supports a short hold period."}
+            <p className="mt-3 text-[13px] text-muted-foreground">
+              Listed {marketDelta > 0 ? `${formatCurrency(marketDelta)} below` : "at"} regional average.
             </p>
-          </Card>
+          </div>
+          <div className="rounded-2xl border border-border bg-white p-5 shadow-card">
+            <SectionTitle>Seller</SectionTitle>
+            <dl className="mt-3 space-y-2 text-[13px]">
+              <div className="flex justify-between">
+                <dt className="text-muted-foreground">Name</dt>
+                <dd className="font-medium">{vehicle.seller}</dd>
+              </div>
+              <div className="flex justify-between capitalize">
+                <dt className="text-muted-foreground">Type</dt>
+                <dd>{vehicle.sellerType}</dd>
+              </div>
+            </dl>
+          </div>
         </div>
       </div>
     </div>
@@ -251,7 +183,7 @@ function Field({ label, value, mono }: { label: string; value: string; mono?: bo
 
 function StatBlock({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <div className="rounded-[10px] border border-border bg-white p-4 shadow-card">
+    <div className="rounded-xl border border-border bg-[#fafafa] p-4">
       <p className="text-helper">{label}</p>
       <p className={cn("mt-1.5 font-mono text-[15px] font-semibold tabular-nums", highlight && "text-[#16a34a]")}>
         {value}

@@ -30,40 +30,41 @@ export default function OpportunitiesPage() {
         description="AI-scored acquisition pipeline"
       />
 
-      <div className="mb-8 flex gap-4 overflow-x-auto pb-2">
+      <div className="mb-8 flex gap-3 overflow-x-auto pb-2">
           {columns.map((col) => (
-            <div key={col.id} className="w-[260px] shrink-0">
-              <div className="mb-3 flex items-baseline justify-between border-b border-border pb-2">
-                <h2 className="text-card-title">{col.label}</h2>
-                <span className="font-mono text-label tabular-nums">{col.items.length}</span>
+            <div key={col.id} className="w-[220px] shrink-0">
+              <div className="mb-2 flex items-baseline justify-between border-b border-border pb-1.5">
+                <h2 className="text-[13px] font-semibold">{col.label}</h2>
+                <span className="font-mono text-[11px] tabular-nums text-muted-foreground">{col.items.length}</span>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {col.items.map((v) => (
                   <Link
                     key={v.id}
                     href={`/vehicles/${v.id}`}
-                    className="block rounded-md border border-border p-3 transition-colors hover:bg-[#fafafa]"
+                    className="block rounded-lg border border-border p-2 transition-colors hover:bg-[#fafafa]"
                   >
-                    <p className="text-[13px] font-medium leading-snug">{v.title}</p>
-                    <p className="mt-1 font-mono text-[13px] tabular-nums">{formatCurrency(v.price)}</p>
-                    <div className="mt-2 flex items-center justify-between">
-                      <span className="text-label">Score</span>
-                      <ScoreBadge score={v.acquisitionScore} />
+                    <p className="line-clamp-2 text-[12px] font-medium leading-tight">{v.title}</p>
+                    <p className="mt-1 font-mono text-[12px] font-semibold tabular-nums">{formatCurrency(v.price)}</p>
+                    <div className="mt-1.5 flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] text-muted-foreground">Score</span>
+                        <ScoreBadge score={v.acquisitionScore} />
+                      </div>
+                      <span className="font-mono text-[11px] tabular-nums text-[#16a34a]">
+                        +{formatCurrency(v.expectedProfit)}
+                      </span>
                     </div>
-                    <div className="mt-1 flex items-center justify-between text-label">
-                      <span>Margin</span>
-                      <span className="font-mono tabular-nums text-[#16a34a]">+{formatCurrency(v.expectedProfit)}</span>
-                    </div>
-                    <div className="mt-2 border-t border-border pt-2">
+                    <div className="mt-1.5">
                       <AcquisitionRecommendationBadge recommendation={v.acquisitionRecommendation} />
                     </div>
-                    <p className="mt-2 line-clamp-2 text-[12px] leading-relaxed text-muted-foreground">
+                    <p className="mt-1 line-clamp-1 text-[11px] leading-snug text-muted-foreground">
                       {v.aiExplanation}
                     </p>
                   </Link>
                 ))}
                 {col.items.length === 0 && (
-                  <p className="py-8 text-center text-label">Empty</p>
+                  <p className="py-6 text-center text-[11px] text-muted-foreground">Empty</p>
                 )}
               </div>
             </div>

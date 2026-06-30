@@ -6,6 +6,7 @@ interface KpiCardProps {
   value: string | number;
   change?: number;
   changeLabel?: string;
+  subtitle?: string;
   description?: string;
   sparkline?: number[];
   className?: string;
@@ -16,17 +17,19 @@ export function KpiCard({
   value,
   change,
   changeLabel,
+  subtitle,
   description,
   sparkline,
   className,
 }: KpiCardProps) {
   const isPositive = change !== undefined && change > 0;
   const isNegative = change !== undefined && change < 0;
+  const footnote = subtitle ?? changeLabel;
 
   return (
     <div
       className={cn(
-        "rounded-[10px] border border-border bg-white p-5 shadow-card transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)]",
+        "rounded-2xl border border-border bg-white p-5 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]",
         className
       )}
     >
@@ -49,11 +52,14 @@ export function KpiCard({
               !isPositive && !isNegative && "text-muted-foreground"
             )}
           >
+            {isPositive ? "↑ " : isNegative ? "↓ " : ""}
             {isPositive ? "+" : ""}
-            {change}%
+            {Math.abs(change)}%
           </span>
-          {changeLabel && <span className="text-muted-foreground"> · {changeLabel}</span>}
         </p>
+      )}
+      {footnote && (
+        <p className="mt-0.5 text-[11px] text-muted-foreground">{footnote}</p>
       )}
       {description && !change && (
         <p className="mt-1.5 text-helper">{description}</p>

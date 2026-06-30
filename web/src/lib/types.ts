@@ -291,3 +291,314 @@ export interface NavSection {
   label?: string;
   items: NavItem[];
 }
+
+export type OpportunityLabel =
+  | "excellent_buy"
+  | "strong_opportunity"
+  | "worth_reviewing"
+  | "high_risk"
+  | "avoid";
+
+export interface OpportunityBreakdown {
+  estimatedProfit: number;
+  marketDemand: number;
+  daysToSell: number;
+  popularity: number;
+  priceAttractiveness: number;
+  repairRisk: "Low" | "Medium" | "High";
+  repairRiskScore: number;
+}
+
+export interface VehicleOpportunityIntel {
+  score: number;
+  confidence: number;
+  label: OpportunityLabel;
+  breakdown: OpportunityBreakdown;
+  explanationBullets: string[];
+}
+
+export interface PurchaseAlert {
+  id: string;
+  vehicleId: string;
+  title: string;
+  opportunityScore: number;
+  expectedProfit: number;
+  location: string;
+  postedAgo: string;
+  read: boolean;
+}
+
+export interface NegotiationIntel {
+  firstOffer: number;
+  targetPurchasePrice: number;
+  acceptanceProbability: number;
+  maxOffer: number;
+  sellerMotivation: "Low" | "Medium" | "High";
+  difficulty: "Easy" | "Moderate" | "Hard";
+  reasoningBullets: string[];
+  explanation: string;
+}
+
+export interface ProfitAnalysis {
+  purchasePrice: number;
+  transportation: number;
+  reconditioning: number;
+  auctionFees: number;
+  holdingCost: number;
+  totalAcquisitionCost: number;
+  expectedSellingPrice: number;
+  netProfit: number;
+  roi: number;
+  waterfall: { label: string; value: number; type: "cost" | "revenue" | "total" }[];
+  costBreakdown: { name: string; value: number }[];
+}
+
+export interface ComparableListing {
+  id: string;
+  vehicle: string;
+  year: number;
+  mileage: number;
+  price: number;
+  daysListed: number;
+  source: string;
+  distance: string;
+  status?: "Active" | "Sold" | "Pending";
+}
+
+export type BuyRecommendationStatus = "buy" | "review" | "avoid";
+
+export interface PricingOpportunityDriver {
+  icon: "trending" | "demand" | "mileage" | "resale" | "inventory" | "repair" | "seasonal" | "transport" | "age";
+  title: string;
+  description: string;
+}
+
+export interface PricingPriceComparison {
+  askingPrice: number;
+  marketValue: number;
+  difference: number;
+  differencePct: number;
+  lowestComparable: number;
+  marketAverage: number;
+  highestComparable: number;
+}
+
+export interface PricingPriceHistoryPoint {
+  date: string;
+  label: string;
+  price: number;
+  event?: string;
+}
+
+export interface PricingPriceHistory {
+  points: PricingPriceHistoryPoint[];
+  initialPrice: number;
+  currentPrice: number;
+  totalReduction: number;
+  reductionCount: number;
+  daysSinceLastReduction: number;
+}
+
+export interface PricingMarketSnapshot {
+  avgLocalPrice: number;
+  avgDaysToSell: number;
+  demandScore: number;
+  inventoryLevel: "Low" | "Balanced" | "High";
+  similarActiveListings: number;
+  recentSales: number;
+  demandTrend: number[];
+}
+
+export interface PricingRiskScores {
+  pricing: number;
+  repair: number;
+  demand: number;
+  holding: number;
+  market: number;
+  overall: "Low Risk" | "Moderate Risk" | "High Risk";
+}
+
+export interface PricingWorkspace {
+  vehicleId: string;
+  vehicleTitle: string;
+  marketplace: string;
+  location: string;
+  make: string;
+  model: string;
+  askingPrice: number;
+  marketValue: number;
+  recommendedPurchase: number;
+  maxPurchase: number;
+  expectedResale: number;
+  expectedNetProfit: number;
+  projectedRoi: number;
+  recommendation: {
+    status: BuyRecommendationStatus;
+    confidence: number;
+    timestamp: string;
+    bullets: string[];
+  };
+  priceComparison: PricingPriceComparison;
+  comparables: ComparableListing[];
+  negotiation: NegotiationIntel;
+  profit: ProfitAnalysis;
+  priceHistory: PricingPriceHistory;
+  marketSnapshot: PricingMarketSnapshot;
+  risk: PricingRiskScores;
+  positiveDrivers: PricingOpportunityDriver[];
+  negativeDrivers: PricingOpportunityDriver[];
+  insights: AiInsightFeedItem[];
+}
+
+export interface PricingIntelExtended {
+  currentPrice: number;
+  marketValue: number;
+  difference: number;
+  differencePct: number;
+  marketPosition: string;
+  recommendedPurchase: number;
+  maxPurchase: number;
+  expectedSelling: number;
+  expectedGrossProfit: number;
+  confidence: number;
+  priceDistribution: { range: string; count: number }[];
+  priceTrend: { month: string; price: number; market: number }[];
+  comparables: ComparableListing[];
+}
+
+export interface RegionalStateIntel {
+  code: string;
+  name: string;
+  demandScore: number;
+  avgSaleTime: number;
+  avgMargin: number;
+  topCategory: string;
+}
+
+export interface RegionalCityIntel {
+  city: string;
+  state: string;
+  demandScore: number;
+  inventory: number;
+  avgMargin: number;
+  avgSaleTime: number;
+}
+
+export interface AiInsightFeedItem {
+  id: string;
+  text: string;
+  timestamp: string;
+  confidence: number;
+  category: string;
+}
+
+export interface AlertRulesConfig {
+  enabled: boolean;
+  minOpportunityScore: number;
+  minProfit: number;
+  maxPurchasePrice: number;
+  maxMileage: number;
+  preferredMakes: string[];
+  preferredModels: string[];
+  preferredCities: string[];
+  marketplaces: string[];
+  repairRiskThreshold: "Low" | "Medium" | "High";
+  roiThreshold: number;
+  demandScoreThreshold: number;
+  priceDropPercent: number;
+  /** @deprecated use preferredMakes */
+  makes: string[];
+  /** @deprecated use preferredCities */
+  cities: string[];
+  categories: string[];
+}
+
+export type AlertCategory =
+  | "all"
+  | "high_value"
+  | "price_drop"
+  | "new_listing"
+  | "negotiation"
+  | "market_intel"
+  | "risk"
+  | "watchlist"
+  | "system";
+
+export type AlertType =
+  | "high_value_opportunity"
+  | "underpriced"
+  | "price_drop"
+  | "new_match"
+  | "high_roi"
+  | "negotiation"
+  | "market_intel"
+  | "risk"
+  | "watchlist"
+  | "system";
+
+export type AlertPriority = "critical" | "high" | "medium" | "low";
+
+export interface IntelligenceAlert {
+  id: string;
+  type: AlertType;
+  category: Exclude<AlertCategory, "all">;
+  priority: AlertPriority;
+  timestamp: string;
+  postedAgo: string;
+  minutesAgo: number;
+  read: boolean;
+  saved: boolean;
+  vehicleId?: string;
+  title: string;
+  aiSummary: string;
+  location?: string;
+  marketplace?: string;
+  opportunityScore?: number;
+  expectedProfit?: number;
+  explanationBullets: string[];
+  relatedAlertIds: string[];
+  data: Record<string, string | number | boolean | number[] | { date: string; price: number }[] | undefined>;
+}
+
+export interface AlertsDashboardStats {
+  todayTotal: number;
+  highPriority: number;
+  priceDrops: number;
+  newListings: number;
+  negotiation: number;
+  highValueCount: number;
+  priceDropsKpi: number;
+  potentialSavings: number;
+  negotiationCount: number;
+  avgAcceptance: number;
+  marketAlerts: number;
+  newTrends: number;
+  topOpportunity: { title: string; vehicleId: string; roi: number; confidence: number };
+  highestRoi: { title: string; vehicleId: string; roi: number };
+  mostActiveMarketplace: string;
+  highestDemandCity: string;
+}
+
+export interface AlertsAiSummary {
+  vehiclesAnalyzed: number;
+  highValueCount: number;
+  roiIncrease: number;
+  marketInsight: string;
+  priceDropsToday: number;
+  topRecommendation: { title: string; vehicleId: string };
+}
+
+export interface DemandIntelMetrics {
+  topModels: { model: string; demandIndex: number; change: number }[];
+  fastestSelling: { vehicle: string; days: number }[];
+  topBrands: { brand: string; share: number }[];
+  topCategories: { category: string; index: number }[];
+  avgDaysToSell: number;
+  demandIndex: number;
+  inventorySupply: number;
+  buyerActivity: number;
+  forecast30: { week: string; demand: number }[];
+  forecast60: { week: string; demand: number }[];
+  forecast90: { week: string; demand: number }[];
+  seasonal: { month: string; index: number }[];
+}

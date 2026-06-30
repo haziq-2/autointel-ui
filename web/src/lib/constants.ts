@@ -9,6 +9,8 @@ import {
   TrendingUp,
   LineChart,
   Bell,
+  DollarSign,
+  Map,
 } from "lucide-react";
 import type { NavSection } from "@/lib/types";
 
@@ -20,7 +22,7 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Data",
     items: [
       { title: "Data Sources", href: "/data-sources", icon: Database },
-      { title: "Scrapers", href: "/scrapers", icon: Radar, badge: "2 active" },
+      { title: "Data Collection", href: "/scrapers", icon: Radar, badge: "2 active" },
       { title: "Vehicles", href: "/vehicles", icon: Car },
     ],
   },
@@ -28,8 +30,10 @@ export const NAV_SECTIONS: NavSection[] = [
     label: "Intelligence",
     items: [
       { title: "Market Intel", href: "/market-intelligence", icon: TrendingUp },
+      { title: "AI Pricing", href: "/pricing-intelligence", icon: DollarSign },
+      { title: "Regional Intel", href: "/regional-intelligence", icon: Map },
       { title: "Acquisition", href: "/opportunities", icon: Bookmark, badge: "24" },
-      { title: "Demand", href: "/demand", icon: LineChart },
+      { title: "Demand Intel", href: "/demand", icon: LineChart },
     ],
   },
   {

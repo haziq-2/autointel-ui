@@ -9,7 +9,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <TopNavbar />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto [scrollbar-gutter:stable]">
           <div className="mx-auto w-full max-w-[1280px] px-6 py-10 lg:px-10">{children}</div>
         </main>
       </div>

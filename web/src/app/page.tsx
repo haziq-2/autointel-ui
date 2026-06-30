@@ -15,6 +15,8 @@ import { getRecentVehicles, TOTAL_VEHICLES } from "@/lib/mock-data/generate-vehi
 import { getDailyScrapeCounts, getTodayScrapeCount } from "@/lib/mock-data/scrape-activity";
 import { getExecutiveSummary } from "@/lib/mock-data/intelligence";
 import { DailyScrapeChart } from "@/components/dashboard/daily-scrape-chart";
+import { DashboardIntelligenceWidgets } from "@/components/intelligence/dashboard-widgets";
+import { AiInsightsFeed } from "@/components/intelligence/ai-insights-feed";
 import { formatCurrency, formatMileage } from "@/lib/format";
 
 export default function DashboardPage() {
@@ -36,7 +38,7 @@ export default function DashboardPage() {
 
       <KpiGrid className="mb-14">
         <KpiCard label="Vehicles tracked" value={TOTAL_VEHICLES.toLocaleString()} change={8.2} changeLabel="this week" sparkline={sparkData} />
-        <KpiCard label="Scraped today" value={todayCount} change={todayChange} changeLabel="vs yesterday" sparkline={sparkData} />
+        <KpiCard label="Scraped today" value={todayCount} change={todayChange} changeLabel="vs yesterday" />
         <KpiCard label="Active scrapers" value={2} />
       </KpiGrid>
 
@@ -55,11 +57,19 @@ export default function DashboardPage() {
       </section>
 
       <section className="mb-14">
-        <SectionTitle>Daily scraped vehicles</SectionTitle>
-        <Card padding>
-          <DailyScrapeChart data={dailyScrapeData} />
-        </Card>
+        <SectionTitle description="AI-powered acquisition signals">Intelligence widgets</SectionTitle>
+        <DashboardIntelligenceWidgets />
       </section>
+
+      <div className="mb-14 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px]">
+        <section>
+          <SectionTitle>Daily scraped vehicles</SectionTitle>
+          <Card padding>
+            <DailyScrapeChart data={dailyScrapeData} />
+          </Card>
+        </section>
+        <AiInsightsFeed limit={6} />
+      </div>
 
       <section className="mb-14">
         <SectionTitle>Recent scraping jobs</SectionTitle>

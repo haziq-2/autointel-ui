@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Search, Bell, Plus } from "lucide-react";
+import { NotificationCenter } from "@/components/intelligence/notification-center";
+import { Menu, Search, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -14,13 +15,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ORGANIZATIONS, NAV_SECTIONS } from "@/lib/constants";
+import { NAV_SECTIONS } from "@/lib/constants";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function TopNavbar() {
   const pathname = usePathname();
-  const unreadAlerts = 4;
 
   return (
     <header className="sticky top-0 z-30 flex h-12 shrink-0 items-center gap-3 border-b border-border bg-white/90 px-4 backdrop-blur-md lg:px-6">
@@ -92,38 +92,7 @@ export function TopNavbar() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Link
-          href="/alerts"
-          className={cn(
-            buttonVariants({ variant: "ghost", size: "icon" }),
-            "relative h-8 w-8 text-muted-foreground"
-          )}
-        >
-          <Bell className="h-4 w-4" />
-          {unreadAlerts > 0 && (
-            <span className="absolute right-1.5 top-1.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[#2563eb] px-0.5 text-[9px] font-medium text-white">
-              {unreadAlerts}
-            </span>
-          )}
-        </Link>
-
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            className={cn(
-              buttonVariants({ variant: "ghost", size: "sm" }),
-              "hidden h-8 max-w-[160px] truncate text-[13px] text-muted-foreground sm:inline-flex"
-            )}
-          >
-            {ORGANIZATIONS[0].name}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="text-[13px]">
-            <DropdownMenuLabel className="text-label">Workspace</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {ORGANIZATIONS.map((org) => (
-              <DropdownMenuItem key={org.id}>{org.name}</DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <NotificationCenter />
 
         <DropdownMenu>
           <DropdownMenuTrigger className="rounded-md p-1 transition-colors hover:bg-[#fafafa]">
