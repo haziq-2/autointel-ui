@@ -29,7 +29,7 @@ export function KpiCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-border bg-white p-5 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)]",
+        "rounded-xl border border-border bg-white p-5 transition-colors duration-150 hover:border-[#dcdcdc]",
         className
       )}
     >
@@ -39,7 +39,7 @@ export function KpiCard({
           <Sparkline data={sparkline} color="#2563eb" className="h-8 w-[72px]" />
         )}
       </div>
-      <p className="mt-2 font-mono text-[1.625rem] font-semibold tracking-tight text-foreground tabular-nums">
+      <p className="mt-2.5 font-mono text-[1.5rem] font-semibold tracking-tight text-foreground tabular-nums">
         {value}
       </p>
       {change !== undefined && (

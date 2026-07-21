@@ -62,7 +62,7 @@ export function DashboardIntelligenceWidgets() {
         primary: `${c.city}, ${c.state}`,
         secondary: `${c.inventory} listings`,
         value: `Score ${c.demandScore}`,
-        href: "/regional-intelligence",
+        href: "/vehicles",
       })),
     },
     {
@@ -98,10 +98,10 @@ export function DashboardIntelligenceWidgets() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: si * 0.06 }}
-          className="rounded-2xl border border-border bg-white shadow-card transition-shadow hover:shadow-md"
+          className="rounded-xl border border-border bg-white transition-colors hover:border-[#dcdcdc]"
         >
           <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-            <section.icon className="h-4 w-4 text-[#2563eb]" />
+            <section.icon className="h-4 w-4 text-muted-foreground" />
             <h3 className="text-[13px] font-semibold">{section.title}</h3>
           </div>
           <ul className="divide-y divide-border">
@@ -109,7 +109,7 @@ export function DashboardIntelligenceWidgets() {
               <li key={item.id}>
                 <Link
                   href={item.href}
-                  className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-[#fafafa]"
+                  className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-surface"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-medium">{item.primary}</p>
@@ -125,7 +125,7 @@ export function DashboardIntelligenceWidgets() {
                       {item.value}
                     </span>
                   )}
-                  <ArrowRight className="h-3.5 w-3.5 shrink-0 text-[#9ca3af] opacity-0 transition-opacity group-hover:opacity-100" />
+                  <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
                 </Link>
               </li>
             ))}

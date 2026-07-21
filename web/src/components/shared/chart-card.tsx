@@ -12,15 +12,15 @@ export function ChartCard({ title, description, children, className, action }: C
   return (
     <div
       className={cn(
-        "rounded-xl border border-border/60 bg-card/80 p-4 backdrop-blur-sm",
+        "rounded-xl border border-border bg-white p-5",
         className
       )}
     >
       <div className="mb-4 flex items-start justify-between gap-2">
         <div>
-          <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+          <h3 className="text-card-title">{title}</h3>
           {description && (
-            <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>
+            <p className="mt-0.5 text-helper">{description}</p>
           )}
         </div>
         {action}

@@ -2,15 +2,10 @@ import {
   LayoutDashboard,
   Radar,
   Car,
-  Bookmark,
   Sparkles,
   FileText,
-  Database,
-  TrendingUp,
-  LineChart,
   Bell,
-  DollarSign,
-  Map,
+  ScanSearch,
 } from "lucide-react";
 import type { NavSection } from "@/lib/types";
 
@@ -21,19 +16,9 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     label: "Data",
     items: [
-      { title: "Data Sources", href: "/data-sources", icon: Database },
       { title: "Data Collection", href: "/scrapers", icon: Radar, badge: "2 active" },
       { title: "Vehicles", href: "/vehicles", icon: Car },
-    ],
-  },
-  {
-    label: "Intelligence",
-    items: [
-      { title: "Market Intel", href: "/market-intelligence", icon: TrendingUp },
-      { title: "AI Pricing", href: "/pricing-intelligence", icon: DollarSign },
-      { title: "Regional Intel", href: "/regional-intelligence", icon: Map },
-      { title: "Acquisition", href: "/opportunities", icon: Bookmark, badge: "24" },
-      { title: "Demand Intel", href: "/demand", icon: LineChart },
+      { title: "VIN Decoder", href: "/vin-decoder", icon: ScanSearch },
     ],
   },
   {

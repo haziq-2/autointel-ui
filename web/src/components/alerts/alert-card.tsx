@@ -40,12 +40,12 @@ export function AlertCard({ alert, index, onOpen, onDismiss, onSave }: AlertCard
       exit={{ opacity: 0, x: -20 }}
       transition={{ delay: Math.min(index * 0.03, 0.3) }}
       className={cn(
-        "group relative overflow-hidden rounded-2xl border bg-white shadow-card transition-all hover:shadow-md",
+        "group relative overflow-hidden rounded-xl border bg-white transition-colors hover:border-[#dcdcdc]",
         !alert.read ? "border-[#2563eb]/25" : "border-border"
       )}
     >
       {!alert.read && (
-        <span className="absolute left-0 top-0 h-full w-1 bg-[#2563eb]" />
+        <span className="absolute left-0 top-0 h-full w-1 bg-primary" />
       )}
 
       <div className="p-4 sm:p-5">
@@ -70,8 +70,8 @@ export function AlertCard({ alert, index, onOpen, onDismiss, onSave }: AlertCard
               <PriorityBadge priority={alert.priority} />
               {!alert.read && (
                 <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#2563eb] opacity-40" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#2563eb]" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-40" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
                 </span>
               )}
               <span className="ml-auto text-[11px] text-muted-foreground">{alert.postedAgo}</span>
@@ -82,7 +82,7 @@ export function AlertCard({ alert, index, onOpen, onDismiss, onSave }: AlertCard
               onClick={() => onOpen(alert)}
               className="mt-2 text-left"
             >
-              <h3 className="text-[15px] font-semibold leading-snug hover:text-[#2563eb]">
+              <h3 className="text-[15px] font-semibold leading-snug hover:text-primary">
                 {alert.title}
               </h3>
             </button>
@@ -108,7 +108,7 @@ export function AlertCard({ alert, index, onOpen, onDismiss, onSave }: AlertCard
                 <button
                   type="button"
                   onClick={() => setExpanded(!expanded)}
-                  className="inline-flex items-center gap-1 text-[11px] font-medium text-[#2563eb] hover:underline"
+                  className="inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline"
                 >
                   AI explanation
                   {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
@@ -289,7 +289,7 @@ function Metric({
         className={cn(
           "font-mono text-[13px] font-semibold tabular-nums",
           green && "text-[#16a34a]",
-          accent && "text-[#2563eb]"
+          accent && "text-primary"
         )}
       >
         {value}
@@ -338,10 +338,10 @@ function ActionButton({
       className={cn(
         "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12px] font-medium transition-colors",
         primary
-          ? "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+          ? "bg-primary text-white hover:bg-[#1d4ed8]"
           : active
-            ? "bg-[#eff6ff] text-[#2563eb]"
-            : "border border-border bg-white text-muted-foreground hover:bg-[#fafafa] hover:text-foreground"
+            ? "bg-primary/10 text-primary"
+            : "border border-border bg-white text-muted-foreground hover:bg-surface hover:text-foreground"
       )}
     >
       <Icon className="h-3.5 w-3.5" />

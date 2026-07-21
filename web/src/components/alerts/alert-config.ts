@@ -19,9 +19,9 @@ export const ALERT_CATEGORIES: {
   color: string;
   bg: string;
 }[] = [
-  { id: "all", label: "All Alerts", icon: Bell, color: "text-[#2563eb]", bg: "bg-[#eff6ff]" },
+  { id: "all", label: "All Alerts", icon: Bell, color: "text-primary", bg: "bg-[#eff6ff]" },
   { id: "high_value", label: "High Value Opportunities", icon: Zap, color: "text-[#dc2626]", bg: "bg-red-50" },
-  { id: "price_drop", label: "Price Drops", icon: TrendingDown, color: "text-[#2563eb]", bg: "bg-blue-50" },
+  { id: "price_drop", label: "Price Drops", icon: TrendingDown, color: "text-primary", bg: "bg-blue-50" },
   { id: "new_listing", label: "New Listings", icon: Sparkles, color: "text-[#7c3aed]", bg: "bg-violet-50" },
   { id: "negotiation", label: "Negotiation", icon: MessageSquare, color: "text-[#ea580c]", bg: "bg-orange-50" },
   { id: "market_intel", label: "Market Intelligence", icon: LineChart, color: "text-[#0891b2]", bg: "bg-cyan-50" },

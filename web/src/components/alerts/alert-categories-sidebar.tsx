@@ -31,7 +31,7 @@ export function AlertCategoriesSidebar({
               "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all",
               isActive
                 ? "bg-[#eff6ff] shadow-sm"
-                : "hover:bg-[#fafafa]"
+                : "hover:bg-surface"
             )}
           >
             <div
@@ -54,7 +54,7 @@ export function AlertCategoriesSidebar({
               <span
                 className={cn(
                   "flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 font-mono text-[10px] font-semibold tabular-nums",
-                  isActive ? "bg-[#2563eb] text-white" : "bg-[#e5e7eb] text-[#64748b]"
+                  isActive ? "bg-primary text-white" : "bg-accent text-muted-foreground"
                 )}
               >
                 {count}

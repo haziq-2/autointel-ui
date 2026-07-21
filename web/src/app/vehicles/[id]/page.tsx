@@ -1,10 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SectionTitle } from "@/components/shared/page-header";
-import { RecommendationBadge } from "@/components/shared/status-badge";
 import { getVehicleById, getAllVehicles, dedupeVehicles } from "@/lib/mock-data/generate-vehicles";
 import { getVehiclePricingIntelligence } from "@/lib/mock-data/intelligence";
-import { VehicleIntelligenceSection } from "@/components/intelligence/vehicle-intelligence-section";
+import { VehicleImage } from "@/components/shared/vehicle-image";
 import { formatCurrency, formatMileage } from "@/lib/format";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -35,7 +34,6 @@ export default async function VehicleDetailPage({
     )
   ).slice(0, 4);
 
-  const marketDelta = (vehicle.fairMarketValue ?? vehicle.price) - vehicle.price;
   const pricing = getVehiclePricingIntelligence(id);
 
   return (
@@ -48,6 +46,14 @@ export default async function VehicleDetailPage({
         Vehicles
       </Link>
 
+      <VehicleImage
+        title={vehicle.title}
+        bodyStyle={vehicle.bodyStyle}
+        imageUrl={vehicle.imageUrl}
+        className="mb-8 h-72 w-full rounded-xl border border-border"
+        iconClassName="h-20 w-20"
+      />
+
       <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-page-title">{vehicle.title}</h1>
@@ -59,16 +65,21 @@ export default async function VehicleDetailPage({
           </p>
         </div>
         <div className="flex gap-2">
-          <Link href={`/pricing-intelligence`} className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
-            Pricing intel
-          </Link>
+          {vehicle.listingUrl && (
+            <a
+              href={vehicle.listingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+            >
+              View on Facebook
+            </a>
+          )}
           <button type="button" className={cn(buttonVariants({ size: "sm" }))}>
             Save opportunity
           </button>
         </div>
       </div>
-
-      <VehicleIntelligenceSection vehicleId={id} />
 
       <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-3">
         <div className="space-y-10 lg:col-span-2">
@@ -82,6 +93,14 @@ export default async function VehicleDetailPage({
               <Field label="Days listed" value={String(vehicle.daysListed)} />
               <Field label="VIN" value={vehicle.vin ?? "—"} mono />
             </dl>
+            {vehicle.vin && (
+              <Link
+                href={`/vin-decoder?vin=${encodeURIComponent(vehicle.vin)}`}
+                className="mt-4 inline-flex text-[13px] font-medium text-primary hover:underline"
+              >
+                Decode VIN specifications →
+              </Link>
+            )}
             {vehicle.description && (
               <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">{vehicle.description}</p>
             )}
@@ -128,8 +147,15 @@ export default async function VehicleDetailPage({
                 <Link
                   key={v.id}
                   href={`/vehicles/${v.id}`}
-                  className="flex items-center gap-4 py-3 transition-colors hover:bg-[#fafafa]"
+                  className="flex items-center gap-4 py-3 transition-colors hover:bg-surface"
                 >
+                  <VehicleImage
+                    title={v.title}
+                    bodyStyle={v.bodyStyle}
+                    imageUrl={v.imageUrl}
+                    className="h-9 w-12 shrink-0 rounded-md border border-border"
+                    iconClassName="h-4 w-4"
+                  />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-medium">{v.title}</p>
                     <p className="text-label">{v.location}</p>
@@ -142,16 +168,7 @@ export default async function VehicleDetailPage({
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-2xl border border-border bg-white p-5 shadow-card">
-            <p className="text-label">Recommendation</p>
-            <div className="mt-2">
-              {vehicle.recommendation && <RecommendationBadge recommendation={vehicle.recommendation} />}
-            </div>
-            <p className="mt-3 text-[13px] text-muted-foreground">
-              Listed {marketDelta > 0 ? `${formatCurrency(marketDelta)} below` : "at"} regional average.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-border bg-white p-5 shadow-card">
+          <div className="rounded-xl border border-border bg-white p-5">
             <SectionTitle>Seller</SectionTitle>
             <dl className="mt-3 space-y-2 text-[13px]">
               <div className="flex justify-between">
@@ -183,7 +200,7 @@ function Field({ label, value, mono }: { label: string; value: string; mono?: bo
 
 function StatBlock({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <div className="rounded-xl border border-border bg-[#fafafa] p-4">
+    <div className="rounded-xl border border-border bg-surface p-4">
       <p className="text-helper">{label}</p>
       <p className={cn("mt-1.5 font-mono text-[15px] font-semibold tabular-nums", highlight && "text-[#16a34a]")}>
         {value}

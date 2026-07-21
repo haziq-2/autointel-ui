@@ -11,7 +11,7 @@ export function MetricsGrid({ metrics, className }: MetricsGridProps) {
       {metrics.map((m) => (
         <div
           key={m.label}
-          className="rounded-[10px] border border-border bg-white p-4 shadow-card transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
+          className="rounded-xl border border-border bg-white p-4 transition-colors hover:border-[#dcdcdc]"
         >
           <p className="text-label">{m.label}</p>
           <p className="mt-1.5 font-mono text-[15px] font-semibold tabular-nums text-foreground">

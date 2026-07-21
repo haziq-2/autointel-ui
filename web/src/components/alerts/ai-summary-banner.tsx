@@ -10,15 +10,14 @@ export function AiSummaryBanner({ summary }: { summary: AlertsAiSummary }) {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-2xl border border-[#2563eb]/20 bg-gradient-to-br from-[#eff6ff] via-white to-[#f0fdf4] p-6 shadow-card"
+      className="rounded-xl border border-border bg-surface p-6"
     >
-      <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#2563eb]/5 blur-2xl" />
-      <div className="relative flex gap-4">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#2563eb] shadow-lg shadow-[#2563eb]/20">
-          <Sparkles className="h-5 w-5 text-white" />
+      <div className="flex gap-4">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+          <Sparkles className="h-4 w-4 text-primary" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-[#2563eb]">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
             Today&apos;s AI Summary
           </p>
           <ul className="mt-3 space-y-1.5 text-[13px] leading-relaxed text-foreground">
@@ -48,7 +47,7 @@ export function AiSummaryBanner({ summary }: { summary: AlertsAiSummary }) {
               Highest confidence recommendation:{" "}
               <Link
                 href={`/vehicles/${summary.topRecommendation.vehicleId}`}
-                className="font-semibold text-[#2563eb] hover:underline"
+                className="font-semibold text-primary hover:underline"
               >
                 {summary.topRecommendation.title}
               </Link>

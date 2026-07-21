@@ -5,6 +5,7 @@ import { PageHeader, SectionTitle } from "@/components/shared/page-header";
 import { StatusBadge, JobStatusBadge } from "@/components/shared/status-badge";
 import { MarketplaceMark } from "@/components/shared/marketplace-mark";
 import { Card } from "@/components/shared/card";
+import { ContinuousScrapePanel } from "@/components/scraping/continuous-scrape-panel";
 import { ACTIVE_SCRAPERS, SCRAPING_JOBS } from "@/lib/mock-data/scrapers";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -22,15 +23,20 @@ export default function ScrapersPage() {
     <div className="animate-fade-in">
       <PageHeader title="Data Collection" description="Configure and run marketplace scraping jobs">
         <Link href="/scrapers/run-all" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
-          Run all (~3 min)
+          Run all (~6 min)
         </Link>
       </PageHeader>
 
-      <section className="mb-14">
+      <section className="mb-12">
+        <SectionTitle description="Poll every source automatically on a fixed interval">Automation</SectionTitle>
+        <ContinuousScrapePanel />
+      </section>
+
+      <section className="mb-12">
         <SectionTitle description="Active marketplace connectors">Sources</SectionTitle>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {ACTIVE_SCRAPERS.map((scraper) => (
-            <Card key={scraper.id} className="flex flex-col transition-shadow hover:shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
+            <Card key={scraper.id} className="flex flex-col transition-colors hover:border-[#dcdcdc]">
               <div className="flex items-start gap-3">
                 <MarketplaceMark id={scraper.id} name={scraper.name} />
                 <div className="min-w-0 flex-1">
@@ -92,7 +98,7 @@ export default function ScrapersPage() {
                 <DataTableCell className="text-muted-foreground">{job.lastRun}</DataTableCell>
                 <DataTableCell>
                   <div className="flex items-center justify-end gap-2">
-                    <Link href={`/scrapers/${job.id}/live`} className="text-[13px] font-medium text-[#2563eb] hover:underline">
+                    <Link href={`/scrapers/${job.id}/live`} className="text-[13px] font-medium text-primary hover:underline">
                       Run
                     </Link>
                     <button type="button" className="text-[13px] text-muted-foreground transition-colors hover:text-foreground">Pause</button>

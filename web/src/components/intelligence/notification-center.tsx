@@ -22,7 +22,7 @@ export function NotificationCenter() {
       >
         <Bell className="h-4 w-4" />
         {unread > 0 && (
-          <span className="absolute right-1.5 top-1.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[#2563eb] px-0.5 text-[9px] font-medium text-white">
+          <span className="absolute right-1.5 top-1.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-primary px-0.5 text-[9px] font-medium text-white">
             {unread}
           </span>
         )}
@@ -30,7 +30,7 @@ export function NotificationCenter() {
       <SheetContent className="w-full sm:max-w-md">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2 text-[15px]">
-            <Sparkles className="h-4 w-4 text-[#2563eb]" />
+            <Sparkles className="h-4 w-4 text-primary" />
             Purchase Alerts
           </SheetTitle>
         </SheetHeader>
@@ -39,13 +39,13 @@ export function NotificationCenter() {
           <div className="flex items-center gap-3">
             <Link
               href="/alerts"
-              className="text-[12px] font-medium text-[#2563eb] hover:underline"
+              className="text-[12px] font-medium text-primary hover:underline"
             >
               View all
             </Link>
             <Link
               href="/alerts/rules"
-              className="inline-flex items-center gap-1 text-[12px] font-medium text-[#2563eb] hover:underline"
+              className="inline-flex items-center gap-1 text-[12px] font-medium text-primary hover:underline"
             >
               <Settings className="h-3 w-3" />
               Rules
@@ -64,16 +64,16 @@ export function NotificationCenter() {
                 <Link
                   href={`/vehicles/${alert.vehicleId}`}
                   className={cn(
-                    "block rounded-2xl border p-4 transition-all hover:shadow-md",
+                    "block rounded-xl border p-4 transition-colors hover:bg-surface",
                     alert.read ? "border-border bg-white" : "border-[#2563eb]/30 bg-[#eff6ff]/40"
                   )}
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <p className="text-[11px] font-semibold uppercase tracking-wide text-[#2563eb]">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-primary">
                       New High Value Opportunity
                     </p>
                     {!alert.read && (
-                      <span className="h-2 w-2 shrink-0 rounded-full bg-[#2563eb]" />
+                      <span className="h-2 w-2 shrink-0 rounded-full bg-primary" />
                     )}
                   </div>
                   <p className="mt-2 text-[14px] font-semibold text-foreground">{alert.title}</p>

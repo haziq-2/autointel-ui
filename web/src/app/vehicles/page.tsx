@@ -3,8 +3,8 @@
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { PageHeader } from "@/components/shared/page-header";
-import { ScoreBadge, VehicleStatusBadge } from "@/components/shared/status-badge";
 import { EmptyState } from "@/components/shared/empty-state";
+import { VehicleImage } from "@/components/shared/vehicle-image";
 import { TableSkeleton } from "@/components/shared/skeletons";
 import { Card } from "@/components/shared/card";
 import {
@@ -23,8 +23,6 @@ import {
 } from "@/components/ui/select";
 import { MARKETPLACES } from "@/lib/constants";
 import { ChevronLeft, ChevronRight, Search, ArrowUpDown, Car } from "lucide-react";
-import { OpportunityLabelBadge } from "@/components/intelligence/opportunity-label-badge";
-import { getOpportunityLabel } from "@/lib/mock-data/ai-intelligence";
 import { cn } from "@/lib/utils";
 import type { VehicleStatus } from "@/lib/types";
 
@@ -63,7 +61,7 @@ export default function VehiclesPage() {
     <div className="animate-fade-in">
       <PageHeader
         title="Vehicles"
-        description={`${TOTAL_VEHICLES.toLocaleString()} records indexed across 3 sources`}
+        description={`${TOTAL_VEHICLES.toLocaleString()} live listings from Facebook Marketplace`}
       >
         <button type="button" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
           Export
@@ -73,10 +71,10 @@ export default function VehiclesPage() {
       <Card className="mb-5">
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative min-w-[220px] flex-1">
-            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9ca3af]" />
+            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search make, model, location..."
-              className="h-8 rounded-[10px] border-border bg-[#fafafa] pl-9 text-[13px] shadow-none focus-visible:bg-white"
+              className="h-8 rounded-lg border-transparent bg-surface pl-9 text-[13px] shadow-none focus-visible:border-border focus-visible:bg-white"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             />
@@ -105,7 +103,7 @@ export default function VehiclesPage() {
       </Card>
 
       {loading ? (
-        <TableSkeleton rows={10} cols={8} />
+        <TableSkeleton rows={10} cols={9} />
       ) : vehicles.length === 0 ? (
         <EmptyState
           icon={Car}
@@ -127,7 +125,7 @@ export default function VehiclesPage() {
               <DataTableHeaderCell>
                 <span className="inline-flex items-center gap-1.5">
                   Vehicle
-                  <ArrowUpDown className="h-3 w-3 text-[#9ca3af]" />
+                  <ArrowUpDown className="h-3 w-3 text-muted-foreground" />
                 </span>
               </DataTableHeaderCell>
               <DataTableHeaderCell>Year</DataTableHeaderCell>
@@ -138,10 +136,6 @@ export default function VehiclesPage() {
               <DataTableHeaderCell>Location</DataTableHeaderCell>
               <DataTableHeaderCell>Source</DataTableHeaderCell>
               <DataTableHeaderCell>Found</DataTableHeaderCell>
-              <DataTableHeaderCell align="right">AI</DataTableHeaderCell>
-              <DataTableHeaderCell align="right">Opp</DataTableHeaderCell>
-              <DataTableHeaderCell>Label</DataTableHeaderCell>
-              <DataTableHeaderCell>Status</DataTableHeaderCell>
             </tr>
           </DataTableHead>
           <tbody>
@@ -150,9 +144,18 @@ export default function VehiclesPage() {
                 <DataTableCell>
                   <Link
                     href={`/vehicles/${v.id}`}
-                    className="font-medium text-foreground transition-colors hover:text-[#2563eb]"
+                    className="group flex items-center gap-3"
                   >
-                    {v.title}
+                    <VehicleImage
+                      title={v.title}
+                      bodyStyle={v.bodyStyle}
+                      imageUrl={v.imageUrl}
+                      className="h-9 w-12 shrink-0 rounded-md border border-border"
+                      iconClassName="h-4 w-4"
+                    />
+                    <span className="font-medium text-foreground transition-colors group-hover:text-primary">
+                      {v.title}
+                    </span>
                   </Link>
                 </DataTableCell>
                 <DataTableCell className="font-mono tabular-nums text-muted-foreground">{v.year}</DataTableCell>
@@ -163,12 +166,6 @@ export default function VehiclesPage() {
                 <DataTableCell className="text-muted-foreground">{v.location}</DataTableCell>
                 <DataTableCell className="text-muted-foreground">{v.marketplace}</DataTableCell>
                 <DataTableCell className="font-mono text-muted-foreground tabular-nums">{v.dateFound}</DataTableCell>
-                <DataTableCell align="right"><ScoreBadge score={v.aiScore} /></DataTableCell>
-                <DataTableCell align="right"><ScoreBadge score={v.opportunityScore} /></DataTableCell>
-                <DataTableCell>
-                  <OpportunityLabelBadge label={getOpportunityLabel(v.opportunityScore)} className="text-[10px] px-2 py-0.5" />
-                </DataTableCell>
-                <DataTableCell><VehicleStatusBadge status={v.status} /></DataTableCell>
               </DataTableRow>
             ))}
           </tbody>
@@ -222,7 +219,7 @@ function FilterSelect({
 }) {
   return (
     <Select value={value} onValueChange={(v) => onChange(v ?? "all")}>
-      <SelectTrigger className={cn("h-8 rounded-[10px] border-border bg-white text-[13px] shadow-none", width)}>
+      <SelectTrigger className={cn("h-8 rounded-lg border-border bg-white text-[13px] shadow-none", width)}>
         <span className="flex w-full items-center gap-1.5 overflow-hidden">
           <span className="shrink-0 text-muted-foreground">{label}</span>
           <span className="shrink-0 text-border">·</span>

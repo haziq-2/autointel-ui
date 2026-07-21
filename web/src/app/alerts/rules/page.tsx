@@ -58,11 +58,11 @@ export default function AlertRulesPage() {
       <div className="space-y-5">
         <Card className="p-5">
           <div className="mb-5 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#eff6ff]">
-              <Bell className="h-4 w-4 text-[#2563eb]" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent">
+              <Bell className="h-4 w-4 text-muted-foreground" />
             </div>
             <div>
-              <h3 className="text-[14px] font-semibold">Global Settings</h3>
+              <h3 className="text-card-title font-medium">Global Settings</h3>
               <p className="text-[12px] text-muted-foreground">Master toggle for all alert channels</p>
             </div>
           </div>
@@ -224,10 +224,10 @@ function SectionHeader({
 }) {
   return (
     <div className="mb-5 flex items-center gap-3">
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#f8fafc]">
-        <Icon className="h-4 w-4 text-[#2563eb]" />
+      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
+        <Icon className="h-4 w-4 text-muted-foreground" />
       </div>
-      <h3 className="text-[14px] font-semibold">{title}</h3>
+      <h3 className="text-card-title font-medium">{title}</h3>
     </div>
   );
 }
@@ -256,7 +256,7 @@ function ToggleRow({
         onClick={onToggle}
         className={cn(
           "relative h-6 w-11 rounded-full transition-colors",
-          enabled ? "bg-[#2563eb]" : "bg-[#e5e7eb]"
+          enabled ? "bg-primary" : "bg-input"
         )}
       >
         <span
@@ -289,7 +289,7 @@ function SliderField({
     <div>
       <div className="mb-2 flex items-baseline justify-between">
         <label className="text-[13px] font-medium">{label}</label>
-        <span className="font-mono text-[12px] font-semibold text-[#2563eb]">{display}</span>
+        <span className="font-mono text-[12px] font-semibold text-primary">{display}</span>
       </div>
       <input
         type="range"
@@ -297,7 +297,7 @@ function SliderField({
         max={max}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full accent-[#2563eb]"
+        className="w-full accent-primary"
       />
     </div>
   );
@@ -339,8 +339,8 @@ function ChipRow({
           className={cn(
             "rounded-full border px-3 py-1 text-[12px] font-medium transition-colors",
             active.includes(item)
-              ? "border-[#2563eb] bg-[#eff6ff] text-[#2563eb]"
-              : "border-border bg-white text-muted-foreground hover:border-[#2563eb]/40"
+              ? "border-primary bg-primary/10 text-primary"
+              : "border-border bg-white text-muted-foreground hover:border-primary/40"
           )}
         >
           {item}

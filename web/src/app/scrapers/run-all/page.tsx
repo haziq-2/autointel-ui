@@ -72,8 +72,8 @@ export default function RunAllScrapersPage() {
             <div
               key={s.id}
               className={cn(
-                "flex items-center gap-2 rounded-md border px-3 py-1.5 text-[13px]",
-                isCurrent && "border-foreground bg-[#fafafa] font-medium",
+                "flex items-center gap-2 rounded-lg border px-3 py-1.5 text-[13px]",
+                isCurrent && "border-foreground bg-surface font-medium",
                 isDone && "text-muted-foreground",
                 !isCurrent && !isDone && "border-border text-muted-foreground"
               )}
@@ -86,7 +86,7 @@ export default function RunAllScrapersPage() {
       </div>
 
       {finished ? (
-        <div className="rounded-md border border-border p-8 text-center">
+        <div className="rounded-xl border border-border p-8 text-center">
           <p className="text-section-title">All scrapers completed</p>
           <p className="mt-2 text-[13px] text-muted-foreground">
             {city} · {total} marketplaces · ~{total} minutes

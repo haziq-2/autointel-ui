@@ -59,7 +59,7 @@ export default function AiAnalysisPage() {
                 key={p}
                 type="button"
                 onClick={() => send(p)}
-                className="w-full rounded-md px-2 py-2 text-left text-[13px] leading-snug text-muted-foreground hover:bg-[#fafafa] hover:text-foreground"
+                className="w-full rounded-lg px-2.5 py-2 text-left text-[13px] leading-snug text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
               >
                 {p}
               </button>
@@ -67,7 +67,7 @@ export default function AiAnalysisPage() {
           </div>
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col rounded-md border border-border">
+        <div className="flex min-w-0 flex-1 flex-col rounded-xl border border-border">
           <ScrollArea className="flex-1 p-6">
             <div className="mx-auto max-w-2xl space-y-6">
               {messages.map((msg, i) => (
@@ -75,7 +75,7 @@ export default function AiAnalysisPage() {
                   <div
                     className={
                       msg.role === "user"
-                        ? "max-w-[85%] rounded-md bg-[#f4f4f5] px-4 py-3 text-[13px] leading-relaxed"
+                        ? "max-w-[85%] rounded-2xl rounded-br-md bg-accent px-4 py-2.5 text-[13px] leading-relaxed"
                         : "max-w-[90%] text-[13px] leading-relaxed text-foreground whitespace-pre-wrap"
                     }
                   >
@@ -133,7 +133,7 @@ function getResponse(input: string): string {
   }
   if (lower.includes("summarize") || lower.includes("today")) {
     const today = getTodayScrapeCount();
-    return `Today's executive summary:\n\n· ${today} new vehicles discovered\n· 41 undervalued listings flagged\n· 17 acquisition opportunities\n· Truck demand up 18% in Southwest\n· Average listing price down 2.4%\n\n2 active scrapers · inventory health 78/100`;
+    return `Today's executive summary:\n\n· ${today} new vehicles discovered\n· 41 undervalued listings flagged\n· 17 acquisition opportunities\n· Truck demand up 18% in Southwest\n· Average listing price down 2.4%\n\n4 active scrapers · inventory health 78/100`;
   }
   return "Southwest pickup trucks show the strongest signals. I recommend reviewing the Acquisition page for scored opportunities and the Market Intelligence page for regional trends.";
 }

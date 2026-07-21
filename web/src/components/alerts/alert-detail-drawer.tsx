@@ -109,7 +109,7 @@ export function AlertDetailDrawer({
 
           <div className="rounded-xl bg-[#f8fafc] p-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[#2563eb]" />
+              <Sparkles className="h-4 w-4 text-primary" />
               <p className="text-[12px] font-semibold">AI Summary</p>
             </div>
             <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{alert.aiSummary}</p>
@@ -171,7 +171,7 @@ export function AlertDetailDrawer({
               <ul className="mt-2 space-y-1.5">
                 {alert.explanationBullets.map((b) => (
                   <li key={b} className="flex gap-2 text-[12px] text-muted-foreground">
-                    <span className="text-[#2563eb]">•</span>
+                    <span className="text-primary">•</span>
                     {b}
                   </li>
                 ))}
@@ -182,7 +182,7 @@ export function AlertDetailDrawer({
           {priceHistory && priceHistory.length > 1 && (
             <div>
               <h4 className="flex items-center gap-2 text-[13px] font-semibold">
-                <TrendingDown className="h-4 w-4 text-[#2563eb]" />
+                <TrendingDown className="h-4 w-4 text-primary" />
                 Price History
               </h4>
               <div className="mt-3 h-36">
@@ -304,7 +304,7 @@ function DrawerMetric({
       <p className="text-[10px] text-muted-foreground">{label}</p>
       <p
         className={`mt-0.5 font-mono text-[14px] font-semibold tabular-nums ${
-          green ? "text-[#16a34a]" : accent ? "text-[#2563eb]" : ""
+          green ? "text-[#16a34a]" : accent ? "text-primary" : ""
         }`}
       >
         {value}
@@ -316,7 +316,7 @@ function DrawerMetric({
 function TimelineItem({ label, value }: { label: string; value: string }) {
   return (
     <li className="relative text-[12px]">
-      <span className="absolute -left-[21px] top-1.5 h-2 w-2 rounded-full bg-[#2563eb]" />
+      <span className="absolute -left-[21px] top-1.5 h-2 w-2 rounded-full bg-primary" />
       <span className="text-muted-foreground">{label}</span>
       <span className="ml-2 font-medium">{value}</span>
     </li>

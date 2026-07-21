@@ -28,15 +28,15 @@ export function TopNavbar() {
         <SheetTrigger className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "h-8 w-8 lg:hidden")}>
           <Menu className="h-4 w-4" />
         </SheetTrigger>
-        <SheetContent side="left" className="w-[220px] p-0">
+        <SheetContent side="left" className="w-[240px] p-0">
           <div className="border-b border-border px-4 py-3">
-            <p className="text-[13px] font-semibold tracking-[-0.02em]">AutoIntel</p>
+            <p className="text-[13px] font-semibold tracking-[-0.02em]">TripAI</p>
           </div>
-          <nav className="space-y-3 overflow-y-auto p-2">
+          <nav className="space-y-4 overflow-y-auto p-3">
             {NAV_SECTIONS.map((section, idx) => (
               <div key={section.label ?? `m-${idx}`}>
                 {section.label && (
-                  <p className="mb-1 px-2.5 text-[10px] font-semibold uppercase tracking-wider text-[#9ca3af]">
+                  <p className="mb-1 px-2.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
                     {section.label}
                   </p>
                 )}
@@ -45,10 +45,10 @@ export function TopNavbar() {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "block rounded-md px-2.5 py-1.5 text-[13px] transition-colors",
+                      "block rounded-lg px-2.5 py-1.5 text-[13px] transition-colors",
                       pathname.startsWith(item.href) || (item.href === "/" && pathname === "/")
-                        ? "bg-[#fafafa] font-medium text-foreground"
-                        : "text-muted-foreground hover:bg-[#fafafa]"
+                        ? "bg-surface font-medium text-foreground"
+                        : "text-muted-foreground hover:bg-surface"
                     )}
                   >
                     {item.title}
@@ -61,12 +61,12 @@ export function TopNavbar() {
       </Sheet>
 
       <div className="relative hidden max-w-md flex-1 md:block">
-        <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#9ca3af]" />
+        <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Search vehicles, sources, reports..."
-          className="h-8 rounded-[10px] border-border bg-[#fafafa] pl-9 text-[13px] shadow-none transition-colors focus-visible:bg-white"
+          className="h-8 rounded-lg border-transparent bg-surface pl-9 text-[13px] shadow-none transition-colors focus-visible:border-border focus-visible:bg-white"
         />
-        <kbd className="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded border border-border bg-white px-1.5 py-px font-mono text-[10px] text-[#9ca3af] sm:inline">
+        <kbd className="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded border border-border bg-white px-1.5 py-px font-mono text-[10px] text-muted-foreground sm:inline">
           ⌘K
         </kbd>
       </div>
@@ -95,7 +95,7 @@ export function TopNavbar() {
         <NotificationCenter />
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="rounded-md p-1 transition-colors hover:bg-[#fafafa]">
+          <DropdownMenuTrigger className="rounded-lg p-1 transition-colors hover:bg-surface">
             <Avatar className="h-7 w-7">
               <AvatarFallback className="bg-[#f4f4f5] text-[11px] font-medium text-foreground">JM</AvatarFallback>
             </Avatar>

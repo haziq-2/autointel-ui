@@ -45,6 +45,8 @@ export interface VehicleListing {
   description?: string;
   vin?: string;
   priceHistory?: { date: string; price: number }[];
+  imageUrl?: string;
+  listingUrl?: string;
 }
 
 export interface AcquisitionOpportunity extends VehicleListing {

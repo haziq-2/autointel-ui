@@ -4,34 +4,17 @@ import type {
   AiInsight,
   Alert,
   Competitor,
-  DataSource,
   DemandForecastPoint,
   FleetVehicle,
   InventoryUnit,
   MarketplaceMetrics,
   RiskLevel,
   SellerProfile,
-  SyncLog,
   VehicleListing,
   VehiclePricingIntelligence,
 } from "@/lib/types";
 import { getAllVehicles, getSavedOpportunities, getVehicleById } from "./generate-vehicles";
 import { getDailyScrapeCounts, getTodayScrapeCount } from "./scrape-activity";
-
-export const DATA_SOURCES: DataSource[] = [
-  { id: "facebook", name: "Facebook Marketplace", category: "marketplace", status: "running", lastSync: "2 min ago", recordsImported: 1585, syncFrequency: "Every 30 min", connectionHealth: "excellent", avgDailyRecords: 57 },
-  { id: "craigslist", name: "Craigslist", category: "marketplace", status: "idle", lastSync: "18 min ago", recordsImported: 795, syncFrequency: "Every 1 hr", connectionHealth: "good", avgDailyRecords: 57 },
-  { id: "autotrader", name: "AutoTrader", category: "marketplace", status: "running", lastSync: "1 min ago", recordsImported: 2763, syncFrequency: "Every 30 min", connectionHealth: "excellent", avgDailyRecords: 57 },
-];
-
-export const SYNC_LOGS: SyncLog[] = [
-  { id: "s1", source: "AutoTrader", timestamp: "Today, 9:14 AM", status: "success", records: 139, message: "Sync completed successfully" },
-  { id: "s2", source: "Facebook Marketplace", timestamp: "Today, 9:12 AM", status: "success", records: 96, message: "Sync completed successfully" },
-  { id: "s3", source: "Craigslist", timestamp: "Today, 8:45 AM", status: "success", records: 63, message: "Sync completed successfully" },
-  { id: "s4", source: "Facebook Marketplace", timestamp: "Today, 8:42 AM", status: "success", records: 110, message: "Sync completed successfully" },
-  { id: "s5", source: "AutoTrader", timestamp: "Today, 8:14 AM", status: "success", records: 153, message: "Sync completed successfully" },
-  { id: "s6", source: "Craigslist", timestamp: "Today, 7:30 AM", status: "success", records: 47, message: "Sync completed successfully" },
-];
 
 export const MARKET_TRENDS = [
   { metric: "Avg listing price", value: "$28,420", change: -2.4, explanation: "Average asking prices declined 2.4% over 30 days as supply increased in midsize SUVs." },
@@ -266,15 +249,6 @@ export function getPageInsights(page: string): AiInsight[] {
         impact: "Acquisition margins on trucks may compress within 30 days",
         action: "Prioritize F-150 and Tacoma acquisitions this week",
         confidence: 92,
-      },
-    ],
-    "data-sources": [
-      {
-        what: "AutoTrader highest sync volume",
-        why: "171 new listings indexed per day on average across all sources",
-        impact: "Best source for pricing intelligence calibration",
-        action: "Weight AutoTrader comparables at 40% in pricing model",
-        confidence: 94,
       },
     ],
     "market-intelligence": [

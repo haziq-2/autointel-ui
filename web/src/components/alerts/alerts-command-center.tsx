@@ -116,7 +116,7 @@ export function AlertsCommandCenter() {
       >
         <Link
           href="/alerts/rules"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-1.5 text-[13px] font-medium shadow-card transition-colors hover:bg-[#fafafa]"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-1.5 text-[13px] font-medium transition-colors hover:bg-surface"
         >
           <Settings className="h-3.5 w-3.5" />
           Alert rules
@@ -131,7 +131,7 @@ export function AlertsCommandCenter() {
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-[220px_1fr_280px]">
         <aside className="hidden xl:block">
-          <div className="sticky top-6 rounded-2xl border border-border bg-white p-3 shadow-card">
+          <div className="sticky top-6 rounded-xl border border-border bg-white p-3">
             <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               Categories
             </p>
@@ -176,7 +176,7 @@ export function AlertsCommandCenter() {
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-40 animate-pulse rounded-2xl border border-border bg-[#f8fafc]"
+                  className="h-40 animate-pulse rounded-xl border border-border bg-surface"
                 />
               ))}
             </div>

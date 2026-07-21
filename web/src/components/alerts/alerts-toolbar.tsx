@@ -50,7 +50,7 @@ export function AlertsToolbar({ filters, onChange, resultCount }: AlertsToolbarP
   const set = (patch: Partial<AlertFilters>) => onChange({ ...filters, ...patch });
 
   return (
-    <div className="mb-5 space-y-3 rounded-2xl border border-border bg-white p-4 shadow-card">
+    <div className="mb-5 space-y-3 rounded-xl border border-border bg-white p-4">
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative min-w-[200px] flex-1">
           <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
@@ -134,7 +134,7 @@ export function AlertsToolbar({ filters, onChange, resultCount }: AlertsToolbarP
         <button
           type="button"
           onClick={() => onChange(DEFAULT_FILTERS)}
-          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-[#fafafa] hover:text-foreground"
+          className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[12px] font-medium text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
         >
           <RotateCcw className="h-3 w-3" />
           Reset filters
@@ -194,8 +194,8 @@ function ToggleChip({
       className={cn(
         "rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors",
         active
-          ? "border-[#2563eb] bg-[#eff6ff] text-[#2563eb]"
-          : "border-border bg-white text-muted-foreground hover:border-[#2563eb]/40"
+          ? "border-primary bg-primary/10 text-primary"
+          : "border-border bg-white text-muted-foreground hover:border-primary/40"
       )}
     >
       {label}
