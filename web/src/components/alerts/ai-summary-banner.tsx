@@ -10,11 +10,11 @@ export function AiSummaryBanner({ summary }: { summary: AlertsAiSummary }) {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-xl border border-border bg-surface p-6"
+      className="bg-aurora relative overflow-hidden rounded-xl border border-border bg-card p-6 shadow-card"
     >
       <div className="flex gap-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-          <Sparkles className="h-4 w-4 text-primary" />
+        <div className="bg-gradient-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-white shadow-card">
+          <Sparkles className="h-4 w-4" />
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -26,14 +26,14 @@ export function AiSummaryBanner({ summary }: { summary: AlertsAiSummary }) {
               vehicles analyzed.
             </li>
             <li>
-              <span className="font-mono font-semibold tabular-nums text-[#16a34a]">
+              <span className="font-mono font-semibold tabular-nums text-[var(--tint-success-fg)]">
                 {summary.highValueCount}
               </span>{" "}
               high-value opportunities identified.
             </li>
             <li>
               Average projected ROI increased by{" "}
-              <span className="font-mono font-semibold tabular-nums text-[#16a34a]">
+              <span className="font-mono font-semibold tabular-nums text-[var(--tint-success-fg)]">
                 {summary.roiIncrease}%
               </span>
               .

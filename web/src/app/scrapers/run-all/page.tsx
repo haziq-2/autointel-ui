@@ -78,7 +78,7 @@ export default function RunAllScrapersPage() {
                 !isCurrent && !isDone && "border-border text-muted-foreground"
               )}
             >
-              {isDone && <Check className="h-3.5 w-3.5 text-[#16a34a]" />}
+              {isDone && <Check className="h-3.5 w-3.5 text-success" />}
               {s.name}
             </div>
           );

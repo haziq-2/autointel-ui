@@ -107,7 +107,7 @@ export function AlertDetailDrawer({
             </div>
           )}
 
-          <div className="rounded-xl bg-[#f8fafc] p-4">
+          <div className="rounded-xl bg-surface p-4">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary" />
               <p className="text-[12px] font-semibold">AI Summary</p>
@@ -300,11 +300,11 @@ function DrawerMetric({
   accent?: boolean;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-white p-3">
+    <div className="rounded-xl border border-border bg-card p-3">
       <p className="text-[10px] text-muted-foreground">{label}</p>
       <p
         className={`mt-0.5 font-mono text-[14px] font-semibold tabular-nums ${
-          green ? "text-[#16a34a]" : accent ? "text-primary" : ""
+          green ? "text-[var(--tint-success-fg)]" : accent ? "text-primary" : ""
         }`}
       >
         {value}

@@ -36,7 +36,7 @@ export default function ScrapersPage() {
         <SectionTitle description="Active marketplace connectors">Sources</SectionTitle>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {ACTIVE_SCRAPERS.map((scraper) => (
-            <Card key={scraper.id} className="flex flex-col transition-colors hover:border-[#dcdcdc]">
+            <Card key={scraper.id} className="card-interactive flex flex-col">
               <div className="flex items-start gap-3">
                 <MarketplaceMark id={scraper.id} name={scraper.name} />
                 <div className="min-w-0 flex-1">

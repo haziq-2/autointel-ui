@@ -108,7 +108,7 @@ export function ContinuousScrapePanel() {
 
         <div className="flex items-center gap-2">
           <Select value={rate} onValueChange={(v) => setRate(v ?? "300")} disabled={active}>
-            <SelectTrigger className="h-8 w-[168px] rounded-lg border-border bg-white text-[13px] shadow-none">
+            <SelectTrigger className="h-8 w-[168px] rounded-lg border-border bg-card text-[13px] shadow-none">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -157,7 +157,7 @@ export function ContinuousScrapePanel() {
                     <span className="mr-2 font-mono text-[11px] text-muted-foreground/70">{e.time}</span>
                     Polled {sourceCount} sources
                   </span>
-                  <span className="font-mono tabular-nums text-[#16a34a]">+{e.found}</span>
+                  <span className="font-mono tabular-nums text-[var(--tint-success-fg)]">+{e.found}</span>
                 </li>
               ))}
             </ul>

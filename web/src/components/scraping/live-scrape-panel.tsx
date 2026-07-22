@@ -103,25 +103,25 @@ function LiveScrapeRunner({
           <div className="flex items-center gap-2.5">
             {phase === "running" && (
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#2563eb] opacity-25" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#2563eb]" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-25" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
               </span>
             )}
             {phase === "completed" && (
-              <span className="inline-flex h-2 w-2 rounded-full bg-[#16a34a]" />
+              <span className="inline-flex h-2 w-2 rounded-full bg-success" />
             )}
             {(phase === "stopped" || phase === "idle") && (
-              <span className="inline-flex h-2 w-2 rounded-full bg-[#9ca3af]" />
+              <span className="inline-flex h-2 w-2 rounded-full bg-muted-foreground/60" />
             )}
             <span className="text-card-title font-medium capitalize">{phase === "idle" ? "starting" : phase}</span>
           </div>
           <span className="font-mono text-[13px] tabular-nums text-muted-foreground">{progress}%</span>
         </div>
-        <div className="h-1 overflow-hidden rounded-full bg-[#f4f4f5]">
+        <div className="h-1 overflow-hidden rounded-full bg-accent">
           <div
             className={cn(
               "h-full rounded-full transition-all duration-500 ease-out",
-              phase === "completed" ? "bg-[#16a34a]" : "bg-[#2563eb]"
+              phase === "completed" ? "bg-success" : "bg-primary"
             )}
             style={{ width: `${progress}%` }}
           />
@@ -183,12 +183,12 @@ function LiveScrapeRunner({
                   key={`${item.time}-${item.msg}`}
                   className={cn(
                     "flex items-start gap-3 border-b border-border px-5 py-2.5 text-[13px] transition-colors",
-                    i === 0 ? "bg-[#fafafa]" : ""
+                    i === 0 ? "bg-surface" : ""
                   )}
                 >
-                  <Check className={cn("mt-0.5 h-3.5 w-3.5 shrink-0", i === 0 ? "text-[#2563eb]" : "text-[#9ca3af]")} />
+                  <Check className={cn("mt-0.5 h-3.5 w-3.5 shrink-0", i === 0 ? "text-primary" : "text-muted-foreground/60")} />
                   <div className="min-w-0 flex-1">
-                    <span className="mr-2 font-mono text-[11px] text-[#9ca3af]">{item.time}</span>
+                    <span className="mr-2 font-mono text-[11px] text-muted-foreground/70">{item.time}</span>
                     <span className={i === 0 ? "text-foreground" : "text-muted-foreground"}>{item.msg}</span>
                   </div>
                 </li>
@@ -210,7 +210,7 @@ function LiveScrapeRunner({
                   <Link
                     key={v.id}
                     href={`/vehicles/${v.id}`}
-                    className="flex items-center gap-3 px-5 py-3 transition-colors hover:bg-[#fafafa]"
+                    className="flex items-center gap-3 px-5 py-3 transition-colors hover:bg-surface"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-[13px] font-medium">{v.title}</p>

@@ -7,12 +7,10 @@ import { Settings } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import {
   INTELLIGENCE_ALERTS,
-  ALERTS_AI_SUMMARY,
   ALERTS_DASHBOARD_STATS,
 } from "@/lib/mock-data/alerts";
 import type { AlertCategory, IntelligenceAlert } from "@/lib/types";
 import { AlertsKpiRow } from "./alerts-kpi-row";
-import { AiSummaryBanner } from "./ai-summary-banner";
 import { AlertCategoriesSidebar } from "./alert-categories-sidebar";
 import { AlertsToolbar, DEFAULT_FILTERS, type AlertFilters } from "./alerts-toolbar";
 import { AlertCard } from "./alert-card";
@@ -116,7 +114,7 @@ export function AlertsCommandCenter() {
       >
         <Link
           href="/alerts/rules"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-1.5 text-[13px] font-medium transition-colors hover:bg-surface"
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-[13px] font-medium transition-colors hover:bg-surface"
         >
           <Settings className="h-3.5 w-3.5" />
           Alert rules
@@ -125,13 +123,9 @@ export function AlertsCommandCenter() {
 
       <AlertsKpiRow stats={ALERTS_DASHBOARD_STATS} />
 
-      <div className="mb-6">
-        <AiSummaryBanner summary={ALERTS_AI_SUMMARY} />
-      </div>
-
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[220px_1fr_280px]">
+      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[220px_1fr_280px]">
         <aside className="hidden xl:block">
-          <div className="sticky top-6 rounded-xl border border-border bg-white p-3">
+          <div className="sticky top-6 rounded-xl border border-border bg-card p-3 shadow-card">
             <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               Categories
             </p>
@@ -151,7 +145,7 @@ export function AlertsCommandCenter() {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as AlertCategory)}
-              className="h-9 w-full rounded-lg border border-border bg-white px-3 text-[13px]"
+              className="h-9 w-full rounded-lg border border-border bg-card px-3 text-[13px]"
             >
               <option value="all">All Alerts</option>
               <option value="high_value">High Value</option>

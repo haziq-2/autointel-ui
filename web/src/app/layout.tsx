@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppShell } from "@/components/layout/app-shell";
+import { ThemeScript } from "@/components/layout/theme-script";
 import "./globals.css";
 
 const inter = Inter({
@@ -27,8 +28,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${geistMono.variable} h-full`}>
-      <body className="min-h-full bg-white">
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${inter.variable} ${geistMono.variable} h-full`}
+    >
+      <head>
+        <ThemeScript />
+      </head>
+      <body className="min-h-full bg-background">
         <TooltipProvider>
           <AppShell>{children}</AppShell>
         </TooltipProvider>

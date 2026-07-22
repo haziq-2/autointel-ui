@@ -11,22 +11,26 @@ export function MetricsGrid({ metrics, className }: MetricsGridProps) {
       {metrics.map((m) => (
         <div
           key={m.label}
-          className="rounded-xl border border-border bg-white p-4 transition-colors hover:border-[#dcdcdc]"
+          className="card-interactive rounded-xl border border-border bg-card p-4 shadow-card"
         >
           <p className="text-label">{m.label}</p>
           <p className="mt-1.5 font-mono text-[15px] font-semibold tabular-nums text-foreground">
             {m.value}
           </p>
           {m.change !== undefined && (
-            <p
+            <span
               className={cn(
-                "mt-1 font-mono text-[12px] tabular-nums",
-                m.change > 0 ? "text-[#16a34a]" : m.change < 0 ? "text-[#dc2626]" : "text-muted-foreground"
+                "mt-1.5 inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 font-mono text-[11px] font-medium tabular-nums",
+                m.change > 0
+                  ? "bg-[var(--tint-success-bg)] text-[var(--tint-success-fg)]"
+                  : m.change < 0
+                    ? "bg-[var(--tint-danger-bg)] text-[var(--tint-danger-fg)]"
+                    : "bg-[var(--tint-neutral-bg)] text-[var(--tint-neutral-fg)]"
               )}
             >
-              {m.change > 0 ? "+" : ""}
+              {m.change > 0 ? "↑+" : m.change < 0 ? "↓" : "•"}
               {m.change}%
-            </p>
+            </span>
           )}
           {m.description && (
             <p className="mt-1 text-helper">{m.description}</p>

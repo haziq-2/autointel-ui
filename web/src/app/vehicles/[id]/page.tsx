@@ -168,7 +168,7 @@ export default async function VehicleDetailPage({
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-white p-5">
+          <div className="rounded-xl border border-border bg-card p-5 shadow-card">
             <SectionTitle>Seller</SectionTitle>
             <dl className="mt-3 space-y-2 text-[13px]">
               <div className="flex justify-between">
@@ -202,7 +202,7 @@ function StatBlock({ label, value, highlight }: { label: string; value: string; 
   return (
     <div className="rounded-xl border border-border bg-surface p-4">
       <p className="text-helper">{label}</p>
-      <p className={cn("mt-1.5 font-mono text-[15px] font-semibold tabular-nums", highlight && "text-[#16a34a]")}>
+      <p className={cn("mt-1.5 font-mono text-[15px] font-semibold tabular-nums", highlight && "text-[var(--tint-success-fg)]")}>
         {value}
       </p>
     </div>

@@ -74,7 +74,7 @@ export default function VehiclesPage() {
             <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search make, model, location..."
-              className="h-8 rounded-lg border-transparent bg-surface pl-9 text-[13px] shadow-none focus-visible:border-border focus-visible:bg-white"
+              className="h-8 rounded-lg border-border/60 bg-surface pl-9 text-[13px] shadow-none transition-all focus-visible:border-primary/40 focus-visible:bg-card focus-visible:ring-2 focus-visible:ring-primary/15"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             />
@@ -219,7 +219,7 @@ function FilterSelect({
 }) {
   return (
     <Select value={value} onValueChange={(v) => onChange(v ?? "all")}>
-      <SelectTrigger className={cn("h-8 rounded-lg border-border bg-white text-[13px] shadow-none", width)}>
+      <SelectTrigger className={cn("h-8 rounded-lg border-border bg-card text-[13px] shadow-none", width)}>
         <span className="flex w-full items-center gap-1.5 overflow-hidden">
           <span className="shrink-0 text-muted-foreground">{label}</span>
           <span className="shrink-0 text-border">·</span>

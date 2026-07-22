@@ -98,10 +98,12 @@ export function DashboardIntelligenceWidgets() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: si * 0.06 }}
-          className="rounded-xl border border-border bg-white transition-colors hover:border-[#dcdcdc]"
+          className="card-interactive rounded-xl border border-border bg-card shadow-card"
         >
-          <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-            <section.icon className="h-4 w-4 text-muted-foreground" />
+          <div className="flex items-center gap-2.5 border-b border-border px-4 py-3">
+            <span className="flex h-6 w-6 items-center justify-center rounded-lg border border-primary/15 bg-primary-soft text-primary">
+              <section.icon className="h-3.5 w-3.5" strokeWidth={2} />
+            </span>
             <h3 className="text-[13px] font-semibold">{section.title}</h3>
           </div>
           <ul className="divide-y divide-border">
@@ -109,7 +111,7 @@ export function DashboardIntelligenceWidgets() {
               <li key={item.id}>
                 <Link
                   href={item.href}
-                  className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-surface"
+                  className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-primary-soft/50"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-medium">{item.primary}</p>
@@ -121,7 +123,7 @@ export function DashboardIntelligenceWidgets() {
                     )}
                   </div>
                   {item.value && (
-                    <span className="font-mono text-[12px] font-semibold tabular-nums text-[#16a34a]">
+                    <span className="font-mono text-[12px] font-semibold tabular-nums text-[var(--tint-success-fg)]">
                       {item.value}
                     </span>
                   )}

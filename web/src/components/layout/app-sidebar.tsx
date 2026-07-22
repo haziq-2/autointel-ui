@@ -9,16 +9,23 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full w-[220px] flex-col border-r border-border bg-surface">
-      <div className="flex h-12 items-center px-4">
-        <span className="text-[13px] font-semibold tracking-[-0.02em] text-foreground">TripAI</span>
+    <aside className="flex h-full w-[220px] flex-col border-r border-sidebar-border bg-sidebar">
+      <div className="flex h-12 items-center gap-2.5 px-4">
+        <span className="bg-gradient-primary flex h-6 w-6 items-center justify-center rounded-[7px] text-[13px] font-bold text-white shadow-card">
+          T
+        </span>
+        <span className="text-[14px] font-semibold tracking-[-0.02em] text-foreground">
+          Trip<span className="text-primary">AI</span>
+        </span>
       </div>
+
+      <div className="mx-3 mb-2 h-px bg-sidebar-border" />
 
       <nav className="flex-1 space-y-6 overflow-y-auto px-3 pb-4">
         {NAV_SECTIONS.map((section, idx) => (
           <div key={section.label ?? `section-${idx}`}>
             {section.label && (
-              <p className="mb-1.5 px-2.5 text-[10px] font-medium uppercase tracking-[0.06em] text-muted-foreground">
+              <p className="mb-1.5 px-2.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground/80">
                 {section.label}
               </p>
             )}
@@ -35,10 +42,10 @@ export function AppSidebar() {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "group relative flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[13px] transition-colors duration-150",
+                      "group relative flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[13px] transition-all duration-150",
                       isActive
-                        ? "bg-white font-medium text-foreground"
-                        : "text-muted-foreground hover:bg-white hover:text-foreground"
+                        ? "bg-primary-soft font-medium text-primary shadow-card"
+                        : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
                     )}
                   >
                     {isActive && (
@@ -52,7 +59,14 @@ export function AppSidebar() {
                     />
                     <span className="flex-1 truncate">{item.title}</span>
                     {item.badge && (
-                      <span className="rounded bg-accent px-1.5 py-px font-mono text-[10px] text-muted-foreground">
+                      <span
+                        className={cn(
+                          "rounded px-1.5 py-px font-mono text-[10px]",
+                          isActive
+                            ? "bg-primary/15 text-primary"
+                            : "bg-accent text-muted-foreground"
+                        )}
+                      >
                         {item.badge.replace(" active", "")}
                       </span>
                     )}

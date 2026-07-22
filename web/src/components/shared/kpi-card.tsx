@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Sparkline } from "./sparkline";
+import { StaggerGrid } from "./motion";
 
 interface KpiCardProps {
   label: string;
@@ -29,40 +30,40 @@ export function KpiCard({
   return (
     <div
       className={cn(
-        "rounded-xl border border-border bg-white p-5 transition-colors duration-150 hover:border-[#dcdcdc]",
+        "card-interactive rounded-xl border border-border bg-card p-5 shadow-card",
         className
       )}
     >
       <div className="flex items-start justify-between gap-3">
         <p className="text-label">{label}</p>
         {sparkline && sparkline.length > 1 && (
-          <Sparkline data={sparkline} color="#2563eb" className="h-8 w-[72px]" />
+          <Sparkline data={sparkline} color="var(--primary)" className="h-8 w-[72px]" />
         )}
       </div>
-      <p className="mt-2.5 font-mono text-[1.5rem] font-semibold tracking-tight text-foreground tabular-nums">
+      <p className="mt-3 font-mono text-[1.625rem] font-semibold leading-none tracking-tight text-foreground tabular-nums">
         {value}
       </p>
-      {change !== undefined && (
-        <p className="mt-1.5 text-helper">
+      <div className="mt-2.5 flex flex-wrap items-center gap-2">
+        {change !== undefined && (
           <span
             className={cn(
-              "font-mono text-[12px] font-medium tabular-nums",
-              isPositive && "text-[#16a34a]",
-              isNegative && "text-[#dc2626]",
-              !isPositive && !isNegative && "text-muted-foreground"
+              "inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 font-mono text-[11px] font-medium tabular-nums",
+              isPositive && "bg-[var(--tint-success-bg)] text-[var(--tint-success-fg)]",
+              isNegative && "bg-[var(--tint-danger-bg)] text-[var(--tint-danger-fg)]",
+              !isPositive && !isNegative && "bg-[var(--tint-neutral-bg)] text-[var(--tint-neutral-fg)]"
             )}
           >
-            {isPositive ? "↑ " : isNegative ? "↓ " : ""}
+            {isPositive ? "↑" : isNegative ? "↓" : "•"}
             {isPositive ? "+" : ""}
             {Math.abs(change)}%
           </span>
-        </p>
-      )}
-      {footnote && (
-        <p className="mt-0.5 text-[11px] text-muted-foreground">{footnote}</p>
-      )}
-      {description && !change && (
-        <p className="mt-1.5 text-helper">{description}</p>
+        )}
+        {footnote && (
+          <span className="text-[11px] text-muted-foreground">{footnote}</span>
+        )}
+      </div>
+      {description && change === undefined && (
+        <p className="mt-2 text-helper">{description}</p>
       )}
     </div>
   );
@@ -70,8 +71,8 @@ export function KpiCard({
 
 export function KpiGrid({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4", className)}>
+    <StaggerGrid className={cn("grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4", className)}>
       {children}
-    </div>
+    </StaggerGrid>
   );
 }

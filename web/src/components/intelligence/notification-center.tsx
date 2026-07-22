@@ -65,7 +65,7 @@ export function NotificationCenter() {
                   href={`/vehicles/${alert.vehicleId}`}
                   className={cn(
                     "block rounded-xl border p-4 transition-colors hover:bg-surface",
-                    alert.read ? "border-border bg-white" : "border-[#2563eb]/30 bg-[#eff6ff]/40"
+                    alert.read ? "border-border bg-card" : "border-primary/30 bg-primary-soft/50"
                   )}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -78,13 +78,13 @@ export function NotificationCenter() {
                   </div>
                   <p className="mt-2 text-[14px] font-semibold text-foreground">{alert.title}</p>
                   <div className="mt-3 grid grid-cols-2 gap-2 text-[12px]">
-                    <div className="rounded-lg bg-white/80 px-2.5 py-2">
+                    <div className="rounded-lg bg-card/80 px-2.5 py-2">
                       <p className="text-muted-foreground">Opportunity Score</p>
                       <p className="font-mono font-semibold tabular-nums">{alert.opportunityScore}</p>
                     </div>
-                    <div className="rounded-lg bg-white/80 px-2.5 py-2">
+                    <div className="rounded-lg bg-card/80 px-2.5 py-2">
                       <p className="text-muted-foreground">Expected Profit</p>
-                      <p className="font-mono font-semibold tabular-nums text-[#16a34a]">
+                      <p className="font-mono font-semibold tabular-nums text-[var(--tint-success-fg)]">
                         {formatCurrency(alert.expectedProfit)}
                       </p>
                     </div>

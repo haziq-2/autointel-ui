@@ -13,9 +13,7 @@ import {
 import { RECENT_JOBS } from "@/lib/mock-data/scrapers";
 import { getRecentVehicles, TOTAL_VEHICLES } from "@/lib/mock-data/generate-vehicles";
 import { getDailyScrapeCounts, getTodayScrapeCount } from "@/lib/mock-data/scrape-activity";
-import { getExecutiveSummary } from "@/lib/mock-data/intelligence";
 import { DailyScrapeChart } from "@/components/dashboard/daily-scrape-chart";
-import { DashboardIntelligenceWidgets } from "@/components/intelligence/dashboard-widgets";
 import { formatCurrency, formatMileage } from "@/lib/format";
 
 export default function DashboardPage() {
@@ -26,7 +24,6 @@ export default function DashboardPage() {
   const yesterdayCount = dailyScrapeData.at(-2)?.count ?? 0;
   const todayChange =
     yesterdayCount > 0 ? Math.round(((todayCount - yesterdayCount) / yesterdayCount) * 100) : 0;
-  const exec = getExecutiveSummary();
 
   return (
     <div className="animate-fade-in">
@@ -40,25 +37,6 @@ export default function DashboardPage() {
         <KpiCard label="Scraped today" value={todayCount} change={todayChange} changeLabel="vs yesterday" />
         <KpiCard label="Active scrapers" value={4} />
       </KpiGrid>
-
-      <section className="mb-12">
-        <SectionTitle description="AI-generated summary of today's activity">Today&apos;s highlights</SectionTitle>
-        <Card>
-          <ul className="space-y-2.5">
-            {exec.highlights.map((h) => (
-              <li key={h} className="flex gap-3 text-[13px] text-foreground">
-                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />
-                {h}
-              </li>
-            ))}
-          </ul>
-        </Card>
-      </section>
-
-      <section className="mb-12">
-        <SectionTitle description="AI-powered acquisition signals">Intelligence widgets</SectionTitle>
-        <DashboardIntelligenceWidgets />
-      </section>
 
       <section className="mb-12">
         <SectionTitle>Daily scraped vehicles</SectionTitle>
@@ -111,7 +89,7 @@ export default function DashboardPage() {
               <Link
                 key={v.id}
                 href={`/vehicles/${v.id}`}
-                className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-surface"
+                className="flex items-center gap-4 px-5 py-4 transition-colors hover:bg-primary-soft/50"
               >
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[13px] font-medium text-foreground">{v.title}</p>

@@ -10,7 +10,7 @@ export function DataTable({ children, className, maxHeight }: DataTableProps) {
   return (
     <div
       className={cn(
-        "overflow-auto rounded-xl border border-border bg-white",
+        "overflow-auto rounded-xl border border-border bg-card shadow-card",
         className
       )}
       style={maxHeight ? { maxHeight } : undefined}
@@ -22,7 +22,7 @@ export function DataTable({ children, className, maxHeight }: DataTableProps) {
 
 export function DataTableHead({ children }: { children: React.ReactNode }) {
   return (
-    <thead className="sticky top-0 z-10 border-b border-border bg-surface/95 backdrop-blur-sm [&_tr]:border-0">
+    <thead className="sticky top-0 z-10 border-b border-border bg-surface/80 backdrop-blur-md [&_tr]:border-0">
       {children}
     </thead>
   );
@@ -62,7 +62,7 @@ export function DataTableRow({
   return (
     <tr
       className={cn(
-        "border-b border-border transition-colors duration-150 last:border-0 hover:bg-surface",
+        "border-b border-border transition-colors duration-150 last:border-0 even:bg-surface/40 hover:bg-primary-soft/60",
         onClick && "cursor-pointer",
         className
       )}

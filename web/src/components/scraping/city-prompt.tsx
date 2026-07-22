@@ -60,7 +60,7 @@ export function CityPrompt({ marketplace, onSubmit, defaultCity = "" }: CityProm
               ~{previewCount.toLocaleString()} vehicles indexed in this area
             </p>
           )}
-          {error && <p className="mt-1.5 text-[13px] text-[#dc2626]">{error}</p>}
+          {error && <p className="mt-1.5 text-[13px] text-destructive">{error}</p>}
         </div>
 
         <div className="flex flex-wrap gap-1.5">

@@ -24,39 +24,48 @@ function Dot({ className }: { className?: string }) {
   return <span className={cn("h-1.5 w-1.5 rounded-full", className)} />;
 }
 
+const TINT = {
+  info: "bg-[var(--tint-info-bg)] text-[var(--tint-info-fg)]",
+  success: "bg-[var(--tint-success-bg)] text-[var(--tint-success-fg)]",
+  warning: "bg-[var(--tint-warning-bg)] text-[var(--tint-warning-fg)]",
+  danger: "bg-[var(--tint-danger-bg)] text-[var(--tint-danger-fg)]",
+  neutral: "bg-[var(--tint-neutral-bg)] text-[var(--tint-neutral-fg)]",
+  muted: "bg-[var(--tint-neutral-bg)] text-[var(--tint-muted-fg)]",
+} as const;
+
 const jobStyles: Record<JobStatus, string> = {
-  running: "bg-[#eff6ff] text-[#1d4ed8]",
-  completed: "bg-[#f0fdf4] text-[#15803d]",
-  paused: "bg-[#fffbeb] text-[#b45309]",
-  failed: "bg-[#fef2f2] text-[#dc2626]",
-  scheduled: "bg-[#f4f4f5] text-[#6b7280]",
-  idle: "bg-[#f4f4f5] text-[#6b7280]",
+  running: TINT.info,
+  completed: TINT.success,
+  paused: TINT.warning,
+  failed: TINT.danger,
+  scheduled: TINT.neutral,
+  idle: TINT.neutral,
 };
 
 export function JobStatusBadge({ status }: { status: JobStatus }) {
   return (
     <Pill className={jobStyles[status]}>
-      <Dot className={status === "running" ? "bg-[#2563eb] animate-pulse" : "bg-current opacity-60"} />
+      <Dot className={status === "running" ? "bg-primary animate-pulse" : "bg-current opacity-60"} />
       <span className="capitalize">{status}</span>
     </Pill>
   );
 }
 
 const sourceStyles: Record<SourceStatus, string> = {
-  running: "bg-[#eff6ff] text-[#1d4ed8]",
-  healthy: "bg-[#f0fdf4] text-[#15803d]",
-  idle: "bg-[#f4f4f5] text-[#6b7280]",
-  paused: "bg-[#fffbeb] text-[#b45309]",
-  degraded: "bg-[#fffbeb] text-[#b45309]",
-  offline: "bg-[#fef2f2] text-[#dc2626]",
-  syncing: "bg-[#eff6ff] text-[#1d4ed8]",
+  running: TINT.info,
+  healthy: TINT.success,
+  idle: TINT.neutral,
+  paused: TINT.warning,
+  degraded: TINT.warning,
+  offline: TINT.danger,
+  syncing: TINT.info,
 };
 
 export function StatusBadge({ status }: { status: SourceStatus }) {
   const label = status === "healthy" ? "Active" : status.charAt(0).toUpperCase() + status.slice(1);
   return (
     <Pill className={sourceStyles[status] ?? sourceStyles.idle}>
-      <Dot className={status === "syncing" || status === "running" ? "bg-[#2563eb] animate-pulse" : "bg-current opacity-60"} />
+      <Dot className={status === "syncing" || status === "running" ? "bg-primary animate-pulse" : "bg-current opacity-60"} />
       {label}
     </Pill>
   );
@@ -64,7 +73,7 @@ export function StatusBadge({ status }: { status: SourceStatus }) {
 
 export function ScoreBadge({ score }: { score: number }) {
   const tone =
-    score >= 85 ? "text-[#15803d]" : score >= 70 ? "text-foreground" : "text-muted-foreground";
+    score >= 85 ? "text-[var(--tint-success-fg)]" : score >= 70 ? "text-foreground" : "text-muted-foreground";
   return (
     <span className={cn("font-mono text-[12px] font-medium tabular-nums", tone)}>
       {score}
@@ -80,10 +89,10 @@ const recLabels: Record<Recommendation, string> = {
 };
 
 const recStyles: Record<Recommendation, string> = {
-  buy_now: "bg-[#f0fdf4] text-[#15803d]",
-  negotiate: "bg-[#eff6ff] text-[#1d4ed8]",
-  monitor: "bg-[#f4f4f5] text-[#6b7280]",
-  ignore: "bg-[#fef2f2] text-[#9ca3af]",
+  buy_now: TINT.success,
+  negotiate: TINT.info,
+  monitor: TINT.neutral,
+  ignore: TINT.muted,
 };
 
 export function RecommendationBadge({ recommendation }: { recommendation: Recommendation }) {
@@ -91,10 +100,10 @@ export function RecommendationBadge({ recommendation }: { recommendation: Recomm
 }
 
 const vehicleStatusStyles: Record<VehicleStatus, string> = {
-  new: "bg-[#eff6ff] text-[#1d4ed8]",
-  reviewed: "bg-[#f4f4f5] text-[#6b7280]",
-  saved: "bg-[#f0fdf4] text-[#15803d]",
-  archived: "bg-[#f4f4f5] text-[#9ca3af]",
+  new: TINT.info,
+  reviewed: TINT.neutral,
+  saved: TINT.success,
+  archived: TINT.muted,
 };
 
 export function VehicleStatusBadge({ status }: { status: VehicleStatus }) {
@@ -102,10 +111,10 @@ export function VehicleStatusBadge({ status }: { status: VehicleStatus }) {
 }
 
 const alertStyles: Record<AlertSeverity, string> = {
-  critical: "bg-[#fef2f2] text-[#dc2626]",
-  high: "bg-[#fef2f2] text-[#dc2626]",
-  medium: "bg-[#fffbeb] text-[#b45309]",
-  low: "bg-[#f4f4f5] text-[#6b7280]",
+  critical: TINT.danger,
+  high: TINT.danger,
+  medium: TINT.warning,
+  low: TINT.neutral,
 };
 
 export function AlertSeverityBadge({ severity }: { severity: AlertSeverity }) {
@@ -125,10 +134,10 @@ const acquisitionLabels: Record<AcquisitionRecommendation, string> = {
 };
 
 const acquisitionStyles: Record<AcquisitionRecommendation, string> = {
-  acquire_immediately: "bg-[#f0fdf4] text-[#15803d]",
-  strong_candidate: "bg-[#eff6ff] text-[#1d4ed8]",
-  monitor: "bg-[#f4f4f5] text-[#6b7280]",
-  avoid: "bg-[#fef2f2] text-[#9ca3af]",
+  acquire_immediately: TINT.success,
+  strong_candidate: TINT.info,
+  monitor: TINT.neutral,
+  avoid: TINT.muted,
 };
 
 export function AcquisitionRecommendationBadge({ recommendation }: { recommendation: AcquisitionRecommendation }) {

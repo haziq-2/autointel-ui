@@ -40,8 +40,8 @@ export function AlertCard({ alert, index, onOpen, onDismiss, onSave }: AlertCard
       exit={{ opacity: 0, x: -20 }}
       transition={{ delay: Math.min(index * 0.03, 0.3) }}
       className={cn(
-        "group relative overflow-hidden rounded-xl border bg-white transition-colors hover:border-[#dcdcdc]",
-        !alert.read ? "border-[#2563eb]/25" : "border-border"
+        "card-interactive group relative overflow-hidden rounded-xl border bg-card shadow-card",
+        !alert.read ? "border-primary/30" : "border-border"
       )}
     >
       {!alert.read && (
@@ -117,7 +117,7 @@ export function AlertCard({ alert, index, onOpen, onDismiss, onSave }: AlertCard
                   <motion.ul
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
-                    className="mt-2 space-y-1 border-l-2 border-[#2563eb]/20 pl-3"
+                    className="mt-2 space-y-1 border-l-2 border-primary/20 pl-3"
                   >
                     {alert.explanationBullets.map((b) => (
                       <li key={b} className="text-[12px] text-muted-foreground">
@@ -182,7 +182,7 @@ function AlertTypeBody({ alert }: { alert: IntelligenceAlert }) {
             <Metric label="Reduction" value={formatCurrency(Number(d.reduction))} green />
           </div>
           {spark.length > 1 && (
-            <Sparkline data={spark} color="#2563eb" className="h-10 w-24" />
+            <Sparkline data={spark} color="var(--primary)" className="h-10 w-24" />
           )}
         </div>
       );
@@ -248,17 +248,17 @@ function AlertTypeBody({ alert }: { alert: IntelligenceAlert }) {
     case "risk":
       if (d.riskType === "repair") {
         return (
-          <div className="mt-3 rounded-xl border border-red-200 bg-red-50/50 p-3">
-            <p className="text-[12px] font-semibold text-red-700">Repair Risk High</p>
-            <p className="mt-1 font-mono text-[14px] font-semibold tabular-nums text-red-800">
+          <div className="mt-3 rounded-xl border border-red-200 bg-red-50/50 p-3 dark:border-red-900/50 dark:bg-red-950/30">
+            <p className="text-[12px] font-semibold text-red-700 dark:text-red-400">Repair Risk High</p>
+            <p className="mt-1 font-mono text-[14px] font-semibold tabular-nums text-red-800 dark:text-red-300">
               Est. Repairs {formatCurrency(Number(d.estimatedRepairs))}
             </p>
           </div>
         );
       }
       return (
-        <div className="mt-3 rounded-xl border border-orange-200 bg-orange-50/50 p-3">
-          <p className="text-[12px] font-semibold text-orange-700">Holding Time</p>
+        <div className="mt-3 rounded-xl border border-orange-200 bg-orange-50/50 p-3 dark:border-orange-900/50 dark:bg-orange-950/30">
+          <p className="text-[12px] font-semibold text-orange-700 dark:text-orange-400">Holding Time</p>
           <p className="mt-1 text-[13px]">
             <span className="font-mono font-semibold tabular-nums">{String(d.holdingDays)}</span> days · Above
             target ({String(d.targetDays)})
@@ -283,12 +283,12 @@ function Metric({
   accent?: boolean;
 }) {
   return (
-    <div className="rounded-lg bg-[#f8fafc] px-2.5 py-2">
+    <div className="rounded-lg bg-surface px-2.5 py-2">
       <p className="text-[10px] text-muted-foreground">{label}</p>
       <p
         className={cn(
           "font-mono text-[13px] font-semibold tabular-nums",
-          green && "text-[#16a34a]",
+          green && "text-[var(--tint-success-fg)]",
           accent && "text-primary"
         )}
       >
@@ -338,10 +338,10 @@ function ActionButton({
       className={cn(
         "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12px] font-medium transition-colors",
         primary
-          ? "bg-primary text-white hover:bg-[#1d4ed8]"
+          ? "bg-primary text-primary-foreground hover:opacity-90"
           : active
             ? "bg-primary/10 text-primary"
-            : "border border-border bg-white text-muted-foreground hover:bg-surface hover:text-foreground"
+            : "border border-border bg-card text-muted-foreground hover:bg-surface hover:text-foreground"
       )}
     >
       <Icon className="h-3.5 w-3.5" />

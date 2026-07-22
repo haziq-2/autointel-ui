@@ -50,7 +50,7 @@ export function AlertsToolbar({ filters, onChange, resultCount }: AlertsToolbarP
   const set = (patch: Partial<AlertFilters>) => onChange({ ...filters, ...patch });
 
   return (
-    <div className="mb-5 space-y-3 rounded-xl border border-border bg-white p-4">
+    <div className="mb-5 space-y-3 rounded-xl border border-border bg-card p-4 shadow-card">
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative min-w-[200px] flex-1">
           <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
@@ -195,7 +195,7 @@ function ToggleChip({
         "rounded-full border px-3 py-1.5 text-[12px] font-medium transition-colors",
         active
           ? "border-primary bg-primary/10 text-primary"
-          : "border-border bg-white text-muted-foreground hover:border-primary/40"
+          : "border-border bg-card text-muted-foreground hover:border-primary/40"
       )}
     >
       {label}

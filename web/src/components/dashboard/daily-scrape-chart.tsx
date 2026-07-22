@@ -35,38 +35,44 @@ export function DailyScrapeChart({ data }: DailyScrapeChartProps) {
       <div className="h-[280px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
-            <CartesianGrid stroke="#E5E7EB" strokeDasharray="3 3" vertical={false} />
+            <defs>
+              <linearGradient id="dailyScrapeBar" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="var(--primary)" stopOpacity="1" />
+                <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.55" />
+              </linearGradient>
+            </defs>
+            <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" vertical={false} />
             <XAxis
               dataKey="label"
-              tick={{ fontSize: 11, fill: "#6B7280" }}
+              tick={{ fontSize: 11, fill: "var(--chart-axis)" }}
               axisLine={false}
               tickLine={false}
               interval="preserveStartEnd"
               minTickGap={24}
             />
             <YAxis
-              tick={{ fontSize: 11, fill: "#6B7280" }}
+              tick={{ fontSize: 11, fill: "var(--chart-axis)" }}
               axisLine={false}
               tickLine={false}
               allowDecimals={false}
               width={40}
             />
             <Tooltip
-              cursor={{ fill: "#FAFAFA" }}
+              cursor={{ fill: "var(--chart-cursor)" }}
               content={({ active, payload }) => {
                 if (!active || !payload?.length) return null;
                 const point = payload[0].payload as DailyScrapePoint;
                 return (
-                  <div className="rounded-lg border border-border bg-white px-3 py-2 shadow-md">
+                  <div className="rounded-lg border border-border bg-popover px-3 py-2 shadow-popover">
                     <p className="text-[12px] text-muted-foreground">{point.date}</p>
-                    <p className="font-mono text-[13px] font-medium tabular-nums">
+                    <p className="font-mono text-[13px] font-medium tabular-nums text-foreground">
                       {point.count.toLocaleString()} vehicles
                     </p>
                   </div>
                 );
               }}
             />
-            <Bar dataKey="count" fill="#2563eb" radius={[4, 4, 0, 0]} maxBarSize={24} />
+            <Bar dataKey="count" fill="url(#dailyScrapeBar)" radius={[5, 5, 0, 0]} maxBarSize={24} />
           </BarChart>
         </ResponsiveContainer>
       </div>
