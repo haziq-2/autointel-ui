@@ -103,9 +103,7 @@ export const SELLER_PROFILES: SellerProfile[] = [
 ];
 
 export const MARKETPLACE_METRICS: MarketplaceMetrics[] = [
-  { id: "facebook", name: "Facebook Marketplace", listings: 1585, growthRate: 8.4, avgPriceChange: -1.2, qualityScore: 78, duplicateRate: 4.2, regionsCovered: 12, dailyVolume: 57, health: "excellent" },
-  { id: "autotrader", name: "AutoTrader", listings: 2763, growthRate: 5.1, avgPriceChange: -0.8, qualityScore: 91, duplicateRate: 1.8, regionsCovered: 12, dailyVolume: 57, health: "excellent" },
-  { id: "craigslist", name: "Craigslist", listings: 795, growthRate: 2.4, avgPriceChange: -2.1, qualityScore: 68, duplicateRate: 8.6, regionsCovered: 10, dailyVolume: 57, health: "good" },
+  { id: "facebook", name: "Facebook Marketplace", listings: 796, growthRate: 8.4, avgPriceChange: -1.2, qualityScore: 78, duplicateRate: 4.2, regionsCovered: 12, dailyVolume: 26, health: "excellent" },
 ];
 
 export const FLEET_VEHICLES: FleetVehicle[] = [
@@ -224,19 +222,31 @@ export function getDemandForecast(segment: string): DemandForecastPoint[] {
 
 export function getExecutiveSummary() {
   const today = getTodayScrapeCount();
+  const vehicles = getAllVehicles();
+  const undervalued = vehicles.filter(
+    (v) => (v.fairMarketValue ?? v.price) > v.price * 1.05
+  ).length;
+  const opportunities = vehicles.filter((v) => v.opportunityScore >= 82).length;
+  const fb = vehicles.filter((v) => v.marketplace === "Facebook Marketplace").length;
+  const cl = vehicles.filter((v) => v.marketplace === "Craigslist").length;
+
   return {
     highlights: [
       `${today} new vehicles discovered today`,
-      "41 undervalued listings detected",
-      "Truck demand increased 18% in Southwest",
-      "Average listing price down 2.4%",
-      "17 acquisition opportunities flagged",
+      `${undervalued} undervalued listings detected`,
+      `${fb} Facebook Marketplace + ${cl} Craigslist listings tracked`,
+      `${vehicles.length.toLocaleString()} total vehicles in inventory`,
+      `${opportunities} acquisition opportunities flagged`,
     ],
-    estimatedAcquisitionValue: 1805000,
-    potentialGrossProfit: 420000,
+    estimatedAcquisitionValue: Math.round(
+      vehicles.reduce((s, v) => s + (v.marginPotential ?? 0), 0) * 4.2
+    ),
+    potentialGrossProfit: Math.round(
+      vehicles.reduce((s, v) => s + (v.marginPotential ?? 0), 0)
+    ),
     inventoryHealth: 78,
-    marketCoverage: 12,
-    highOpportunityCount: 17,
+    marketCoverage: new Set(vehicles.map((v) => v.location.split(",")[0])).size,
+    highOpportunityCount: opportunities,
   };
 }
 

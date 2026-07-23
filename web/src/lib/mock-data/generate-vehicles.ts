@@ -20,11 +20,17 @@ interface RawListing {
   transmission: string;
   firstSeen: string;
   lastSeen: string;
+  source?: string;
 }
 
 const LISTINGS = rawListings as RawListing[];
 
-const MARKETPLACE = "Facebook Marketplace";
+const SOURCE_ALIASES: Record<string, string> = {
+  facebook: "Facebook Marketplace",
+  "facebook marketplace": "Facebook Marketplace",
+  craigslist: "Craigslist",
+  autotrader: "AutoTrader",
+};
 
 const KNOWN_MAKES: Record<string, string> = {
   ford: "Ford",
@@ -81,16 +87,21 @@ function titleCase(str: string): string {
     .trim();
 }
 
+function looksLikeMake(value: string): boolean {
+  const v = value.trim();
+  if (!v || v.length > 40) return false;
+  // reject emoji / punctuation-led junk from dealer spam titles
+  if (!/^[A-Za-z]/.test(v)) return false;
+  return true;
+}
+
 function deriveMakeModel(title: string, year: number): { make: string; model: string } {
-  const tokens = title.trim().split(/\s+/);
+  const tokens = title.trim().split(/\s+/).filter((t) => t && !/^[\u{1F300}-\u{1FAFF}]+$/u.test(t));
   let idx = 0;
   if (tokens[0] && /^(19|20)\d{2}$/.test(tokens[0])) idx = 1;
   else if (year > 0 && tokens[0] === String(year)) idx = 1;
 
   const makeRaw = tokens[idx] ?? "";
-  const rest = tokens.slice(idx + 1).join(" ");
-
-  // Two-word makes like "Land Rover"
   const twoWord = `${tokens[idx] ?? ""} ${tokens[idx + 1] ?? ""}`.toLowerCase().trim();
   if (KNOWN_MAKES[twoWord]) {
     return {
@@ -99,9 +110,24 @@ function deriveMakeModel(title: string, year: number): { make: string; model: st
     };
   }
 
-  const make = KNOWN_MAKES[makeRaw.toLowerCase()] ?? titleCase(makeRaw) ?? "Other";
-  const model = titleCase(rest) || "—";
+  const make = KNOWN_MAKES[makeRaw.toLowerCase()] ?? (looksLikeMake(makeRaw) ? titleCase(makeRaw) : "Other");
+  const model = titleCase(tokens.slice(idx + 1).join(" ")) || "—";
   return { make: make || "Other", model };
+}
+
+function resolveMakeModel(raw: RawListing, year: number): { make: string; model: string } {
+  const derived = deriveMakeModel(raw.title, year);
+  const csvMake = (raw.make || "").trim();
+  const csvModel = (raw.model || "").trim();
+
+  if (looksLikeMake(csvMake)) {
+    const normalized = KNOWN_MAKES[csvMake.toLowerCase()] ?? titleCase(csvMake);
+    return {
+      make: normalized,
+      model: looksLikeMake(csvModel) ? titleCase(csvModel) : derived.model,
+    };
+  }
+  return derived;
 }
 
 function classifyBodyStyle(title: string): string {
@@ -137,6 +163,11 @@ function pick<T>(arr: readonly T[], seed: number): T {
   return arr[Math.floor(seededRandom(seed) * arr.length)];
 }
 
+function normalizeMarketplace(source?: string): string {
+  const key = (source || "").trim().toLowerCase();
+  return SOURCE_ALIASES[key] ?? source?.trim() ?? "Facebook Marketplace";
+}
+
 const FUEL_TYPES = ["Gasoline", "Diesel", "Hybrid"];
 const STATUSES = ["new", "reviewed", "saved", "archived"] as const;
 
@@ -162,9 +193,10 @@ function daysBetween(a: string, b: string): number {
 
 function mapListing(raw: RawListing): VehicleListing {
   const seed = hashStr(raw.listingId || raw.title) + 1;
-  const year = raw.year > 0 ? raw.year : 2012 + Math.floor(seededRandom(seed * 5) * 13);
-  const { make, model } = deriveMakeModel(raw.title, raw.year);
+  const year = raw.year > 1900 ? raw.year : 2012 + Math.floor(seededRandom(seed * 5) * 13);
+  const { make, model } = resolveMakeModel(raw, year);
   const bodyStyle = classifyBodyStyle(raw.title);
+  const marketplace = normalizeMarketplace(raw.source);
 
   const age = Math.max(1, 2026 - year);
   const mileage =
@@ -178,9 +210,12 @@ function mapListing(raw: RawListing): VehicleListing {
   const fairMarketValue = Math.round(price * (1 + (seededRandom(seed * 12) - 0.4) * 0.25));
 
   const dateFound = toDate(raw.firstSeen || raw.postedTime);
-  const daysListed = Math.max(daysBetween(raw.firstSeen, raw.lastSeen), Math.floor(seededRandom(seed * 9) * 30));
+  const daysListed = Math.max(
+    daysBetween(raw.firstSeen, raw.lastSeen),
+    Math.floor(seededRandom(seed * 9) * 30)
+  );
 
-  const seller = raw.seller || "Private Seller";
+  const seller = raw.seller || (marketplace === "Craigslist" ? "Craigslist Seller" : "Private Seller");
 
   return {
     id: raw.listingId,
@@ -192,8 +227,8 @@ function mapListing(raw: RawListing): VehicleListing {
     mileage,
     location: raw.location || "—",
     seller,
-    sellerType: "private",
-    marketplace: MARKETPLACE,
+    sellerType: marketplace === "Craigslist" && /dealer|autonat|sales/i.test(seller) ? "dealer" : "private",
+    marketplace,
     aiScore,
     opportunityScore,
     daysListed,
@@ -238,7 +273,11 @@ export function getAllVehicles(): VehicleListing[] {
 export const TOTAL_VEHICLES = LISTINGS.length;
 
 export const VEHICLE_MAKES = Array.from(
-  new Set(getAllVehicles().map((v) => v.make).filter(Boolean))
+  new Set(getAllVehicles().map((v) => v.make).filter((m) => m && m !== "Other"))
+).sort();
+
+export const VEHICLE_MARKETPLACES = Array.from(
+  new Set(getAllVehicles().map((v) => v.marketplace).filter(Boolean))
 ).sort();
 
 const LOCATIONS = Array.from(new Set(getAllVehicles().map((v) => v.location).filter((l) => l && l !== "—")));
@@ -329,4 +368,12 @@ export function getSavedOpportunities(): VehicleListing[] {
   return dedupeVehicles(
     getAllVehicles().filter((v) => v.status === "saved" || v.opportunityScore >= 82)
   ).slice(0, 24);
+}
+
+export function countByMarketplace(): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const v of getAllVehicles()) {
+    counts[v.marketplace] = (counts[v.marketplace] ?? 0) + 1;
+  }
+  return counts;
 }

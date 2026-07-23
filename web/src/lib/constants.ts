@@ -5,7 +5,6 @@ import {
   Sparkles,
   FileText,
   Bell,
-  ScanSearch,
 } from "lucide-react";
 import type { NavSection } from "@/lib/types";
 
@@ -16,9 +15,8 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     label: "Data",
     items: [
-      { title: "Data Collection", href: "/scrapers", icon: Radar, badge: "2 active" },
+      { title: "Data Collection", href: "/scrapers", icon: Radar, badge: "1 active" },
       { title: "Vehicles", href: "/vehicles", icon: Car },
-      { title: "VIN Decoder", href: "/vin-decoder", icon: ScanSearch },
     ],
   },
   {
@@ -40,6 +38,4 @@ export const ORGANIZATIONS = [
 
 export const MARKETPLACES = [
   "Facebook Marketplace",
-  "Craigslist",
-  "AutoTrader",
 ];

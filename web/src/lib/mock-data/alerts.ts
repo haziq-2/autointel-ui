@@ -477,7 +477,7 @@ export const ALERT_TYPE_LABELS: Record<AlertType, string> = {
   system: "System",
 };
 
-export const ALERT_MARKETPLACES = ["Facebook Marketplace", "Craigslist", "AutoTrader"];
+export const ALERT_MARKETPLACES = ["Facebook Marketplace"];
 export const ALERT_CITIES = [
   "Dallas",
   "Houston",

@@ -14,14 +14,18 @@ import {
   DataTableRow,
   DataTableCell,
 } from "@/components/shared/data-table";
-import { queryVehicles, TOTAL_VEHICLES, VEHICLE_MAKES } from "@/lib/mock-data/generate-vehicles";
+import {
+  queryVehicles,
+  TOTAL_VEHICLES,
+  VEHICLE_MAKES,
+  VEHICLE_MARKETPLACES,
+} from "@/lib/mock-data/generate-vehicles";
 import { formatCurrency, formatMileage } from "@/lib/format";
 import { Input } from "@/components/ui/input";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { MARKETPLACES } from "@/lib/constants";
 import { ChevronLeft, ChevronRight, Search, ArrowUpDown, Car } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { VehicleStatus } from "@/lib/types";
@@ -79,9 +83,9 @@ export default function VehiclesPage() {
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             />
           </div>
-          <FilterSelect value={marketplace} onChange={(v) => { setMarketplace(v); setPage(1); }} label="Source" width="w-[148px]">
+          <FilterSelect value={marketplace} onChange={(v) => { setMarketplace(v); setPage(1); }} label="Source" width="w-[168px]">
             <SelectItem value="all">All sources</SelectItem>
-            {MARKETPLACES.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
+            {VEHICLE_MARKETPLACES.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
           </FilterSelect>
           <FilterSelect value={make} onChange={(v) => { setMake(v); setPage(1); }} label="Make" width="w-[128px]">
             <SelectItem value="all">All makes</SelectItem>

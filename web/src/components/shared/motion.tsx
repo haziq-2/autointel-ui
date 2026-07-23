@@ -58,6 +58,7 @@ export function StaggerGrid({
       {items.map((child, i) => (
         <motion.div
           key={(child as { key?: string }).key ?? i}
+          className="h-full min-w-0"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.24, ease: EASE, delay: i * step }}
