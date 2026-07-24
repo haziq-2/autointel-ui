@@ -29,7 +29,7 @@ const MARKET_INTEL_TEMPLATES = [
 
 const SYSTEM_ALERTS = [
   { title: "Scraper sync completed", aiSummary: "Facebook Marketplace import finished — 142 new listings indexed." },
-  { title: "AutoTrader rate limit recovered", aiSummary: "Scraper resumed normal cadence after 12-minute throttle." },
+  { title: "CarGurus rate limit recovered", aiSummary: "Scraper resumed normal cadence after 12-minute throttle." },
   { title: "Weekly digest ready", aiSummary: "Acquisition summary for Texas region is available in Reports." },
   { title: "Watchlist threshold reached", aiSummary: "3 saved searches exceeded 90+ opportunity score today." },
   { title: "Data quality check passed", aiSummary: "All 3 active sources validated — 99.2% field completeness." },
@@ -477,7 +477,11 @@ export const ALERT_TYPE_LABELS: Record<AlertType, string> = {
   system: "System",
 };
 
-export const ALERT_MARKETPLACES = ["Facebook Marketplace"];
+export const ALERT_MARKETPLACES = [
+  "Facebook Marketplace",
+  "Craigslist",
+  "CarGurus",
+];
 export const ALERT_CITIES = [
   "Dallas",
   "Houston",

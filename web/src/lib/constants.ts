@@ -15,7 +15,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     label: "Data",
     items: [
-      { title: "Data Collection", href: "/scrapers", icon: Radar, badge: "1 active" },
+      { title: "Data Collection", href: "/scrapers", icon: Radar, badge: "3 active" },
       { title: "Vehicles", href: "/vehicles", icon: Car },
     ],
   },
@@ -38,4 +38,6 @@ export const ORGANIZATIONS = [
 
 export const MARKETPLACES = [
   "Facebook Marketplace",
+  "Craigslist",
+  "CarGurus",
 ];

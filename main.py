@@ -49,7 +49,7 @@ def configure_logging(settings: Settings) -> None:
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="autowatch",
-        description="Monitor newly listed vehicles on Facebook Marketplace, Craigslist, and AutoTrader.",
+        description="Monitor newly listed vehicles on Facebook Marketplace, Craigslist, and CarGurus.",
     )
     parser.add_argument(
         "--region",
@@ -65,7 +65,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--source",
-        choices=("craigslist", "facebook", "autotrader"),
+        choices=("craigslist", "facebook", "cargurus", "autotrader"),
         default=None,
         help="Filter --list output by source.",
     )
@@ -103,7 +103,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
     parser.add_argument("--no-facebook", action="store_true", help="Skip Facebook Marketplace this run.")
     parser.add_argument("--no-craigslist", action="store_true", help="Skip Craigslist this run.")
-    parser.add_argument("--no-autotrader", action="store_true", help="Skip AutoTrader this run.")
+    parser.add_argument(
+        "--no-cargurus",
+        "--no-autotrader",
+        dest="no_cargurus",
+        action="store_true",
+        help="Skip CarGurus this run.",
+    )
 
     args = parser.parse_args(argv)
     if args.list:
@@ -127,8 +133,11 @@ def list_stored_vehicles(settings: Settings, args: argparse.Namespace) -> int:
     """Print all vehicles saved in the SQLite database."""
     db = Database(settings.db_path)
     try:
-        total = db.count(source=args.source)
-        rows = db.list_all(source=args.source, limit=args.limit)
+        source = args.source
+        if source == "autotrader":
+            source = "cargurus"
+        total = db.count(source=source)
+        rows = db.list_all(source=source, limit=args.limit)
         ConsoleNotifier().print_inventory(rows, total=total, showing=len(rows))
     finally:
         db.close()
@@ -156,7 +165,7 @@ class AutoWatch:
         )
         self.run_facebook = settings.facebook_enabled and not args.no_facebook
         self.run_craigslist = not args.no_craigslist
-        self.run_autotrader = settings.autotrader_enabled and not args.no_autotrader
+        self.run_autotrader = settings.autotrader_enabled and not args.no_cargurus
 
     def run_once(self, region: ResolvedRegion) -> list[VehicleListing]:
         scraped: list[VehicleListing] = []
@@ -182,7 +191,7 @@ class AutoWatch:
             try:
                 scraped.extend(AutotraderScraper(self.settings).scrape(region))
             except Exception as exc:  # noqa: BLE001
-                logger.error("AutoTrader scraper crashed: {}", exc)
+                logger.error("CarGurus scraper crashed: {}", exc)
 
         new_listings, stats = self.deduplicator.process(scraped, self.filters)
         self.notifier.notify_many(new_listings, stats=stats, db_total=self.db.count())

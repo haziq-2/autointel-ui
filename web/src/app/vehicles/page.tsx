@@ -65,7 +65,7 @@ export default function VehiclesPage() {
     <div className="animate-fade-in">
       <PageHeader
         title="Vehicles"
-        description={`${TOTAL_VEHICLES.toLocaleString()} live listings from Facebook Marketplace`}
+        description={`${TOTAL_VEHICLES.toLocaleString()} live listings across ${VEHICLE_MARKETPLACES.length} sources`}
       >
         <button type="button" className={cn(buttonVariants({ variant: "outline", size: "sm" }))}>
           Export

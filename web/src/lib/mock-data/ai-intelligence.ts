@@ -422,7 +422,7 @@ export const DEFAULT_ALERT_RULES: AlertRulesConfig = {
   preferredMakes: ["Ford", "Toyota", "Chevrolet", "Honda"],
   preferredModels: ["F-150", "Tacoma", "Silverado", "CR-V"],
   preferredCities: ["Dallas", "Houston", "Austin", "Phoenix"],
-  marketplaces: ["Facebook Marketplace"],
+  marketplaces: ["Facebook Marketplace", "Craigslist", "CarGurus"],
   repairRiskThreshold: "Medium",
   roiThreshold: 18,
   demandScoreThreshold: 75,

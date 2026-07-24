@@ -88,7 +88,7 @@ def _browser_context(settings: Settings) -> Iterator:
 class AutotraderScraper:
     """Scrapes used vehicle listings from AutoTrader.com for a US region."""
 
-    source = Source.AUTOTRADER
+    source = Source.CARGURUS
 
     def __init__(self, settings: Settings | None = None) -> None:
         self.settings = settings or get_settings()

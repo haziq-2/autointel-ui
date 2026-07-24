@@ -29,7 +29,8 @@ const SOURCE_ALIASES: Record<string, string> = {
   facebook: "Facebook Marketplace",
   "facebook marketplace": "Facebook Marketplace",
   craigslist: "Craigslist",
-  autotrader: "AutoTrader",
+  autotrader: "CarGurus",
+  cargurus: "CarGurus",
 };
 
 const KNOWN_MAKES: Record<string, string> = {

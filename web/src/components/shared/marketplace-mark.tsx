@@ -1,7 +1,7 @@
 const MARKETPLACE_INITIALS: Record<string, string> = {
   facebook: "F",
   craigslist: "CL",
-  autotrader: "AT",
+  cargurus: "CG",
 };
 
 export function MarketplaceMark({ id, name }: { id: string; name: string }) {

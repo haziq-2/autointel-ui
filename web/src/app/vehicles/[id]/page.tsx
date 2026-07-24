@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SectionTitle } from "@/components/shared/page-header";
 import { getVehicleById, getAllVehicles, dedupeVehicles } from "@/lib/mock-data/generate-vehicles";
-import { getVehiclePricingIntelligence } from "@/lib/mock-data/intelligence";
 import { VehicleImage } from "@/components/shared/vehicle-image";
 import { formatCurrency, formatMileage } from "@/lib/format";
 import { buttonVariants } from "@/components/ui/button";
@@ -33,8 +32,6 @@ export default async function VehicleDetailPage({
         v.id !== vehicle.id
     )
   ).slice(0, 4);
-
-  const pricing = getVehiclePricingIntelligence(id);
 
   return (
     <div className="animate-fade-in">
@@ -72,7 +69,7 @@ export default async function VehicleDetailPage({
               rel="noopener noreferrer"
               className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
             >
-              View on Facebook
+              View listing
             </a>
           )}
           <button type="button" className={cn(buttonVariants({ size: "sm" }))}>
@@ -105,18 +102,6 @@ export default async function VehicleDetailPage({
               <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">{vehicle.description}</p>
             )}
           </section>
-
-          {pricing && (
-            <section>
-              <SectionTitle>Quick pricing summary</SectionTitle>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                <StatBlock label="Market value" value={formatCurrency(pricing.estimatedMarketValue)} />
-                <StatBlock label="Suggested buy" value={formatCurrency(pricing.suggestedPurchasePrice)} />
-                <StatBlock label="Expected ROI" value={`${pricing.expectedRoi}%`} highlight />
-                <StatBlock label="Gross profit" value={formatCurrency(pricing.expectedGrossProfit)} highlight />
-              </div>
-            </section>
-          )}
 
           <section>
             <SectionTitle>Price history</SectionTitle>
@@ -194,17 +179,6 @@ function Field({ label, value, mono }: { label: string; value: string; mono?: bo
       <dd className={cn("mt-1 text-[13px] font-medium capitalize text-foreground", mono && "font-mono normal-case")}>
         {value}
       </dd>
-    </div>
-  );
-}
-
-function StatBlock({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
-  return (
-    <div className="rounded-xl border border-border bg-surface p-4">
-      <p className="text-helper">{label}</p>
-      <p className={cn("mt-1.5 font-mono text-[15px] font-semibold tabular-nums", highlight && "text-[var(--tint-success-fg)]")}>
-        {value}
-      </p>
     </div>
   );
 }

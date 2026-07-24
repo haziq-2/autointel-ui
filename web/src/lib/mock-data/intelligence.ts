@@ -335,10 +335,10 @@ export function getPageInsights(page: string): AiInsight[] {
     ],
     marketplaces: [
       {
-        what: "AutoTrader highest quality score at 91",
+        what: "CarGurus highest quality score at 91",
         why: "Low duplicate rate and complete listing metadata",
         impact: "Best source for pricing intelligence calibration",
-        action: "Weight AutoTrader comparables at 40% in pricing model",
+        action: "Weight CarGurus comparables at 40% in pricing model",
         confidence: 94,
       },
     ],
