@@ -13,22 +13,40 @@ import type { DailyScrapePoint } from "@/lib/mock-data/scrape-activity";
 
 interface DailyScrapeChartProps {
   data: DailyScrapePoint[];
+  /** Optional catalog total; defaults to sum of chart points */
+  totalOverride?: number;
 }
 
-export function DailyScrapeChart({ data }: DailyScrapeChartProps) {
-  const total = data.reduce((sum, point) => sum + point.count, 0);
-  const average = data.length > 0 ? Math.round(total / data.length) : 0;
+export function DailyScrapeChart({ data, totalOverride }: DailyScrapeChartProps) {
+  const thirtyDayTotal =
+    totalOverride ?? data.reduce((sum, point) => sum + point.count, 0);
+
+  // Past-week average over days that actually had scrapes
+  const pastWeek = data.slice(-7);
+  const activeWeekDays = pastWeek.filter((d) => d.count > 0);
+  const dailyAverage =
+    activeWeekDays.length > 0
+      ? Math.round(
+          activeWeekDays.reduce((sum, point) => sum + point.count, 0) /
+            activeWeekDays.length
+        )
+      : 0;
 
   return (
     <div>
       <div className="mb-4 flex items-baseline gap-6 text-[13px]">
         <div>
           <span className="text-label">30-day total</span>
-          <p className="mt-0.5 font-mono text-lg font-semibold tabular-nums">{total.toLocaleString()}</p>
+          <p className="mt-0.5 font-mono text-lg font-semibold tabular-nums">
+            {thirtyDayTotal.toLocaleString()}
+          </p>
         </div>
         <div>
           <span className="text-label">Daily average</span>
-          <p className="mt-0.5 font-mono text-lg font-semibold tabular-nums">{average.toLocaleString()}</p>
+          <p className="mt-0.5 font-mono text-lg font-semibold tabular-nums">
+            {dailyAverage.toLocaleString()}
+          </p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">past week</p>
         </div>
       </div>
 

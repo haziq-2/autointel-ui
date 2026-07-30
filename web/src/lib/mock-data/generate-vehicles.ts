@@ -169,11 +169,13 @@ function normalizeMarketplace(source?: string): string {
   return SOURCE_ALIASES[key] ?? source?.trim() ?? "Facebook Marketplace";
 }
 
-const FUEL_TYPES = ["Gasoline", "Diesel", "Hybrid"];
 const STATUSES = ["new", "reviewed", "saved", "archived"] as const;
 
 function toDate(iso: string): string {
   if (!iso) return new Date().toISOString().split("T")[0];
+  // Handle ISO and craigslist-style offsets
+  const parsed = new Date(iso);
+  if (!isNaN(parsed.getTime())) return parsed.toISOString().split("T")[0];
   const d = iso.split("T")[0];
   return d || new Date().toISOString().split("T")[0];
 }
@@ -192,31 +194,127 @@ function daysBetween(a: string, b: string): number {
   return Math.max(0, Math.round((db - da) / 86400000));
 }
 
+function normalizeFuel(fuel: string, bodyStyle: string): string {
+  const f = fuel.trim().toLowerCase();
+  if (!f) {
+    return bodyStyle === "Electric" ? "Electric" : "—";
+  }
+  if (f === "gas" || f === "gasoline" || f === "petrol") return "Gasoline";
+  if (f === "diesel") return "Diesel";
+  if (f === "electric" || f === "ev") return "Electric";
+  if (f.includes("hybrid")) return "Hybrid";
+  if (f.includes("plugin") || f.includes("plug-in")) return "Plug-in Hybrid";
+  return titleCase(fuel);
+}
+
+function normalizeTransmission(value: string): string | undefined {
+  const t = value.trim();
+  if (!t) return undefined;
+  const lower = t.toLowerCase();
+  if (lower.startsWith("auto")) return "Automatic";
+  if (lower.startsWith("man")) return "Manual";
+  if (lower.includes("cvt")) return "CVT";
+  return titleCase(t);
+}
+
+function normalizeCondition(value: string): string | undefined {
+  const c = value.trim();
+  if (!c) return undefined;
+  if (c.toUpperCase() === "CPO") return "CPO";
+  return titleCase(c);
+}
+
+function inferSellerType(
+  seller: string,
+  marketplace: string
+): "dealer" | "private" | "auction" {
+  if (/auction/i.test(seller)) return "auction";
+  if (
+    marketplace === "CarGurus" ||
+    /dealer|motors|auto\b|sales|group|of dallas|of houston|of austin/i.test(seller)
+  ) {
+    return "dealer";
+  }
+  return "private";
+}
+
+function buildPriceHistory(
+  price: number,
+  dateFound: string,
+  daysListed: number,
+  seed: number
+): { date: string; price: number }[] | undefined {
+  if (price <= 0) return undefined;
+
+  // Most listings never change price — just the current ask.
+  const roll = seededRandom(seed * 41);
+  if (roll < 0.78 || daysListed < 3) {
+    return [{ date: dateFound, price }];
+  }
+
+  // Occasional single drop (~17%)
+  if (roll < 0.95) {
+    const dropPct = 0.03 + seededRandom(seed * 43) * 0.07; // 3–10%
+    const listedAt = Math.round(price / (1 - dropPct));
+    const dropDay = Math.min(
+      daysListed,
+      Math.max(2, Math.round(2 + seededRandom(seed * 47) * Math.min(14, daysListed)))
+    );
+    return [
+      { date: dateMinus(dateFound, dropDay), price: listedAt },
+      { date: dateFound, price },
+    ];
+  }
+
+  // Rare two-step drop (~5%)
+  const firstDrop = 0.04 + seededRandom(seed * 53) * 0.05;
+  const secondDrop = 0.02 + seededRandom(seed * 59) * 0.05;
+  const mid = Math.round(price / (1 - secondDrop));
+  const listedAt = Math.round(mid / (1 - firstDrop));
+  const span = Math.max(7, Math.min(daysListed || 21, 28));
+  const firstDay = Math.round(span * (0.55 + seededRandom(seed * 61) * 0.25));
+  const secondDay = Math.round(span * (0.15 + seededRandom(seed * 67) * 0.2));
+
+  return [
+    { date: dateMinus(dateFound, firstDay), price: listedAt },
+    { date: dateMinus(dateFound, secondDay), price: mid },
+    { date: dateFound, price },
+  ];
+}
+
 function mapListing(raw: RawListing): VehicleListing {
   const seed = hashStr(raw.listingId || raw.title) + 1;
-  const year = raw.year > 1900 ? raw.year : 2012 + Math.floor(seededRandom(seed * 5) * 13);
+  const year = raw.year > 1900 ? raw.year : 0;
   const { make, model } = resolveMakeModel(raw, year);
-  const bodyStyle = classifyBodyStyle(raw.title);
+  const bodyStyle = classifyBodyStyle(`${raw.title} ${make} ${model}`);
   const marketplace = normalizeMarketplace(raw.source);
 
-  const age = Math.max(1, 2026 - year);
-  const mileage =
-    raw.mileage > 0
-      ? raw.mileage
-      : Math.max(1200, age * (7500 + Math.floor(seededRandom(seed * 4) * 9000)));
-
-  const price = raw.price > 0 ? raw.price : 1000 + Math.floor(seededRandom(seed * 3) * 20000);
+  // Prefer real CSV mileage; leave 0 when unknown (UI shows "—")
+  const mileage = raw.mileage > 0 ? raw.mileage : 0;
+  const price = raw.price > 0 ? raw.price : 0;
   const aiScore = 55 + Math.floor(seededRandom(seed * 10) * 45);
   const opportunityScore = 50 + Math.floor(seededRandom(seed * 11) * 50);
-  const fairMarketValue = Math.round(price * (1 + (seededRandom(seed * 12) - 0.4) * 0.25));
+  const fairMarketValue =
+    price > 0
+      ? Math.round(price * (1 + (seededRandom(seed * 12) - 0.4) * 0.25))
+      : undefined;
 
-  const dateFound = toDate(raw.firstSeen || raw.postedTime);
-  const daysListed = Math.max(
-    daysBetween(raw.firstSeen, raw.lastSeen),
-    Math.floor(seededRandom(seed * 9) * 30)
-  );
+  const dateFound = toDate(raw.postedTime || raw.firstSeen);
+  const observedDays = daysBetween(raw.firstSeen, raw.lastSeen);
+  const daysListed =
+    observedDays > 0
+      ? observedDays
+      : Math.max(0, Math.floor((Date.now() - new Date(dateFound).getTime()) / 86400000) || 0);
 
-  const seller = raw.seller || (marketplace === "Craigslist" ? "Craigslist Seller" : "Private Seller");
+  const seller =
+    raw.seller ||
+    (marketplace === "Craigslist"
+      ? "Private seller"
+      : marketplace === "CarGurus"
+        ? "Dealer"
+        : "Private Seller");
+  const condition = normalizeCondition(raw.condition);
+  const transmission = normalizeTransmission(raw.transmission);
 
   return {
     id: raw.listingId,
@@ -228,18 +326,20 @@ function mapListing(raw: RawListing): VehicleListing {
     mileage,
     location: raw.location || "—",
     seller,
-    sellerType: marketplace === "Craigslist" && /dealer|autonat|sales/i.test(seller) ? "dealer" : "private",
+    sellerType: inferSellerType(seller, marketplace),
     marketplace,
     aiScore,
     opportunityScore,
     daysListed,
-    fuelType: raw.fuel ? titleCase(raw.fuel) : bodyStyle === "Electric" ? "Electric" : pick(FUEL_TYPES, seed * 14),
+    fuelType: normalizeFuel(raw.fuel, bodyStyle),
     bodyStyle,
     dateFound,
     status: pick([...STATUSES], seed * 16),
     fairMarketValue,
-    estimatedResale: fairMarketValue + Math.floor(seededRandom(seed * 17) * 4000),
-    marginPotential: Math.max(0, fairMarketValue - price),
+    estimatedResale: fairMarketValue
+      ? fairMarketValue + Math.floor(seededRandom(seed * 17) * 4000)
+      : undefined,
+    marginPotential: fairMarketValue ? Math.max(0, fairMarketValue - price) : undefined,
     recommendation:
       opportunityScore >= 85
         ? "buy_now"
@@ -248,17 +348,20 @@ function mapListing(raw: RawListing): VehicleListing {
           : opportunityScore >= 60
             ? "monitor"
             : "ignore",
-    description: raw.condition
-      ? `${titleCase(raw.condition)} ${raw.title}, listed in ${raw.location}.`
-      : `${raw.title} · listed in ${raw.location || "—"}.`,
+    description: [
+      condition ? `${condition} condition` : null,
+      transmission,
+      raw.title,
+      raw.location ? `listed in ${raw.location}` : null,
+    ]
+      .filter(Boolean)
+      .join(" · "),
     vin: raw.vin || undefined,
+    condition,
+    transmission,
     imageUrl: raw.image || undefined,
     listingUrl: raw.url || undefined,
-    priceHistory: [
-      { date: dateMinus(dateFound, 14), price: Math.round(price * 1.08) },
-      { date: dateMinus(dateFound, 7), price: Math.round(price * 1.03) },
-      { date: dateFound, price },
-    ],
+    priceHistory: buildPriceHistory(price, dateFound, daysListed, seed),
   };
 }
 

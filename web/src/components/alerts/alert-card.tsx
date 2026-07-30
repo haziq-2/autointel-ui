@@ -9,8 +9,7 @@ import {
   LineChart,
   Line,
 } from "recharts";
-import { Bookmark, Eye, X, ChevronDown, ChevronUp } from "lucide-react";
-import { useState } from "react";
+import { Bookmark, Eye, X } from "lucide-react";
 import { formatCurrency } from "@/lib/format";
 import type { IntelligenceAlert } from "@/lib/types";
 import { ALERT_TYPE_STYLES } from "./alert-config";
@@ -28,7 +27,6 @@ interface AlertCardProps {
 }
 
 export function AlertCard({ alert, index, onOpen, onDismiss, onSave }: AlertCardProps) {
-  const [expanded, setExpanded] = useState(false);
   const style = ALERT_TYPE_STYLES[alert.type];
   const hasVehicle = Boolean(alert.vehicleId);
 
@@ -102,32 +100,6 @@ export function AlertCard({ alert, index, onOpen, onDismiss, onSave }: AlertCard
                 )}
               </div>
             )}
-
-            {alert.explanationBullets.length > 0 && (
-              <div className="mt-3">
-                <button
-                  type="button"
-                  onClick={() => setExpanded(!expanded)}
-                  className="inline-flex items-center gap-1 text-[11px] font-medium text-primary hover:underline"
-                >
-                  AI explanation
-                  {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                </button>
-                {expanded && (
-                  <motion.ul
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    className="mt-2 space-y-1 border-l-2 border-primary/20 pl-3"
-                  >
-                    {alert.explanationBullets.map((b) => (
-                      <li key={b} className="text-[12px] text-muted-foreground">
-                        {b}
-                      </li>
-                    ))}
-                  </motion.ul>
-                )}
-              </div>
-            )}
           </div>
         </div>
 
@@ -150,15 +122,6 @@ function AlertTypeBody({ alert }: { alert: IntelligenceAlert }) {
   const d = alert.data;
 
   switch (alert.type) {
-    case "high_value_opportunity":
-      return (
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
-          <Metric label="Opportunity Score" value={String(alert.opportunityScore)} accent />
-          <Metric label="Expected Profit" value={formatCurrency(alert.expectedProfit ?? 0)} green />
-          <Metric label="Listed" value={alert.postedAgo} />
-        </div>
-      );
-
     case "underpriced":
       return (
         <div className="mt-3 flex flex-wrap items-end gap-4">
@@ -193,24 +156,6 @@ function AlertTypeBody({ alert }: { alert: IntelligenceAlert }) {
         <div className="mt-3 grid grid-cols-2 gap-2">
           <Metric label="Matches" value={String(d.savedSearch)} />
           <Metric label="Posted" value={alert.postedAgo} />
-        </div>
-      );
-
-    case "high_roi":
-      return (
-        <div className="mt-3 grid grid-cols-3 gap-2">
-          <Metric label="Expected ROI" value={`${d.roi}%`} green />
-          <Metric label="Net Profit" value={formatCurrency(Number(d.netProfit))} />
-          <Metric label="Expected Sale" value={`${d.expectedSaleDays} Days`} />
-        </div>
-      );
-
-    case "negotiation":
-      return (
-        <div className="mt-3 grid grid-cols-3 gap-2">
-          <Metric label="Acceptance Probability" value={`${d.acceptanceProbability}%`} accent />
-          <Metric label="Recommended Offer" value={formatCurrency(Number(d.recommendedOffer))} />
-          <Metric label="Maximum Offer" value={formatCurrency(Number(d.maxOffer))} />
         </div>
       );
 

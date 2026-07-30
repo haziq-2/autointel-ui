@@ -75,32 +75,8 @@ export default function AlertRulesPage() {
         </Card>
 
         <Card className="p-5">
-          <SectionHeader icon={Target} title="Opportunity Thresholds" />
+          <SectionHeader icon={Target} title="Alert Thresholds" />
           <div className="space-y-6">
-            <SliderField
-              label="Minimum Opportunity Score"
-              value={rules.minOpportunityScore}
-              min={50}
-              max={99}
-              display={`${rules.minOpportunityScore}`}
-              onChange={(v) => setRules((r) => ({ ...r, minOpportunityScore: v }))}
-            />
-            <SliderField
-              label="ROI Threshold"
-              value={rules.roiThreshold}
-              min={10}
-              max={40}
-              display={`${rules.roiThreshold}%`}
-              onChange={(v) => setRules((r) => ({ ...r, roiThreshold: v }))}
-            />
-            <SliderField
-              label="Demand Score Threshold"
-              value={rules.demandScoreThreshold}
-              min={50}
-              max={99}
-              display={`${rules.demandScoreThreshold}`}
-              onChange={(v) => setRules((r) => ({ ...r, demandScoreThreshold: v }))}
-            />
             <SliderField
               label="Price Drop Percentage"
               value={rules.priceDropPercent}

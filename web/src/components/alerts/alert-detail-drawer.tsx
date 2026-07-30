@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
 import {
   Bookmark,
   ExternalLink,
   X,
-  Sparkles,
   Clock,
   TrendingDown,
 } from "lucide-react";
@@ -28,14 +26,8 @@ import {
 import { formatCurrency, formatMileage } from "@/lib/format";
 import type { IntelligenceAlert } from "@/lib/types";
 import { getVehicleById } from "@/lib/mock-data/generate-vehicles";
-import {
-  getVehicleOpportunityIntel,
-  getNegotiationIntel,
-  getPricingIntelExtended,
-} from "@/lib/mock-data/ai-intelligence";
 import { INTELLIGENCE_ALERTS } from "@/lib/mock-data/alerts";
-import { ScoreRing } from "@/components/intelligence/score-ring";
-import { ALERT_TYPE_STYLES } from "./alert-config";
+import { ALERT_TYPE_STYLES, HIDDEN_ALERT_TYPES } from "./alert-config";
 import { VehicleImagePlaceholder } from "./vehicle-image-placeholder";
 import { PriorityBadge } from "./alerts-toolbar";
 
@@ -57,12 +49,10 @@ export function AlertDetailDrawer({
   if (!alert) return null;
 
   const vehicle = alert.vehicleId ? getVehicleById(alert.vehicleId) : null;
-  const opportunity = alert.vehicleId ? getVehicleOpportunityIntel(alert.vehicleId) : null;
-  const negotiation = alert.vehicleId ? getNegotiationIntel(alert.vehicleId) : null;
-  const pricing = alert.vehicleId ? getPricingIntelExtended(alert.vehicleId) : null;
   const related = INTELLIGENCE_ALERTS.filter(
     (a) =>
       a.id !== alert.id &&
+      !HIDDEN_ALERT_TYPES.includes(a.type) &&
       (alert.relatedAlertIds.includes(a.id) ||
         (a.vehicleId && a.vehicleId === alert.vehicleId))
   ).slice(0, 3);
@@ -70,8 +60,7 @@ export function AlertDetailDrawer({
   const style = ALERT_TYPE_STYLES[alert.type];
   const priceHistory =
     (alert.data.priceHistory as { date: string; price: number }[]) ??
-    vehicle?.priceHistory ??
-    pricing?.priceTrend.map((p) => ({ date: p.month, price: p.price }));
+    vehicle?.priceHistory;
 
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()} modal="trap-focus">
@@ -107,76 +96,8 @@ export function AlertDetailDrawer({
             </div>
           )}
 
-          <div className="rounded-xl bg-surface p-4">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <p className="text-[12px] font-semibold">AI Summary</p>
-            </div>
-            <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{alert.aiSummary}</p>
-          </div>
-
-          {opportunity && (
-            <div className="flex items-center gap-4 rounded-xl border border-border p-4">
-              <ScoreRing score={opportunity.score} size={72} />
-              <div>
-                <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                  Opportunity Score
-                </p>
-                <p className="font-mono text-[22px] font-semibold tabular-nums">
-                  {opportunity.score}
-                  <span className="text-[14px] text-muted-foreground"> / 100</span>
-                </p>
-                <p className="text-[12px] text-muted-foreground">
-                  {opportunity.confidence}% confidence
-                </p>
-              </div>
-            </div>
-          )}
-
-          {pricing && vehicle && (
-            <div className="grid grid-cols-2 gap-3">
-              <DrawerMetric label="Market Value" value={formatCurrency(pricing.marketValue)} />
-              <DrawerMetric label="Expected Profit" value={formatCurrency(pricing.expectedGrossProfit)} green />
-              <DrawerMetric label="Recommended Buy" value={formatCurrency(pricing.recommendedPurchase)} />
-              <DrawerMetric label="Max Purchase" value={formatCurrency(pricing.maxPurchase)} />
-            </div>
-          )}
-
-          {negotiation && (
-            <div>
-              <h4 className="text-[13px] font-semibold">Negotiation Recommendation</h4>
-              <div className="mt-3 grid grid-cols-2 gap-3">
-                <DrawerMetric label="First Offer" value={formatCurrency(negotiation.firstOffer)} />
-                <DrawerMetric
-                  label="Acceptance Probability"
-                  value={`${negotiation.acceptanceProbability}%`}
-                  accent
-                />
-                <DrawerMetric label="Max Offer" value={formatCurrency(negotiation.maxOffer)} />
-                <DrawerMetric label="Difficulty" value={negotiation.difficulty} />
-              </div>
-              <ul className="mt-3 space-y-1">
-                {negotiation.reasoningBullets.map((b) => (
-                  <li key={b} className="text-[12px] text-muted-foreground">
-                    · {b}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {alert.explanationBullets.length > 0 && (
-            <div>
-              <h4 className="text-[13px] font-semibold">AI Explanation</h4>
-              <ul className="mt-2 space-y-1.5">
-                {alert.explanationBullets.map((b) => (
-                  <li key={b} className="flex gap-2 text-[12px] text-muted-foreground">
-                    <span className="text-primary">•</span>
-                    {b}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {alert.aiSummary && (
+            <p className="text-[13px] leading-relaxed text-muted-foreground">{alert.aiSummary}</p>
           )}
 
           {priceHistory && priceHistory.length > 1 && (
@@ -195,25 +116,6 @@ export function AlertDetailDrawer({
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-            </div>
-          )}
-
-          {pricing && pricing.comparables.length > 0 && (
-            <div>
-              <h4 className="text-[13px] font-semibold">Comparable Vehicles</h4>
-              <ul className="mt-2 divide-y divide-border rounded-xl border border-border">
-                {pricing.comparables.slice(0, 4).map((c) => (
-                  <li key={c.id} className="flex items-center justify-between px-3 py-2.5 text-[12px]">
-                    <div>
-                      <p className="font-medium">{c.vehicle}</p>
-                      <p className="text-muted-foreground">
-                        {c.year} · {formatMileage(c.mileage)} · {c.distance}
-                      </p>
-                    </div>
-                    <p className="font-mono font-semibold tabular-nums">{formatCurrency(c.price)}</p>
-                  </li>
-                ))}
-              </ul>
             </div>
           )}
 
@@ -285,31 +187,6 @@ export function AlertDetailDrawer({
         </div>
       </SheetContent>
     </Sheet>
-  );
-}
-
-function DrawerMetric({
-  label,
-  value,
-  green,
-  accent,
-}: {
-  label: string;
-  value: string;
-  green?: boolean;
-  accent?: boolean;
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-3">
-      <p className="text-[10px] text-muted-foreground">{label}</p>
-      <p
-        className={`mt-0.5 font-mono text-[14px] font-semibold tabular-nums ${
-          green ? "text-[var(--tint-success-fg)]" : accent ? "text-primary" : ""
-        }`}
-      >
-        {value}
-      </p>
-    </div>
   );
 }
 

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { PageHeader, SectionTitle } from "@/components/shared/page-header";
 import { KpiCard, KpiGrid } from "@/components/shared/kpi-card";
 import { Card } from "@/components/shared/card";
-import { ScoreBadge, StatusBadge } from "@/components/shared/status-badge";
+import { ScoreBadge } from "@/components/shared/status-badge";
 import { MarketplaceMark } from "@/components/shared/marketplace-mark";
 import { ACTIVE_SCRAPERS } from "@/lib/mock-data/scrapers";
 import {
@@ -19,6 +19,8 @@ import { DailyScrapeChart } from "@/components/dashboard/daily-scrape-chart";
 import { TopMakesChart } from "@/components/dashboard/top-makes-chart";
 import { BodyStyleChart } from "@/components/dashboard/body-style-chart";
 import { PriceHistogramChart } from "@/components/dashboard/price-histogram-chart";
+import { MarketplaceChart } from "@/components/dashboard/marketplace-chart";
+import { YearHistogramChart } from "@/components/dashboard/year-histogram-chart";
 import { formatCurrency, formatMileage } from "@/lib/format";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -32,13 +34,25 @@ const PRICE_BUCKETS = [
   { label: "$50k+", min: 50_000, max: Infinity },
 ] as const;
 
+const YEAR_BUCKETS = [
+  { label: "<2000", min: 0, max: 2000 },
+  { label: "2000–04", min: 2000, max: 2005 },
+  { label: "2005–09", min: 2005, max: 2010 },
+  { label: "2010–14", min: 2010, max: 2015 },
+  { label: "2015–19", min: 2015, max: 2020 },
+  { label: "2020–22", min: 2020, max: 2023 },
+  { label: "2023+", min: 2023, max: Infinity },
+] as const;
+
 function getInventoryCharts() {
   const vehicles = getAllVehicles();
   const total = vehicles.length || 1;
 
   const makeCounts = new Map<string, number>();
   const bodyCounts = new Map<string, number>();
+  const marketplaceCounts = new Map<string, number>();
   const priceCounts = PRICE_BUCKETS.map(() => 0);
+  const yearCounts = YEAR_BUCKETS.map(() => 0);
 
   for (const v of vehicles) {
     if (v.make && v.make !== "Other") {
@@ -46,9 +60,21 @@ function getInventoryCharts() {
     }
     bodyCounts.set(v.bodyStyle, (bodyCounts.get(v.bodyStyle) ?? 0) + 1);
 
+    if (v.marketplace) {
+      marketplaceCounts.set(
+        v.marketplace,
+        (marketplaceCounts.get(v.marketplace) ?? 0) + 1
+      );
+    }
+
     if (v.price > 0) {
       const idx = PRICE_BUCKETS.findIndex((b) => v.price >= b.min && v.price < b.max);
       if (idx >= 0) priceCounts[idx] += 1;
+    }
+
+    if (v.year > 1900) {
+      const idx = YEAR_BUCKETS.findIndex((b) => v.year >= b.min && v.year < b.max);
+      if (idx >= 0) yearCounts[idx] += 1;
     }
   }
 
@@ -66,12 +92,25 @@ function getInventoryCharts() {
     .sort((a, b) => b.count - a.count)
     .slice(0, 7);
 
+  const marketplaces = [...marketplaceCounts.entries()]
+    .map(([name, count]) => ({
+      name,
+      count,
+      share: Math.round((count / total) * 100),
+    }))
+    .sort((a, b) => b.count - a.count);
+
   const priceBuckets = PRICE_BUCKETS.map((b, i) => ({
     label: b.label,
     count: priceCounts[i],
   }));
 
-  return { topMakes, bodyStyles, priceBuckets };
+  const yearBuckets = YEAR_BUCKETS.map((b, i) => ({
+    label: b.label,
+    count: yearCounts[i],
+  }));
+
+  return { topMakes, bodyStyles, marketplaces, priceBuckets, yearBuckets };
 }
 
 function DashboardSection({
@@ -93,14 +132,15 @@ export default function DashboardPage() {
   const dailyScrapeData = getDailyScrapeCounts(30);
   const sparkData = dailyScrapeData.slice(-7).map((d) => d.count);
   const todayCount = getTodayScrapeCount();
-  const avgDaily = getAverageDailyScrapeCount(30);
+  const avgDaily = getAverageDailyScrapeCount(7);
   const yesterdayCount = dailyScrapeData.at(-2)?.count ?? 0;
   const todayChange =
     yesterdayCount > 0 ? Math.round(((todayCount - yesterdayCount) / yesterdayCount) * 100) : 0;
   const activeCount = ACTIVE_SCRAPERS.filter(
     (s) => s.status === "running" || s.status === "healthy"
   ).length;
-  const { topMakes, bodyStyles, priceBuckets } = getInventoryCharts();
+  const { topMakes, bodyStyles, marketplaces, priceBuckets, yearBuckets } =
+    getInventoryCharts();
 
   return (
     <div className="animate-fade-in flex flex-col gap-4 md:gap-6">
@@ -135,11 +175,11 @@ export default function DashboardPage() {
         <KpiCard
           label="Daily average"
           value={avgDaily}
-          subtitle="last 30 days"
+          subtitle="past week"
           sparkline={sparkData}
         />
         <KpiCard
-          label="Active scrapers"
+          label="Active sources"
           value={`${activeCount}/${ACTIVE_SCRAPERS.length}`}
           subtitle="sources online"
         />
@@ -155,7 +195,7 @@ export default function DashboardPage() {
             Daily scraped vehicles
           </SectionTitle>
           <Card padding className="flex h-full min-h-0 flex-col">
-            <DailyScrapeChart data={dailyScrapeData} />
+            <DailyScrapeChart data={dailyScrapeData} totalOverride={TOTAL_VEHICLES} />
           </Card>
         </DashboardSection>
 
@@ -190,10 +230,10 @@ export default function DashboardPage() {
                       <p className="text-helper">Last run {scraper.lastRun}</p>
                     </div>
                     <div className="shrink-0 text-right">
-                      <StatusBadge status={scraper.status} />
-                      <p className="mt-1 font-mono text-[11px] tabular-nums text-muted-foreground">
-                        {scraper.vehiclesFound.toLocaleString()} found
+                      <p className="font-mono text-[13px] font-medium tabular-nums text-foreground">
+                        {scraper.vehiclesFound.toLocaleString()}
                       </p>
+                      <p className="mt-0.5 text-[11px] text-muted-foreground">found</p>
                     </div>
                   </Link>
                 </li>
@@ -225,6 +265,32 @@ export default function DashboardPage() {
           </SectionTitle>
           <Card padding className="h-full min-h-0">
             <BodyStyleChart data={bodyStyles} />
+          </Card>
+        </DashboardSection>
+      </div>
+
+      {/* Marketplace + year mix — 6 / 6 */}
+      <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:items-stretch">
+        <DashboardSection className="lg:col-span-6 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-0">
+          <SectionTitle
+            className="lg:mb-0 lg:pb-4"
+            description="Where listings are coming from"
+          >
+            Marketplace split
+          </SectionTitle>
+          <Card padding className="h-full min-h-0">
+            <MarketplaceChart data={marketplaces} />
+          </Card>
+        </DashboardSection>
+        <DashboardSection className="lg:col-span-6 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-0">
+          <SectionTitle
+            className="lg:mb-0 lg:pb-4"
+            description="Age mix of inventory by model year"
+          >
+            Model year
+          </SectionTitle>
+          <Card padding className="h-full min-h-0">
+            <YearHistogramChart data={yearBuckets} />
           </Card>
         </DashboardSection>
       </div>

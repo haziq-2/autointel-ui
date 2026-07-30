@@ -165,8 +165,12 @@ export default function VehiclesPage() {
                 <DataTableCell className="font-mono tabular-nums text-muted-foreground">{v.year}</DataTableCell>
                 <DataTableCell className="text-muted-foreground">{v.make}</DataTableCell>
                 <DataTableCell className="text-muted-foreground">{v.model}</DataTableCell>
-                <DataTableCell align="right" className="font-mono font-medium tabular-nums">{formatCurrency(v.price)}</DataTableCell>
-                <DataTableCell align="right" className="font-mono tabular-nums text-muted-foreground">{formatMileage(v.mileage)}</DataTableCell>
+                <DataTableCell align="right" className="font-mono font-medium tabular-nums">
+                  {v.price > 0 ? formatCurrency(v.price) : "—"}
+                </DataTableCell>
+                <DataTableCell align="right" className="font-mono tabular-nums text-muted-foreground">
+                  {v.mileage > 0 ? formatMileage(v.mileage) : "—"}
+                </DataTableCell>
                 <DataTableCell className="text-muted-foreground">{v.location}</DataTableCell>
                 <DataTableCell className="text-muted-foreground">{v.marketplace}</DataTableCell>
                 <DataTableCell className="font-mono text-muted-foreground tabular-nums">{v.dateFound}</DataTableCell>

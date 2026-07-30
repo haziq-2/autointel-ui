@@ -20,7 +20,6 @@ export interface AlertFilters {
   marketplace: string;
   city: string;
   make: string;
-  minScore: string;
   priority: string;
   alertType: string;
   unreadOnly: boolean;
@@ -33,7 +32,6 @@ export const DEFAULT_FILTERS: AlertFilters = {
   marketplace: "all",
   city: "all",
   make: "all",
-  minScore: "all",
   priority: "all",
   alertType: "all",
   unreadOnly: false,
@@ -92,17 +90,6 @@ export function AlertsToolbar({ filters, onChange, resultCount }: AlertsToolbarP
         />
       </div>
       <div className="flex flex-wrap items-center gap-3">
-        <FilterSelect
-          value={filters.minScore}
-          onValueChange={(v) => set({ minScore: v })}
-          label="Opportunity Score"
-          options={[
-            { value: "all", label: "Any score" },
-            { value: "90", label: "90+" },
-            { value: "85", label: "85+" },
-            { value: "80", label: "80+" },
-          ]}
-        />
         <FilterSelect
           value={filters.priority}
           onValueChange={(v) => set({ priority: v })}

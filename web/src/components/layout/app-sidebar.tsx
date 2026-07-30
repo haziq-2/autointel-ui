@@ -4,9 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { NAV_SECTIONS } from "@/lib/constants";
+import { useLiveMonitoring } from "@/lib/scraping/live-monitoring-store";
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { active: liveMonitoring } = useLiveMonitoring();
 
   return (
     <aside className="flex h-full w-[220px] flex-col border-r border-sidebar-border bg-sidebar">
@@ -36,6 +38,7 @@ export function AppSidebar() {
                     ? pathname === "/"
                     : pathname.startsWith(item.href);
                 const Icon = item.icon;
+                const showLive = liveMonitoring && item.href === "/scrapers";
 
                 return (
                   <Link
@@ -58,17 +61,27 @@ export function AppSidebar() {
                       )}
                     />
                     <span className="flex-1 truncate">{item.title}</span>
-                    {item.badge && (
-                      <span
-                        className={cn(
-                          "rounded px-1.5 py-px font-mono text-[10px]",
-                          isActive
-                            ? "bg-primary/15 text-primary"
-                            : "bg-accent text-muted-foreground"
-                        )}
-                      >
-                        {item.badge.replace(" active", "")}
+                    {showLive ? (
+                      <span className="inline-flex items-center gap-1 rounded px-1.5 py-px font-mono text-[10px] text-primary">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-40" />
+                          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+                        </span>
+                        Live
                       </span>
+                    ) : (
+                      item.badge && (
+                        <span
+                          className={cn(
+                            "rounded px-1.5 py-px font-mono text-[10px]",
+                            isActive
+                              ? "bg-primary/15 text-primary"
+                              : "bg-accent text-muted-foreground"
+                          )}
+                        >
+                          {item.badge.replace(" active", "")}
+                        </span>
+                      )
                     )}
                   </Link>
                 );

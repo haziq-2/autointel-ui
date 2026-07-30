@@ -5,8 +5,8 @@ export const ACTIVE_SCRAPERS: ScraperSource[] = [
     id: "craigslist",
     name: "Craigslist",
     status: "healthy",
-    lastRun: "12 min ago",
-    vehiclesFound: 2714,
+    lastRun: "8 min ago",
+    vehiclesFound: 3946,
     successRate: 97.4,
   },
   {
@@ -14,16 +14,16 @@ export const ACTIVE_SCRAPERS: ScraperSource[] = [
     name: "Facebook Marketplace",
     status: "running",
     lastRun: "2 min ago",
-    vehiclesFound: 836,
-    successRate: 98.2,
+    vehiclesFound: 1351,
+    successRate: 98.1,
   },
   {
     id: "cargurus",
     name: "CarGurus",
     status: "healthy",
-    lastRun: "28 min ago",
-    vehiclesFound: 305,
-    successRate: 96.1,
+    lastRun: "18 min ago",
+    vehiclesFound: 1553,
+    successRate: 96.8,
   },
 ];
 
@@ -36,10 +36,10 @@ export const SCRAPING_JOBS: ScrapingJob[] = [
     location: "Dallas, TX · 50 mi",
     frequency: "Every 30 min",
     status: "completed",
-    vehiclesFound: 2714,
-    lastRun: "12 min ago",
+    vehiclesFound: 3946,
+    lastRun: "8 min ago",
     startedAt: "Today, 8:02 AM",
-    duration: "8m 14s",
+    duration: "9m 02s",
   },
   {
     id: "job-2",
@@ -49,10 +49,10 @@ export const SCRAPING_JOBS: ScrapingJob[] = [
     location: "Dallas, TX · 50 mi",
     frequency: "Every 30 min",
     status: "running",
-    vehiclesFound: 836,
+    vehiclesFound: 1351,
     lastRun: "2 min ago",
     startedAt: "Today, 8:14 AM",
-    duration: "12m 40s",
+    duration: "11m 18s",
   },
   {
     id: "job-3",
@@ -62,20 +62,20 @@ export const SCRAPING_JOBS: ScrapingJob[] = [
     location: "Dallas, TX · 50 mi",
     frequency: "Hourly",
     status: "completed",
-    vehiclesFound: 305,
-    lastRun: "28 min ago",
-    startedAt: "Today, 7:45 AM",
-    duration: "6m 22s",
+    vehiclesFound: 1553,
+    lastRun: "18 min ago",
+    startedAt: "Today, 7:50 AM",
+    duration: "7m 41s",
   },
 ];
 
 export const RECENT_JOBS = SCRAPING_JOBS.slice(0, 5);
 
 export const LIVE_ACTIVITY_MESSAGES = [
-  "Craigslist sync — 2,714 vehicles tracked",
-  "Facebook Marketplace sync — 836 vehicles tracked",
-  "CarGurus sync — 305 vehicles tracked",
+  "Craigslist sync — 3,946 vehicles tracked",
+  "Facebook Marketplace sync — 1,351 vehicles tracked",
+  "CarGurus sync — 1,553 vehicles tracked",
   "Vehicle catalog refreshed from listings.csv",
+  "Real make/model/VIN fields applied where available",
   "Image URLs attached for active listings",
-  "New Dallas listing indexed from Marketplace feed",
 ];

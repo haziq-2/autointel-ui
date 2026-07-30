@@ -8,25 +8,24 @@ export function AlertsKpiRow({ stats }: { stats: AlertsDashboardStats }) {
   return (
     <KpiGrid className="mb-6">
       <KpiCard
-        label="High Value Opportunities"
-        value={stats.highValueCount}
-        change={6}
-        changeLabel="today"
+        label="Alerts today"
+        value={stats.todayTotal}
+        changeLabel="total"
       />
       <KpiCard
-        label="Price Drops"
+        label="Price drops"
         value={stats.priceDropsKpi}
         description={`${formatCurrency(stats.potentialSavings)} potential savings`}
       />
       <KpiCard
-        label="Negotiation Opportunities"
-        value={stats.negotiationCount}
-        description={`Average acceptance ${stats.avgAcceptance}%`}
+        label="New listings"
+        value={stats.newListings}
+        description="matching your filters"
       />
       <KpiCard
-        label="Market Alerts"
-        value={stats.marketAlerts}
-        description={`${stats.newTrends} new trends`}
+        label="High priority"
+        value={stats.highPriority}
+        description="need review"
       />
     </KpiGrid>
   );

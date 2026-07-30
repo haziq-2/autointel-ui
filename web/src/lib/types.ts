@@ -44,6 +44,8 @@ export interface VehicleListing {
   recommendation?: Recommendation;
   description?: string;
   vin?: string;
+  condition?: string;
+  transmission?: string;
   priceHistory?: { date: string; price: number }[];
   imageUrl?: string;
   listingUrl?: string;
@@ -517,10 +519,8 @@ export interface AlertRulesConfig {
 
 export type AlertCategory =
   | "all"
-  | "high_value"
   | "price_drop"
   | "new_listing"
-  | "negotiation"
   | "market_intel"
   | "risk"
   | "watchlist"

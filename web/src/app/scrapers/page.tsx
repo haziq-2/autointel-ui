@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { PageHeader, SectionTitle } from "@/components/shared/page-header";
-import { StatusBadge, JobStatusBadge } from "@/components/shared/status-badge";
+import { JobStatusBadge } from "@/components/shared/status-badge";
 import { MarketplaceMark } from "@/components/shared/marketplace-mark";
 import { Card } from "@/components/shared/card";
 import { ContinuousScrapePanel } from "@/components/scraping/continuous-scrape-panel";
@@ -41,7 +41,6 @@ export default function ScrapersPage() {
                 <MarketplaceMark id={scraper.id} name={scraper.name} />
                 <div className="min-w-0 flex-1">
                   <p className="text-card-title font-medium truncate">{scraper.name}</p>
-                  <div className="mt-2"><StatusBadge status={scraper.status} /></div>
                 </div>
               </div>
               <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-border pt-4">

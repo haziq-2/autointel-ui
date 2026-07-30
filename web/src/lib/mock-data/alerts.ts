@@ -2,7 +2,6 @@ import type {
   AlertCategory,
   AlertPriority,
   AlertType,
-  AlertsAiSummary,
   AlertsDashboardStats,
   IntelligenceAlert,
 } from "@/lib/types";
@@ -31,15 +30,14 @@ const SYSTEM_ALERTS = [
   { title: "Scraper sync completed", aiSummary: "Facebook Marketplace import finished — 142 new listings indexed." },
   { title: "CarGurus rate limit recovered", aiSummary: "Scraper resumed normal cadence after 12-minute throttle." },
   { title: "Weekly digest ready", aiSummary: "Acquisition summary for Texas region is available in Reports." },
-  { title: "Watchlist threshold reached", aiSummary: "3 saved searches exceeded 90+ opportunity score today." },
+  { title: "Watchlist threshold reached", aiSummary: "3 saved searches matched new listings today." },
   { title: "Data quality check passed", aiSummary: "All 3 active sources validated — 99.2% field completeness." },
   { title: "Craigslist Dallas job completed", aiSummary: "87 listings parsed in 4m 12s with zero errors." },
-  { title: "AI model refresh", aiSummary: "Opportunity scoring model v2.4 deployed — confidence +3%." },
 ];
 
 const SAVED_SEARCHES = [
   "Texas Trucks Under $30k",
-  "High ROI SUVs",
+  "SUVs Under $25k",
   "Private Seller Tacomas",
   "Dallas F-150 Deals",
   "Low Mileage Hondas",
@@ -55,9 +53,8 @@ function formatPostedAgo(minutes: number): string {
 
 function priorityFor(type: AlertType, score?: number): AlertPriority {
   if (type === "risk") return score && score > 70 ? "critical" : "high";
-  if (type === "high_value_opportunity") return "critical";
-  if (type === "high_roi" || type === "underpriced") return "high";
-  if (type === "price_drop" || type === "negotiation") return "high";
+  if (type === "underpriced") return "high";
+  if (type === "price_drop") return "high";
   if (type === "new_match") return "medium";
   if (type === "market_intel") return "medium";
   if (type === "watchlist") return "medium";
@@ -67,47 +64,6 @@ function priorityFor(type: AlertType, score?: number): AlertPriority {
 function buildVehicleAlerts(): IntelligenceAlert[] {
   const vehicles = getAllVehicles();
   const alerts: IntelligenceAlert[] = [];
-  let idx = 0;
-
-  const highValueVehicles = [...vehicles]
-    .filter((v) => v.opportunityScore >= 88)
-    .sort((a, b) => b.opportunityScore - a.opportunityScore)
-    .slice(0, 22);
-
-  for (const v of highValueVehicles) {
-    const minutes = 3 + idx * 11;
-    const profit = v.marginPotential ?? Math.round(v.price * 0.14);
-    const pctBelow = Math.round(
-      (((v.fairMarketValue ?? v.price * 1.12) - v.price) / v.price) * 100
-    );
-    alerts.push({
-      id: `alert-hv-${idx + 1}`,
-      type: "high_value_opportunity",
-      category: "high_value",
-      priority: "critical",
-      timestamp: new Date(Date.now() - minutes * 60000).toISOString(),
-      postedAgo: formatPostedAgo(minutes),
-      minutesAgo: minutes,
-      read: idx > 6,
-      saved: idx < 4,
-      vehicleId: v.id,
-      title: `${v.year} ${v.make} ${v.model}`,
-      aiSummary: `${pctBelow}% below market with strong ${v.location.split(",")[1]?.trim() ?? "TX"} demand.`,
-      location: v.location,
-      marketplace: v.marketplace,
-      opportunityScore: Math.min(99, v.opportunityScore + 2),
-      expectedProfit: profit,
-      explanationBullets: [
-        `${Math.abs(pctBelow)}% below estimated market value`,
-        "Strong regional demand",
-        "Low repair risk",
-        "Fast projected sale",
-      ],
-      relatedAlertIds: [],
-      data: { trim: v.model, mileage: v.mileage, price: v.price },
-    });
-    idx++;
-  }
 
   const underpriced = vehicles
     .filter((v) => (v.fairMarketValue ?? v.price * 1.1) > v.price * 1.05)
@@ -120,7 +76,7 @@ function buildVehicleAlerts(): IntelligenceAlert[] {
     alerts.push({
       id: `alert-up-${i + 1}`,
       type: "underpriced",
-      category: "high_value",
+      category: "price_drop",
       priority: "high",
       timestamp: new Date(Date.now() - minutes * 60000).toISOString(),
       postedAgo: formatPostedAgo(minutes),
@@ -132,13 +88,8 @@ function buildVehicleAlerts(): IntelligenceAlert[] {
       aiSummary: `Priced ${formatCurrencyShort(savings)} under regional market estimate.`,
       location: v.location,
       marketplace: v.marketplace,
-      opportunityScore: v.opportunityScore,
       expectedProfit: savings,
-      explanationBullets: [
-        "Below comparable listings",
-        "Strong margin potential",
-        "Active buyer interest",
-      ],
+      explanationBullets: [],
       relatedAlertIds: [],
       data: {
         currentPrice: v.price,
@@ -167,16 +118,11 @@ function buildVehicleAlerts(): IntelligenceAlert[] {
       saved: false,
       vehicleId: v.id,
       title: `${v.year} ${v.make} ${v.model}`,
-      aiSummary: `Seller reduced price by ${formatCurrencyShort(reduction)} — negotiation window opening.`,
+      aiSummary: `Seller reduced price by ${formatCurrencyShort(reduction)}.`,
       location: v.location,
       marketplace: v.marketplace,
-      opportunityScore: v.opportunityScore,
       expectedProfit: v.marginPotential ?? Math.round(reduction * 1.4),
-      explanationBullets: [
-        "Multiple price reductions detected",
-        `Listed ${v.daysListed} days — seller may be motivated`,
-        "Comparable inventory increasing nearby",
-      ],
+      explanationBullets: [],
       relatedAlertIds: [],
       data: {
         previousPrice: previous,
@@ -205,76 +151,10 @@ function buildVehicleAlerts(): IntelligenceAlert[] {
       aiSummary: `Matches saved search "${SAVED_SEARCHES[i % SAVED_SEARCHES.length]}".`,
       location: v.location,
       marketplace: v.marketplace,
-      opportunityScore: v.opportunityScore,
       expectedProfit: v.marginPotential ?? 3200,
-      explanationBullets: ["New listing within search criteria", "Early acquisition window"],
+      explanationBullets: [],
       relatedAlertIds: [],
       data: { savedSearch: SAVED_SEARCHES[i % SAVED_SEARCHES.length], price: v.price },
-    });
-  });
-
-  const roiVehicles = [...vehicles]
-    .sort((a, b) => (b.marginPotential ?? 0) - (a.marginPotential ?? 0))
-    .slice(0, 16);
-  roiVehicles.forEach((v, i) => {
-    const profit = v.marginPotential ?? 4800;
-    const roi = Math.round((profit / v.price) * 100);
-    const minutes = 25 + i * 12;
-    alerts.push({
-      id: `alert-roi-${i + 1}`,
-      type: "high_roi",
-      category: "high_value",
-      priority: "high",
-      timestamp: new Date(Date.now() - minutes * 60000).toISOString(),
-      postedAgo: formatPostedAgo(minutes),
-      minutesAgo: minutes,
-      read: i > 7,
-      saved: i < 2,
-      vehicleId: v.id,
-      title: `${v.year} ${v.make} ${v.model}`,
-      aiSummary: `Projected ${roi}% ROI with ${14 + (i % 8)}-day expected sale cycle.`,
-      location: v.location,
-      marketplace: v.marketplace,
-      opportunityScore: v.opportunityScore,
-      expectedProfit: profit,
-      explanationBullets: ["Top quartile ROI for segment", "Favorable holding cost profile"],
-      relatedAlertIds: [],
-      data: { roi, netProfit: profit, expectedSaleDays: 14 + (i % 8) },
-    });
-  });
-
-  const negVehicles = vehicles.filter((v) => v.daysListed > 12).slice(0, 20);
-  negVehicles.forEach((v, i) => {
-    const s = seed(v.id + "neg");
-    const firstOffer = Math.round(v.price * (0.9 + s * 0.04));
-    const maxOffer = Math.round(v.price * (0.96 + s * 0.02));
-    const acceptance = Math.min(92, Math.round(72 + v.daysListed * 0.6));
-    const minutes = 32 + i * 10;
-    alerts.push({
-      id: `alert-neg-${i + 1}`,
-      type: "negotiation",
-      category: "negotiation",
-      priority: "high",
-      timestamp: new Date(Date.now() - minutes * 60000).toISOString(),
-      postedAgo: formatPostedAgo(minutes),
-      minutesAgo: minutes,
-      read: i > 9,
-      saved: false,
-      vehicleId: v.id,
-      title: `${v.year} ${v.make} ${v.model}`,
-      aiSummary: `${acceptance}% seller acceptance probability — motivated listing at ${v.daysListed} days.`,
-      location: v.location,
-      marketplace: v.marketplace,
-      opportunityScore: v.opportunityScore,
-      expectedProfit: v.marginPotential ?? 3800,
-      explanationBullets: [
-        v.daysListed > 18 ? "Seller reduced asking price twice" : "Extended time on market",
-        `Listed for ${v.daysListed} days`,
-        "Comparable inventory increasing",
-        "High probability of successful negotiation",
-      ],
-      relatedAlertIds: [],
-      data: { acceptanceProbability: acceptance, recommendedOffer: firstOffer, maxOffer },
     });
   });
 
@@ -293,13 +173,13 @@ function buildVehicleAlerts(): IntelligenceAlert[] {
       saved: false,
       title: t.subject,
       aiSummary: `${t.change}% ${t.direction === "up" ? "increase" : "decrease"} detected in ${t.location}.`,
-      explanationBullets: ["Regional demand shift", "AI confidence above 85%"],
+      explanationBullets: [],
       relatedAlertIds: [],
-      data: { change: t.change, location: t.location, direction: t.direction, trend },
+      data: { change: t.change, location: t.location, direction: t.direction, subject: t.subject, trend },
     });
   });
 
-  const riskVehicles = vehicles.filter((v) => v.opportunityScore < 72 || v.mileage > 95000).slice(0, 14);
+  const riskVehicles = vehicles.filter((v) => v.mileage > 95000 || v.daysListed > 45).slice(0, 14);
   riskVehicles.forEach((v, i) => {
     const isRepair = i % 2 === 0;
     const minutes = 60 + i * 22;
@@ -320,10 +200,7 @@ function buildVehicleAlerts(): IntelligenceAlert[] {
         : `Projected holding time ${52 + i * 3} days exceeds acquisition target.`,
       location: v.location,
       marketplace: v.marketplace,
-      opportunityScore: v.opportunityScore,
-      explanationBullets: isRepair
-        ? ["Above-average predicted repair costs", "Consider inspection before offer"]
-        : ["Slow-moving segment in region", "Margin compression risk"],
+      explanationBullets: [],
       relatedAlertIds: [],
       data: isRepair
         ? { riskType: "repair", estimatedRepairs: 2800 + i * 200 }
@@ -346,14 +223,13 @@ function buildVehicleAlerts(): IntelligenceAlert[] {
       saved: true,
       vehicleId: v.id,
       title: `${v.year} ${v.make} ${v.model}`,
-      aiSummary: "Watchlist vehicle updated — score increased 4 points since last review.",
+      aiSummary: "Watchlist vehicle updated — price or listing details changed.",
       location: v.location,
       marketplace: v.marketplace,
-      opportunityScore: v.opportunityScore,
       expectedProfit: v.marginPotential ?? 4100,
-      explanationBullets: ["On your watchlist", "Price stable over 7 days"],
+      explanationBullets: [],
       relatedAlertIds: [],
-      data: { scoreChange: 4 },
+      data: {},
     });
   });
 
@@ -405,10 +281,8 @@ export function getAlertsByCategory(category: AlertCategory): IntelligenceAlert[
 export function getUnreadCountByCategory(): Record<AlertCategory, number> {
   const counts: Record<string, number> = {
     all: INTELLIGENCE_ALERTS.filter((a) => !a.read).length,
-    high_value: 0,
     price_drop: 0,
     new_listing: 0,
-    negotiation: 0,
     market_intel: 0,
     risk: 0,
     watchlist: 0,
@@ -424,54 +298,42 @@ export function getAlertById(id: string): IntelligenceAlert | undefined {
   return INTELLIGENCE_ALERTS.find((a) => a.id === id);
 }
 
-export const ALERTS_AI_SUMMARY: AlertsAiSummary = {
-  vehiclesAnalyzed: 127,
-  highValueCount: 18,
-  roiIncrease: 6,
-  marketInsight: "Toyota trucks remain the strongest buying opportunity across Texas.",
-  priceDropsToday: 12,
-  topRecommendation: {
-    title: "2022 Ford F-150 XLT",
-    vehicleId: INTELLIGENCE_ALERTS.find((a) => a.type === "high_value_opportunity")?.vehicleId ?? "v-1",
-  },
-};
-
 export const ALERTS_DASHBOARD_STATS: AlertsDashboardStats = {
   todayTotal: 42,
   highPriority: 8,
   priceDrops: 12,
   newListings: 6,
-  negotiation: 4,
-  highValueCount: 18,
+  negotiation: 0,
+  highValueCount: 0,
   priceDropsKpi: 34,
   potentialSavings: 18200,
-  negotiationCount: 21,
-  avgAcceptance: 82,
+  negotiationCount: 0,
+  avgAcceptance: 0,
   marketAlerts: 15,
   newTrends: 4,
   topOpportunity: {
     title: "2022 Toyota Tacoma TRD",
     vehicleId: INTELLIGENCE_ALERTS.find((a) => a.title.includes("Tacoma"))?.vehicleId ?? "v-2",
-    roi: 31,
-    confidence: 94,
+    roi: 0,
+    confidence: 0,
   },
   highestRoi: {
-    title: "2021 Ford F-150 Lariat",
-    vehicleId: INTELLIGENCE_ALERTS.find((a) => a.type === "high_roi")?.vehicleId ?? "v-3",
-    roi: 34,
+    title: "",
+    vehicleId: "",
+    roi: 0,
   },
   mostActiveMarketplace: "Facebook Marketplace",
   highestDemandCity: "Dallas, TX",
 };
 
 export const ALERT_TYPE_LABELS: Record<AlertType, string> = {
-  high_value_opportunity: "High Value Opportunity",
+  high_value_opportunity: "Alert",
   underpriced: "Under Market Value",
   price_drop: "Price Drop",
   new_match: "New Match",
-  high_roi: "High ROI",
+  high_roi: "Alert",
   negotiation: "Negotiation",
-  market_intel: "Market Intelligence",
+  market_intel: "Market Alert",
   risk: "Risk Alert",
   watchlist: "Watchlist",
   system: "System",

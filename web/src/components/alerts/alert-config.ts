@@ -3,13 +3,10 @@ import {
   AlertTriangle,
   Bell,
   Bookmark,
-  DollarSign,
   LineChart,
-  MessageSquare,
   Sparkles,
   Tag,
   TrendingDown,
-  Zap,
 } from "lucide-react";
 
 export const ALERT_CATEGORIES: {
@@ -20,11 +17,9 @@ export const ALERT_CATEGORIES: {
   bg: string;
 }[] = [
   { id: "all", label: "All Alerts", icon: Bell, color: "text-primary", bg: "bg-[#eff6ff]" },
-  { id: "high_value", label: "High Value Opportunities", icon: Zap, color: "text-[#dc2626]", bg: "bg-red-50" },
   { id: "price_drop", label: "Price Drops", icon: TrendingDown, color: "text-primary", bg: "bg-blue-50" },
   { id: "new_listing", label: "New Listings", icon: Sparkles, color: "text-[#7c3aed]", bg: "bg-violet-50" },
-  { id: "negotiation", label: "Negotiation", icon: MessageSquare, color: "text-[#ea580c]", bg: "bg-orange-50" },
-  { id: "market_intel", label: "Market Intelligence", icon: LineChart, color: "text-[#0891b2]", bg: "bg-cyan-50" },
+  { id: "market_intel", label: "Market Alerts", icon: LineChart, color: "text-[#0891b2]", bg: "bg-cyan-50" },
   { id: "risk", label: "Risk Alerts", icon: AlertTriangle, color: "text-[#dc2626]", bg: "bg-red-50" },
   { id: "watchlist", label: "Watchlist", icon: Bookmark, color: "text-[#6366f1]", bg: "bg-indigo-50" },
   { id: "system", label: "System", icon: Tag, color: "text-[#64748b]", bg: "bg-slate-50" },
@@ -35,9 +30,9 @@ export const ALERT_TYPE_STYLES: Record<
   { badge: string; badgeClass: string; accent: string }
 > = {
   high_value_opportunity: {
-    badge: "HIGH VALUE OPPORTUNITY",
-    badgeClass: "bg-red-600 text-white",
-    accent: "#dc2626",
+    badge: "ALERT",
+    badgeClass: "bg-slate-600 text-white",
+    accent: "#64748b",
   },
   underpriced: {
     badge: "UNDER MARKET VALUE",
@@ -45,7 +40,7 @@ export const ALERT_TYPE_STYLES: Record<
     accent: "#16a34a",
   },
   price_drop: {
-    badge: "SELLER REDUCED PRICE",
+    badge: "PRICE DROP",
     badgeClass: "bg-blue-600 text-white",
     accent: "#2563eb",
   },
@@ -55,17 +50,17 @@ export const ALERT_TYPE_STYLES: Record<
     accent: "#7c3aed",
   },
   high_roi: {
-    badge: "HIGH ROI OPPORTUNITY",
-    badgeClass: "bg-amber-500 text-white",
-    accent: "#d97706",
+    badge: "ALERT",
+    badgeClass: "bg-slate-600 text-white",
+    accent: "#64748b",
   },
   negotiation: {
-    badge: "SELLER MOTIVATED",
+    badge: "NEGOTIATION",
     badgeClass: "bg-orange-500 text-white",
     accent: "#ea580c",
   },
   market_intel: {
-    badge: "MARKET INTELLIGENCE",
+    badge: "MARKET ALERT",
     badgeClass: "bg-cyan-600 text-white",
     accent: "#0891b2",
   },
@@ -75,7 +70,7 @@ export const ALERT_TYPE_STYLES: Record<
     accent: "#b91c1c",
   },
   watchlist: {
-    badge: "WATCHLIST UPDATE",
+    badge: "WATCHLIST",
     badgeClass: "bg-indigo-600 text-white",
     accent: "#6366f1",
   },
@@ -95,12 +90,18 @@ export const PRIORITY_STYLES = {
 
 export const TYPE_FILTER_OPTIONS: { value: AlertType | "all"; label: string }[] = [
   { value: "all", label: "All types" },
-  { value: "high_value_opportunity", label: "High value" },
   { value: "underpriced", label: "Underpriced" },
   { value: "price_drop", label: "Price drop" },
   { value: "new_match", label: "New match" },
-  { value: "high_roi", label: "High ROI" },
-  { value: "negotiation", label: "Negotiation" },
-  { value: "market_intel", label: "Market intel" },
+  { value: "market_intel", label: "Market alert" },
   { value: "risk", label: "Risk" },
+  { value: "watchlist", label: "Watchlist" },
+  { value: "system", label: "System" },
+];
+
+/** Alert types removed from the UI (AI / opportunity-scoring). */
+export const HIDDEN_ALERT_TYPES: AlertType[] = [
+  "high_value_opportunity",
+  "high_roi",
+  "negotiation",
 ];

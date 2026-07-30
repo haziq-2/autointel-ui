@@ -58,7 +58,7 @@ export default async function VehicleDetailPage({
             {vehicle.marketplace} · Found {vehicle.dateFound}
           </p>
           <p className="mt-4 font-mono text-2xl font-semibold tracking-tight tabular-nums">
-            {formatCurrency(vehicle.price)}
+            {vehicle.price > 0 ? formatCurrency(vehicle.price) : "—"}
           </p>
         </div>
         <div className="flex gap-2">
@@ -83,10 +83,18 @@ export default async function VehicleDetailPage({
           <section>
             <SectionTitle>Vehicle information</SectionTitle>
             <dl className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
-              <Field label="Mileage" value={formatMileage(vehicle.mileage)} />
+              <Field label="Year" value={vehicle.year ? String(vehicle.year) : "—"} mono />
+              <Field label="Make" value={vehicle.make || "—"} />
+              <Field label="Model" value={vehicle.model || "—"} />
+              <Field
+                label="Mileage"
+                value={vehicle.mileage > 0 ? formatMileage(vehicle.mileage) : "—"}
+              />
               <Field label="Location" value={vehicle.location} />
               <Field label="Body style" value={vehicle.bodyStyle} />
               <Field label="Fuel type" value={vehicle.fuelType} />
+              <Field label="Transmission" value={vehicle.transmission ?? "—"} />
+              <Field label="Condition" value={vehicle.condition ?? "—"} />
               <Field label="Days listed" value={String(vehicle.daysListed)} />
               <Field label="VIN" value={vehicle.vin ?? "—"} mono />
             </dl>
@@ -113,14 +121,22 @@ export default async function VehicleDetailPage({
                 </tr>
               </DataTableHead>
               <tbody>
-                {vehicle.priceHistory?.map((p) => (
-                  <DataTableRow key={p.date}>
+                {vehicle.priceHistory?.map((p, i) => (
+                  <DataTableRow key={`${p.date}-${p.price}-${i}`}>
                     <DataTableCell className="font-mono text-muted-foreground">{p.date}</DataTableCell>
                     <DataTableCell align="right" className="font-mono font-medium tabular-nums">
                       {formatCurrency(p.price)}
                     </DataTableCell>
                   </DataTableRow>
                 ))}
+                {(!vehicle.priceHistory || vehicle.priceHistory.length === 0) && (
+                  <DataTableRow>
+                    <DataTableCell className="text-muted-foreground">
+                      No price history recorded
+                    </DataTableCell>
+                    <DataTableCell align="right">—</DataTableCell>
+                  </DataTableRow>
+                )}
               </tbody>
             </DataTable>
           </section>

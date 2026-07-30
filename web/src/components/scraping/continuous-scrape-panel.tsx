@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
 import { Play, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,75 +10,28 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card } from "@/components/shared/card";
-import { ACTIVE_SCRAPERS } from "@/lib/mock-data/scrapers";
+import {
+  POLL_OPTIONS,
+  formatCountdown,
+  useLiveMonitoring,
+} from "@/lib/scraping/live-monitoring-store";
 import { cn } from "@/lib/utils";
 
-const POLL_OPTIONS = [
-  { value: "300", label: "Every 5 minutes" },
-  { value: "900", label: "Every 15 minutes" },
-  { value: "1800", label: "Every 30 minutes" },
-  { value: "3600", label: "Every hour" },
-];
-
-interface PollEvent {
-  id: number;
-  time: string;
-  found: number;
-}
-
 export function ContinuousScrapePanel() {
-  const [rate, setRate] = useState("300");
-  const [active, setActive] = useState(false);
-  const [remaining, setRemaining] = useState(0);
-  const [cycles, setCycles] = useState(0);
-  const [totalFound, setTotalFound] = useState(0);
-  const [events, setEvents] = useState<PollEvent[]>([]);
-
-  const remainingRef = useRef(0);
-  const idRef = useRef(0);
-
-  const rateSec = Number(rate);
-  const sourceCount = ACTIVE_SCRAPERS.length;
-  const rateLabel = POLL_OPTIONS.find((o) => o.value === rate)?.label ?? "";
-
-  const runPoll = useCallback(() => {
-    const found = 4 + Math.floor(Math.random() * 15);
-    setCycles((c) => c + 1);
-    setTotalFound((t) => t + found);
-    setEvents((e) => [{ id: idRef.current++, time: nowTime(), found }, ...e].slice(0, 5));
-  }, []);
-
-  useEffect(() => {
-    if (!active) return;
-    const interval = setInterval(() => {
-      remainingRef.current -= 1;
-      if (remainingRef.current <= 0) {
-        runPoll();
-        remainingRef.current = rateSec;
-      }
-      setRemaining(remainingRef.current);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [active, rateSec, runPoll]);
-
-  const start = () => {
-    idRef.current = 0;
-    setCycles(0);
-    setTotalFound(0);
-    setEvents([]);
-    runPoll();
-    remainingRef.current = rateSec;
-    setRemaining(rateSec);
-    setActive(true);
-  };
-
-  const stop = () => {
-    setActive(false);
-    remainingRef.current = 0;
-    setRemaining(0);
-  };
-
-  const pollProgress = rateSec > 0 ? ((rateSec - remaining) / rateSec) * 100 : 0;
+  const {
+    rate,
+    active,
+    remaining,
+    cycles,
+    totalFound,
+    events,
+    rateLabel,
+    sourceCount,
+    pollProgress,
+    setRate,
+    start,
+    stop,
+  } = useLiveMonitoring();
 
   return (
     <Card>
@@ -175,17 +127,4 @@ function Stat({ label, value, mono }: { label: string; value: string; mono?: boo
       <p className={cn("mt-1 text-[15px] font-medium", mono && "font-mono tabular-nums")}>{value}</p>
     </div>
   );
-}
-
-function nowTime() {
-  return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-}
-
-function formatCountdown(seconds: number) {
-  if (seconds >= 60) {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}m ${String(s).padStart(2, "0")}s`;
-  }
-  return `${seconds}s`;
 }

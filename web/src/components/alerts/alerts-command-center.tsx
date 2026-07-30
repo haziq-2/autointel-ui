@@ -14,9 +14,9 @@ import { AlertsKpiRow } from "./alerts-kpi-row";
 import { AlertCategoriesSidebar } from "./alert-categories-sidebar";
 import { AlertsToolbar, DEFAULT_FILTERS, type AlertFilters } from "./alerts-toolbar";
 import { AlertCard } from "./alert-card";
-import { AlertsInsightsSidebar } from "./alerts-insights-sidebar";
 import { AlertDetailDrawer } from "./alert-detail-drawer";
 import { AlertsEmptyState } from "./alerts-empty-state";
+import { HIDDEN_ALERT_TYPES } from "./alert-config";
 
 function filterAlerts(
   alerts: IntelligenceAlert[],
@@ -24,6 +24,7 @@ function filterAlerts(
   filters: AlertFilters
 ): IntelligenceAlert[] {
   return alerts.filter((a) => {
+    if (HIDDEN_ALERT_TYPES.includes(a.type)) return false;
     if (category !== "all" && a.category !== category) return false;
     if (filters.unreadOnly && a.read) return false;
     if (filters.savedOnly && !a.saved) return false;
@@ -38,7 +39,6 @@ function filterAlerts(
     if (filters.marketplace !== "all" && a.marketplace !== filters.marketplace) return false;
     if (filters.city !== "all" && !a.location?.includes(filters.city)) return false;
     if (filters.make !== "all" && !a.title.includes(filters.make)) return false;
-    if (filters.minScore !== "all" && (a.opportunityScore ?? 0) < Number(filters.minScore)) return false;
     if (filters.priority !== "all" && a.priority !== filters.priority) return false;
     if (filters.alertType !== "all" && a.type !== filters.alertType) return false;
     if (filters.dateRange === "today" && a.minutesAgo > 24 * 60) return false;
@@ -50,18 +50,17 @@ function filterAlerts(
 }
 
 function countByCategory(alerts: IntelligenceAlert[]): Record<AlertCategory, number> {
+  const visible = alerts.filter((a) => !HIDDEN_ALERT_TYPES.includes(a.type));
   const counts: Record<string, number> = {
-    all: alerts.filter((a) => !a.read).length,
-    high_value: 0,
+    all: visible.filter((a) => !a.read).length,
     price_drop: 0,
     new_listing: 0,
-    negotiation: 0,
     market_intel: 0,
     risk: 0,
     watchlist: 0,
     system: 0,
   };
-  for (const a of alerts) {
+  for (const a of visible) {
     if (!a.read) counts[a.category]++;
   }
   return counts as Record<AlertCategory, number>;
@@ -80,7 +79,9 @@ export function AlertsCommandCenter() {
     [alerts, category, filters]
   );
 
-  const unread = alerts.filter((a) => !a.read).length;
+  const unread = alerts.filter(
+    (a) => !a.read && !HIDDEN_ALERT_TYPES.includes(a.type)
+  ).length;
   const categoryCounts = useMemo(() => countByCategory(alerts), [alerts]);
 
   const handleOpen = (alert: IntelligenceAlert) => {
@@ -110,7 +111,7 @@ export function AlertsCommandCenter() {
     <div className="animate-fade-in">
       <PageHeader
         title="Alerts"
-        description={`${unread} unread · AI-powered acquisition command center`}
+        description={`${unread} unread`}
       >
         <Link
           href="/alerts/rules"
@@ -123,7 +124,7 @@ export function AlertsCommandCenter() {
 
       <AlertsKpiRow stats={ALERTS_DASHBOARD_STATS} />
 
-      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[220px_1fr_280px]">
+      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[220px_1fr]">
         <aside className="hidden xl:block">
           <div className="sticky top-6 rounded-xl border border-border bg-card p-3 shadow-card">
             <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -148,11 +149,9 @@ export function AlertsCommandCenter() {
               className="h-9 w-full rounded-lg border border-border bg-card px-3 text-[13px]"
             >
               <option value="all">All Alerts</option>
-              <option value="high_value">High Value</option>
               <option value="price_drop">Price Drops</option>
               <option value="new_listing">New Listings</option>
-              <option value="negotiation">Negotiation</option>
-              <option value="market_intel">Market Intel</option>
+              <option value="market_intel">Market Alerts</option>
               <option value="risk">Risk</option>
               <option value="watchlist">Watchlist</option>
               <option value="system">System</option>
@@ -193,12 +192,6 @@ export function AlertsCommandCenter() {
             </div>
           )}
         </main>
-
-        <aside className="hidden lg:block">
-          <div className="sticky top-6">
-            <AlertsInsightsSidebar stats={ALERTS_DASHBOARD_STATS} />
-          </div>
-        </aside>
       </div>
 
       <AlertDetailDrawer
