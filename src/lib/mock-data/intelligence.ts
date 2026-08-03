@@ -103,9 +103,9 @@ export const SELLER_PROFILES: SellerProfile[] = [
 ];
 
 export const MARKETPLACE_METRICS: MarketplaceMetrics[] = [
-  { id: "craigslist", name: "Craigslist", listings: 3946, growthRate: 4.2, avgPriceChange: -1.8, qualityScore: 68, duplicateRate: 8.6, regionsCovered: 10, dailyVolume: 131, health: "good" },
-  { id: "cargurus", name: "CarGurus", listings: 1553, growthRate: 6.1, avgPriceChange: -0.9, qualityScore: 91, duplicateRate: 1.8, regionsCovered: 12, dailyVolume: 52, health: "excellent" },
-  { id: "facebook", name: "Facebook Marketplace", listings: 1351, growthRate: 8.4, avgPriceChange: -1.2, qualityScore: 78, duplicateRate: 4.2, regionsCovered: 12, dailyVolume: 45, health: "excellent" },
+  { id: "craigslist", name: "Craigslist", listings: 4990, growthRate: 4.2, avgPriceChange: -1.8, qualityScore: 68, duplicateRate: 8.6, regionsCovered: 10, dailyVolume: 166, health: "good" },
+  { id: "cargurus", name: "CarGurus", listings: 2103, growthRate: 6.1, avgPriceChange: -0.9, qualityScore: 91, duplicateRate: 1.8, regionsCovered: 12, dailyVolume: 70, health: "excellent" },
+  { id: "facebook", name: "Facebook Marketplace", listings: 1575, growthRate: 8.4, avgPriceChange: -1.2, qualityScore: 78, duplicateRate: 4.2, regionsCovered: 12, dailyVolume: 53, health: "excellent" },
 ];
 
 export const FLEET_VEHICLES: FleetVehicle[] = [
