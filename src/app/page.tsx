@@ -2,12 +2,10 @@ import Link from "next/link";
 import { PageHeader, SectionTitle } from "@/components/shared/page-header";
 import { KpiCard, KpiGrid } from "@/components/shared/kpi-card";
 import { Card } from "@/components/shared/card";
-import { ScoreBadge } from "@/components/shared/status-badge";
 import { MarketplaceMark } from "@/components/shared/marketplace-mark";
 import { ACTIVE_SCRAPERS } from "@/lib/mock-data/scrapers";
 import {
   getAllVehicles,
-  getRecentVehicles,
   TOTAL_VEHICLES,
 } from "@/lib/mock-data/generate-vehicles";
 import {
@@ -21,7 +19,8 @@ import { BodyStyleChart } from "@/components/dashboard/body-style-chart";
 import { PriceHistogramChart } from "@/components/dashboard/price-histogram-chart";
 import { MarketplaceChart } from "@/components/dashboard/marketplace-chart";
 import { YearHistogramChart } from "@/components/dashboard/year-histogram-chart";
-import { formatCurrency, formatMileage } from "@/lib/format";
+import { ShareDonutChart } from "@/components/dashboard/share-donut-chart";
+import { ListingAgeChart } from "@/components/dashboard/listing-age-chart";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -44,6 +43,46 @@ const YEAR_BUCKETS = [
   { label: "2023+", min: 2023, max: Infinity },
 ] as const;
 
+const AGE_BUCKETS = [
+  { label: "0–3d", min: 0, max: 4 },
+  { label: "4–7d", min: 4, max: 8 },
+  { label: "8–14d", min: 8, max: 15 },
+  { label: "15–30d", min: 15, max: 31 },
+  { label: "30d+", min: 31, max: Infinity },
+] as const;
+
+const SELLER_LABELS: Record<string, string> = {
+  private: "Private",
+  dealer: "Dealer",
+  auction: "Auction",
+};
+
+const FUEL_COLORS = [
+  "var(--primary)",
+  "#0ea5e9",
+  "#14b8a6",
+  "#8b5cf6",
+  "#f59e0b",
+  "#64748b",
+];
+
+const SELLER_COLORS = ["#2563eb", "#0ea5e9", "#f59e0b"];
+
+function toShareSlices(
+  counts: Map<string, number>,
+  total: number,
+  limit?: number
+) {
+  const slices = [...counts.entries()]
+    .map(([name, count]) => ({
+      name,
+      count,
+      share: Math.round((count / total) * 100),
+    }))
+    .sort((a, b) => b.count - a.count);
+  return limit ? slices.slice(0, limit) : slices;
+}
+
 function getInventoryCharts() {
   const vehicles = getAllVehicles();
   const total = vehicles.length || 1;
@@ -51,8 +90,12 @@ function getInventoryCharts() {
   const makeCounts = new Map<string, number>();
   const bodyCounts = new Map<string, number>();
   const marketplaceCounts = new Map<string, number>();
+  const fuelCounts = new Map<string, number>();
+  const sellerCounts = new Map<string, number>();
+  const locationCounts = new Map<string, number>();
   const priceCounts = PRICE_BUCKETS.map(() => 0);
   const yearCounts = YEAR_BUCKETS.map(() => 0);
+  const ageCounts = AGE_BUCKETS.map(() => 0);
 
   for (const v of vehicles) {
     if (v.make && v.make !== "Other") {
@@ -67,6 +110,18 @@ function getInventoryCharts() {
       );
     }
 
+    if (v.fuelType && v.fuelType !== "—") {
+      fuelCounts.set(v.fuelType, (fuelCounts.get(v.fuelType) ?? 0) + 1);
+    }
+
+    const sellerLabel = SELLER_LABELS[v.sellerType] ?? "Private";
+    sellerCounts.set(sellerLabel, (sellerCounts.get(sellerLabel) ?? 0) + 1);
+
+    const city = v.location.split(",")[0]?.trim();
+    if (city && city !== "—") {
+      locationCounts.set(city, (locationCounts.get(city) ?? 0) + 1);
+    }
+
     if (v.price > 0) {
       const idx = PRICE_BUCKETS.findIndex((b) => v.price >= b.min && v.price < b.max);
       if (idx >= 0) priceCounts[idx] += 1;
@@ -76,29 +131,30 @@ function getInventoryCharts() {
       const idx = YEAR_BUCKETS.findIndex((b) => v.year >= b.min && v.year < b.max);
       if (idx >= 0) yearCounts[idx] += 1;
     }
+
+    const ageIdx = AGE_BUCKETS.findIndex(
+      (b) => v.daysListed >= b.min && v.daysListed < b.max
+    );
+    if (ageIdx >= 0) ageCounts[ageIdx] += 1;
   }
+
+  const fuelTotal = [...fuelCounts.values()].reduce((s, n) => s + n, 0) || 1;
+  const sellerTotal = [...sellerCounts.values()].reduce((s, n) => s + n, 0) || 1;
 
   const topMakes = [...makeCounts.entries()]
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 8);
 
-  const bodyStyles = [...bodyCounts.entries()]
-    .map(([name, count]) => ({
-      name,
-      count,
-      share: Math.round((count / total) * 100),
-    }))
+  const topMarkets = [...locationCounts.entries()]
+    .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count)
-    .slice(0, 7);
+    .slice(0, 8);
 
-  const marketplaces = [...marketplaceCounts.entries()]
-    .map(([name, count]) => ({
-      name,
-      count,
-      share: Math.round((count / total) * 100),
-    }))
-    .sort((a, b) => b.count - a.count);
+  const bodyStyles = toShareSlices(bodyCounts, total, 7);
+  const marketplaces = toShareSlices(marketplaceCounts, total);
+  const fuelTypes = toShareSlices(fuelCounts, fuelTotal);
+  const sellerTypes = toShareSlices(sellerCounts, sellerTotal);
 
   const priceBuckets = PRICE_BUCKETS.map((b, i) => ({
     label: b.label,
@@ -110,7 +166,22 @@ function getInventoryCharts() {
     count: yearCounts[i],
   }));
 
-  return { topMakes, bodyStyles, marketplaces, priceBuckets, yearBuckets };
+  const ageBuckets = AGE_BUCKETS.map((b, i) => ({
+    label: b.label,
+    count: ageCounts[i],
+  }));
+
+  return {
+    topMakes,
+    topMarkets,
+    bodyStyles,
+    marketplaces,
+    fuelTypes,
+    sellerTypes,
+    priceBuckets,
+    yearBuckets,
+    ageBuckets,
+  };
 }
 
 function DashboardSection({
@@ -128,7 +199,6 @@ function DashboardSection({
 }
 
 export default function DashboardPage() {
-  const recentVehicles = getRecentVehicles(6);
   const dailyScrapeData = getDailyScrapeCounts(30);
   const sparkData = dailyScrapeData.slice(-7).map((d) => d.count);
   const todayCount = getTodayScrapeCount();
@@ -139,8 +209,17 @@ export default function DashboardPage() {
   const activeCount = ACTIVE_SCRAPERS.filter(
     (s) => s.status === "running" || s.status === "healthy"
   ).length;
-  const { topMakes, bodyStyles, marketplaces, priceBuckets, yearBuckets } =
-    getInventoryCharts();
+  const {
+    topMakes,
+    topMarkets,
+    bodyStyles,
+    marketplaces,
+    fuelTypes,
+    sellerTypes,
+    priceBuckets,
+    yearBuckets,
+    ageBuckets,
+  } = getInventoryCharts();
 
   return (
     <div className="animate-fade-in flex flex-col gap-4 md:gap-6">
@@ -295,8 +374,56 @@ export default function DashboardPage() {
         </DashboardSection>
       </div>
 
-      {/* Price distribution + Recent discoveries — 6 / 6 */}
+      {/* Top markets + seller + fuel — 4 / 4 / 4 */}
       <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:items-stretch">
+        <DashboardSection className="lg:col-span-4 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-0">
+          <SectionTitle
+            className="lg:mb-0 lg:pb-4"
+            description="Cities with the most scraped inventory"
+          >
+            Top markets
+          </SectionTitle>
+          <Card padding className="h-full min-h-0">
+            <TopMakesChart data={topMarkets} yAxisWidth={96} />
+          </Card>
+        </DashboardSection>
+        <DashboardSection className="lg:col-span-4 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-0">
+          <SectionTitle
+            className="lg:mb-0 lg:pb-4"
+            description="Private vs dealer vs auction supply"
+          >
+            Seller type
+          </SectionTitle>
+          <Card padding className="h-full min-h-0">
+            <ShareDonutChart data={sellerTypes} colors={SELLER_COLORS} emptyLabel="No seller data" />
+          </Card>
+        </DashboardSection>
+        <DashboardSection className="lg:col-span-4 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-0">
+          <SectionTitle
+            className="lg:mb-0 lg:pb-4"
+            description="Powertrain mix across indexed listings"
+          >
+            Fuel type
+          </SectionTitle>
+          <Card padding className="h-full min-h-0">
+            <ShareDonutChart data={fuelTypes} colors={FUEL_COLORS} emptyLabel="No fuel data" />
+          </Card>
+        </DashboardSection>
+      </div>
+
+      {/* Listing age + price distribution — 6 / 6 */}
+      <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:items-stretch">
+        <DashboardSection className="lg:col-span-6 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-0">
+          <SectionTitle
+            className="lg:mb-0 lg:pb-4"
+            description="How long listings have been on the market"
+          >
+            Listing age
+          </SectionTitle>
+          <Card padding className="h-full min-h-0">
+            <ListingAgeChart data={ageBuckets} />
+          </Card>
+        </DashboardSection>
         <DashboardSection className="lg:col-span-6 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-0">
           <SectionTitle
             className="lg:mb-0 lg:pb-4"
@@ -306,50 +433,6 @@ export default function DashboardPage() {
           </SectionTitle>
           <Card padding className="h-full min-h-0">
             <PriceHistogramChart data={priceBuckets} />
-          </Card>
-        </DashboardSection>
-
-        <DashboardSection className="lg:col-span-6 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-0">
-          <SectionTitle
-            className="lg:mb-0 lg:pb-4"
-            description="Newest listings with AI scores"
-            action={
-              <Link
-                href="/vehicles"
-                className="text-[13px] text-muted-foreground transition-colors hover:text-foreground"
-              >
-                View all →
-              </Link>
-            }
-          >
-            Recent discoveries
-          </SectionTitle>
-          <Card padding={false} className="flex h-full min-h-0 flex-col overflow-hidden">
-            <div className="flex h-full flex-col divide-y divide-border">
-              {recentVehicles.map((v) => (
-                <Link
-                  key={v.id}
-                  href={`/vehicles/${v.id}`}
-                  className="flex flex-1 items-center gap-3 px-5 py-3.5 transition-colors hover:bg-primary-soft/50"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-medium text-foreground">{v.title}</p>
-                    <p className="text-helper">
-                      {v.marketplace} · {v.location}
-                    </p>
-                  </div>
-                  <div className="shrink-0 text-right">
-                    <p className="font-mono text-[13px] font-medium tabular-nums">
-                      {formatCurrency(v.price)}
-                    </p>
-                    <div className="mt-0.5 flex items-center justify-end gap-2">
-                      <span className="text-helper">{formatMileage(v.mileage)}</span>
-                      <ScoreBadge score={v.aiScore} />
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
           </Card>
         </DashboardSection>
       </div>

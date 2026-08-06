@@ -77,7 +77,13 @@ function colorForMake(name: string, index: number): string {
   return BRAND_COLORS[name] ?? FALLBACK_COLORS[index % FALLBACK_COLORS.length];
 }
 
-export function TopMakesChart({ data }: { data: NamedCount[] }) {
+export function TopMakesChart({
+  data,
+  yAxisWidth = 80,
+}: {
+  data: NamedCount[];
+  yAxisWidth?: number;
+}) {
   if (data.length === 0) {
     return <p className="py-8 text-center text-helper">No make data</p>;
   }
@@ -101,7 +107,7 @@ export function TopMakesChart({ data }: { data: NamedCount[] }) {
           <YAxis
             type="category"
             dataKey="name"
-            width={80}
+            width={yAxisWidth}
             tick={{ fontSize: 11, fill: "var(--chart-axis)" }}
             axisLine={false}
             tickLine={false}
