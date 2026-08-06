@@ -6,7 +6,7 @@ export const ACTIVE_SCRAPERS: ScraperSource[] = [
     name: "Craigslist",
     status: "healthy",
     lastRun: "9 min ago",
-    vehiclesFound: 4990,
+    vehiclesFound: 6950,
     successRate: 97.4,
   },
   {
@@ -14,7 +14,7 @@ export const ACTIVE_SCRAPERS: ScraperSource[] = [
     name: "Facebook Marketplace",
     status: "running",
     lastRun: "11 min ago",
-    vehiclesFound: 1575,
+    vehiclesFound: 1635,
     successRate: 98.1,
   },
   {
@@ -22,7 +22,7 @@ export const ACTIVE_SCRAPERS: ScraperSource[] = [
     name: "CarGurus",
     status: "healthy",
     lastRun: "3 min ago",
-    vehiclesFound: 2103,
+    vehiclesFound: 2107,
     successRate: 96.8,
   },
 ];
@@ -36,7 +36,7 @@ export const SCRAPING_JOBS: ScrapingJob[] = [
     location: "Dallas, TX · 50 mi",
     frequency: "Every 30 min",
     status: "completed",
-    vehiclesFound: 4990,
+    vehiclesFound: 6950,
     lastRun: "9 min ago",
     startedAt: "Today, 8:02 AM",
     duration: "9m 02s",
@@ -49,7 +49,7 @@ export const SCRAPING_JOBS: ScrapingJob[] = [
     location: "Dallas, TX · 50 mi",
     frequency: "Every 30 min",
     status: "running",
-    vehiclesFound: 1575,
+    vehiclesFound: 1635,
     lastRun: "11 min ago",
     startedAt: "Today, 8:14 AM",
     duration: "11m 18s",
@@ -62,7 +62,7 @@ export const SCRAPING_JOBS: ScrapingJob[] = [
     location: "Dallas, TX · 50 mi",
     frequency: "Hourly",
     status: "completed",
-    vehiclesFound: 2103,
+    vehiclesFound: 2107,
     lastRun: "3 min ago",
     startedAt: "Today, 7:50 AM",
     duration: "7m 41s",
@@ -72,9 +72,9 @@ export const SCRAPING_JOBS: ScrapingJob[] = [
 export const RECENT_JOBS = SCRAPING_JOBS.slice(0, 5);
 
 export const LIVE_ACTIVITY_MESSAGES = [
-  "Craigslist sync — 4,990 vehicles tracked",
-  "Facebook Marketplace sync — 1,575 vehicles tracked",
-  "CarGurus sync — 2,103 vehicles tracked",
+  "Craigslist sync — 6,950 vehicles tracked",
+  "Facebook Marketplace sync — 1,635 vehicles tracked",
+  "CarGurus sync — 2,107 vehicles tracked",
   "Vehicle catalog refreshed from listings.csv",
   "Real make/model/VIN fields applied where available",
   "Image URLs attached for active listings",
