@@ -23,7 +23,7 @@ export function ScoreRing({ score, size = 120, strokeWidth = 8, className }: Sco
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#f4f4f5"
+          stroke="var(--surface-hover)"
           strokeWidth={strokeWidth}
         />
         <motion.circle
@@ -31,7 +31,7 @@ export function ScoreRing({ score, size = 120, strokeWidth = 8, className }: Sco
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#2563eb"
+          stroke="var(--primary)"
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={circumference}
@@ -41,7 +41,7 @@ export function ScoreRing({ score, size = 120, strokeWidth = 8, className }: Sco
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="font-mono text-3xl font-bold tabular-nums tracking-tight text-foreground">{score}</span>
+        <span className="text-metric text-3xl">{score}</span>
         <span className="text-[11px] text-muted-foreground">/ 100</span>
       </div>
     </div>

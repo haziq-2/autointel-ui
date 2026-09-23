@@ -63,7 +63,7 @@ export function PriceHistogramChart({ data }: { data: PriceBucket[] }) {
                 const point = payload[0].payload as PriceBucket;
                 const share = total > 0 ? Math.round((point.count / total) * 100) : 0;
                 return (
-                  <div className="rounded-lg border border-border bg-popover px-3 py-2 shadow-popover">
+                  <div className="rounded-xl bg-popover px-3 py-2 shadow-popover ring-1 ring-border">
                     <p className="text-[12px] font-medium text-foreground">{point.label}</p>
                     <p className="font-mono text-[13px] tabular-nums text-muted-foreground">
                       {point.count.toLocaleString()} listings · {share}%

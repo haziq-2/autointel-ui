@@ -58,11 +58,11 @@ export default function AlertRulesPage() {
       <div className="space-y-5">
         <Card className="p-5">
           <div className="mb-5 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent">
-              <Bell className="h-4 w-4 text-muted-foreground" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-soft text-primary ring-1 ring-primary/10">
+              <Bell className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-card-title font-medium">Global Settings</h3>
+              <h3 className="text-card-title">Global Settings</h3>
               <p className="text-[12px] text-muted-foreground">Master toggle for all alert channels</p>
             </div>
           </div>
@@ -200,10 +200,10 @@ function SectionHeader({
 }) {
   return (
     <div className="mb-5 flex items-center gap-3">
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
-        <Icon className="h-4 w-4 text-muted-foreground" />
+      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary-soft text-primary ring-1 ring-primary/10">
+        <Icon className="h-4 w-4" />
       </div>
-      <h3 className="text-card-title font-medium">{title}</h3>
+      <h3 className="text-card-title">{title}</h3>
     </div>
   );
 }
@@ -232,12 +232,12 @@ function ToggleRow({
         onClick={onToggle}
         className={cn(
           "relative h-6 w-11 rounded-full transition-colors",
-          enabled ? "bg-primary" : "bg-input"
+          enabled ? "bg-primary" : "bg-border-strong"
         )}
       >
         <span
           className={cn(
-            "absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform",
+            "absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-md transition-all",
             enabled ? "left-[22px]" : "left-0.5"
           )}
         />
@@ -265,7 +265,7 @@ function SliderField({
     <div>
       <div className="mb-2 flex items-baseline justify-between">
         <label className="text-[13px] font-medium">{label}</label>
-        <span className="font-mono text-[12px] font-semibold text-primary">{display}</span>
+        <span className="text-metric text-[12.5px] text-primary">{display}</span>
       </div>
       <input
         type="range"
@@ -313,10 +313,10 @@ function ChipRow({
           type="button"
           onClick={() => onToggle(item)}
           className={cn(
-            "rounded-full border px-3 py-1 text-[12px] font-medium transition-colors",
+            "rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors",
             active.includes(item)
-              ? "border-primary bg-primary/10 text-primary"
-              : "border-border bg-card text-muted-foreground hover:border-primary/40"
+              ? "bg-primary text-primary-foreground"
+              : "bg-surface text-muted-foreground ring-1 ring-border hover:bg-surface-hover hover:text-foreground"
           )}
         >
           {item}

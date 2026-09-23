@@ -11,7 +11,7 @@ function Pill({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[12px] font-medium",
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-[3px] text-[11.5px] font-medium",
         className
       )}
     >

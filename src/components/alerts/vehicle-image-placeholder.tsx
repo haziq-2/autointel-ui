@@ -1,13 +1,13 @@
 import { Car } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const GRADIENTS = [
-  "from-slate-100 to-slate-200",
-  "from-blue-50 to-blue-100",
-  "from-emerald-50 to-emerald-100",
-  "from-amber-50 to-amber-100",
-  "from-violet-50 to-violet-100",
-  "from-rose-50 to-rose-100",
+const TINTS = [
+  "var(--chart-8)",
+  "var(--chart-1)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-6)",
+  "var(--chart-5)",
 ];
 
 function hashSeed(id: string) {
@@ -21,18 +21,19 @@ export function VehicleImagePlaceholder({
   seed: string;
   className?: string;
 }) {
-  const gradient = GRADIENTS[hashSeed(seed) % GRADIENTS.length];
+  const tint = TINTS[hashSeed(seed) % TINTS.length];
 
   return (
     <div
       className={cn(
-        "relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br",
-        gradient,
+        "relative flex shrink-0 items-center justify-center overflow-hidden rounded-xl ring-1 ring-border",
         className
       )}
+      style={{
+        background: `linear-gradient(140deg, color-mix(in oklab, ${tint} 14%, var(--card)) 0%, color-mix(in oklab, ${tint} 6%, var(--card)) 100%)`,
+      }}
     >
-      <Car className="h-6 w-6 text-[#64748b]/60" strokeWidth={1.5} />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/[0.03] to-transparent" />
+      <Car className="h-6 w-6 opacity-45" style={{ color: tint }} strokeWidth={1.5} />
     </div>
   );
 }

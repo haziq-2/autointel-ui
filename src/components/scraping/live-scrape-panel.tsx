@@ -113,11 +113,11 @@ function LiveScrapeRunner({
             {(phase === "stopped" || phase === "idle") && (
               <span className="inline-flex h-2 w-2 rounded-full bg-muted-foreground/60" />
             )}
-            <span className="text-card-title font-medium capitalize">{phase === "idle" ? "starting" : phase}</span>
+            <span className="text-card-title capitalize">{phase === "idle" ? "starting" : phase}</span>
           </div>
-          <span className="font-mono text-[13px] tabular-nums text-muted-foreground">{progress}%</span>
+          <span className="text-metric text-[13px] text-muted-foreground">{progress}%</span>
         </div>
-        <div className="h-1 overflow-hidden rounded-full bg-accent">
+        <div className="h-1.5 overflow-hidden rounded-full bg-surface-hover">
           <div
             className={cn(
               "h-full rounded-full transition-all duration-500 ease-out",
@@ -174,7 +174,7 @@ function LiveScrapeRunner({
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card padding={false} className="overflow-hidden">
           <div className="border-b border-border px-5 py-3.5">
-            <h2 className="text-card-title font-medium">Event log</h2>
+            <h2 className="text-card-title">Event log</h2>
           </div>
           <ScrollArea className="h-[360px]">
             <ul>
@@ -199,7 +199,7 @@ function LiveScrapeRunner({
 
         <Card padding={false} className="overflow-hidden">
           <div className="border-b border-border px-5 py-3.5">
-            <h2 className="text-card-title font-medium">Incoming records · {city}</h2>
+            <h2 className="text-card-title">Incoming records · {city}</h2>
           </div>
           <ScrollArea className="h-[360px]">
             {liveVehicles.length === 0 ? (
@@ -234,7 +234,7 @@ function Metric({ label, value, mono }: { label: string; value: string; mono?: b
   return (
     <div>
       <p className="text-label">{label}</p>
-      <p className={cn("mt-1 text-[15px] font-medium", mono && "font-mono tabular-nums")}>{value}</p>
+      <p className={cn("mt-1.5 text-[16px] font-medium", mono && "text-metric")}>{value}</p>
     </div>
   );
 }

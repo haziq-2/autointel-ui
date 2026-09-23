@@ -9,13 +9,13 @@ export interface ShareSlice {
 }
 
 const DEFAULT_COLORS = [
-  "var(--primary)",
-  "#0ea5e9",
-  "#8b5cf6",
-  "#14b8a6",
-  "#f59e0b",
-  "#f43f5e",
-  "#64748b",
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-4)",
+  "var(--chart-5)",
+  "var(--chart-6)",
+  "var(--chart-8)",
 ];
 
 export function ShareDonutChart({
@@ -54,7 +54,7 @@ export function ShareDonutChart({
                 if (!active || !payload?.length) return null;
                 const point = payload[0].payload as ShareSlice;
                 return (
-                  <div className="rounded-lg border border-border bg-popover px-3 py-2 shadow-popover">
+                  <div className="rounded-xl bg-popover px-3 py-2 shadow-popover ring-1 ring-border">
                     <p className="text-[12px] font-medium text-foreground">{point.name}</p>
                     <p className="font-mono text-[13px] tabular-nums text-muted-foreground">
                       {point.count.toLocaleString()} · {point.share}%

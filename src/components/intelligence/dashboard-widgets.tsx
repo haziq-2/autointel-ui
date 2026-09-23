@@ -98,20 +98,20 @@ export function DashboardIntelligenceWidgets() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: si * 0.06 }}
-          className="card-interactive rounded-xl border border-border bg-card shadow-card"
+          className="surface-card card-interactive overflow-hidden"
         >
-          <div className="flex items-center gap-2.5 border-b border-border px-4 py-3">
-            <span className="flex h-6 w-6 items-center justify-center rounded-lg border border-primary/15 bg-primary-soft text-primary">
+          <div className="flex items-center gap-2.5 border-b border-border px-4 py-3.5">
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-soft text-primary ring-1 ring-primary/10">
               <section.icon className="h-3.5 w-3.5" strokeWidth={2} />
             </span>
-            <h3 className="text-[13px] font-semibold">{section.title}</h3>
+            <h3 className="text-[13.5px] font-semibold tracking-[-0.01em]">{section.title}</h3>
           </div>
           <ul className="divide-y divide-border">
             {section.items.map((item) => (
               <li key={item.id}>
                 <Link
                   href={item.href}
-                  className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-primary-soft/50"
+                  className="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-surface"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-medium">{item.primary}</p>

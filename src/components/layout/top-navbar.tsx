@@ -24,17 +24,17 @@ export function TopNavbar() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-30 flex h-12 shrink-0 items-center gap-3 border-b border-border bg-background/70 px-4 backdrop-blur-xl lg:px-6">
+    <header className="sticky top-0 z-30 flex h-14 min-w-0 shrink-0 items-center gap-2 overflow-x-hidden border-b border-border bg-background/80 px-3 backdrop-blur-xl sm:gap-3 sm:px-4 lg:px-6">
       <Sheet>
-        <SheetTrigger className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "h-8 w-8 lg:hidden")}>
+        <SheetTrigger className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "h-9 w-9 lg:hidden")}>
           <Menu className="h-4 w-4" />
         </SheetTrigger>
         <SheetContent side="left" className="w-[240px] p-0">
-          <div className="flex items-center gap-2.5 border-b border-border px-4 py-3">
-            <span className="bg-gradient-primary flex h-6 w-6 items-center justify-center rounded-[7px] text-[13px] font-bold text-white shadow-card">
+          <div className="flex items-center gap-2.5 border-b border-border px-4 py-3.5">
+            <span className="bg-gradient-primary flex h-7 w-7 items-center justify-center rounded-[9px] text-[13px] font-bold text-white shadow-card">
               T
             </span>
-            <p className="text-[14px] font-semibold tracking-[-0.02em]">
+            <p className="text-[15px] font-semibold tracking-[-0.02em]">
               Trip<span className="text-primary">AI</span>
             </p>
           </div>
@@ -51,10 +51,10 @@ export function TopNavbar() {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "block rounded-lg px-2.5 py-1.5 text-[13px] transition-colors",
+                      "block rounded-[10px] px-3 py-[7px] text-[13.5px] transition-colors",
                       pathname.startsWith(item.href) || (item.href === "/" && pathname === "/")
-                        ? "bg-surface font-medium text-foreground"
-                        : "text-muted-foreground hover:bg-surface"
+                        ? "bg-primary-soft font-medium text-primary"
+                        : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
                     )}
                   >
                     {item.title}
@@ -66,13 +66,13 @@ export function TopNavbar() {
         </SheetContent>
       </Sheet>
 
-      <div className="group relative hidden max-w-md flex-1 md:block">
+      <div className="group relative hidden min-w-0 max-w-md flex-1 md:block">
         <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary" />
         <Input
           placeholder="Search vehicles, sources, reports..."
-          className="h-8 rounded-lg border-border/60 bg-surface pl-9 text-[13px] shadow-none transition-all focus-visible:border-primary/40 focus-visible:bg-card focus-visible:ring-2 focus-visible:ring-primary/15"
+          className="h-9 rounded-[10px] border-transparent bg-surface pl-9 text-[13px] shadow-none transition-all placeholder:text-muted-foreground/80 focus-visible:border-transparent focus-visible:bg-card focus-visible:ring-0 focus-visible:[box-shadow:var(--ring-glow)]"
         />
-        <kbd className="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded border border-border bg-card px-1.5 py-px font-mono text-[10px] text-muted-foreground sm:inline">
+        <kbd className="pointer-events-none absolute right-2.5 top-1/2 hidden -translate-y-1/2 rounded-md border border-border bg-card px-1.5 py-px font-mono text-[10px] text-muted-foreground sm:inline">
           ⌘K
         </kbd>
       </div>
@@ -81,7 +81,7 @@ export function TopNavbar() {
         <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger
-            className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "hidden h-8 gap-1.5 text-[13px] text-muted-foreground sm:inline-flex")}
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "hidden h-9 gap-1.5 px-2.5 text-[13px] text-muted-foreground sm:inline-flex")}
           >
             <Plus className="h-3.5 w-3.5" />
             Quick actions
@@ -102,8 +102,8 @@ export function TopNavbar() {
         <NotificationCenter />
 
         <DropdownMenu>
-          <DropdownMenuTrigger className="rounded-full p-0.5 ring-1 ring-transparent transition-all hover:ring-border focus-visible:outline-none focus-visible:ring-primary/40">
-            <Avatar className="h-7 w-7">
+          <DropdownMenuTrigger className="ml-1 rounded-full p-0.5 ring-1 ring-transparent transition-all hover:ring-border focus-visible:outline-none focus-visible:ring-primary/40">
+            <Avatar className="h-[30px] w-[30px]">
               <AvatarFallback className="bg-gradient-primary text-[11px] font-semibold text-white">JM</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>

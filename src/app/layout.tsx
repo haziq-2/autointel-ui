@@ -36,7 +36,7 @@ export default function RootLayout({
       <head>
         <ThemeScript />
       </head>
-      <body className="min-h-full bg-background">
+      <body className="min-h-full max-w-full overflow-x-hidden bg-background">
         <TooltipProvider>
           <AppShell>{children}</AppShell>
         </TooltipProvider>

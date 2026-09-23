@@ -33,7 +33,7 @@ export function CityPrompt({ marketplace, onSubmit, defaultCity = "" }: CityProm
   };
 
   return (
-    <div className="mx-auto max-w-md rounded-md border border-border p-6">
+    <div className="surface-card mx-auto max-w-md p-6">
       <h2 className="text-card-title">Select city</h2>
       <p className="mt-1 text-[13px] text-muted-foreground">
         {marketplace} will only return listings from this city.
@@ -52,7 +52,7 @@ export function CityPrompt({ marketplace, onSubmit, defaultCity = "" }: CityProm
               setError("");
             }}
             placeholder="e.g. Dallas, TX"
-            className="mt-1.5 h-9 border-border text-[13px] shadow-none"
+            className="mt-1.5 text-[13.5px]"
             autoFocus
           />
           {previewCount !== null && previewCount > 0 && (
@@ -72,7 +72,7 @@ export function CityPrompt({ marketplace, onSubmit, defaultCity = "" }: CityProm
                 setCity(c);
                 setError("");
               }}
-              className="rounded-md border border-border px-2 py-1 text-[12px] text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+              className="rounded-full bg-surface px-2.5 py-1 text-[12px] text-muted-foreground ring-1 ring-border transition-colors hover:bg-surface-hover hover:text-foreground"
             >
               {c}
             </button>

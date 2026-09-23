@@ -30,7 +30,7 @@ export function KpiCard({
   return (
     <div
       className={cn(
-        "card-interactive flex h-full min-h-[128px] flex-col rounded-xl border border-border bg-card p-5 shadow-card",
+        "surface-card card-interactive flex h-full min-h-[132px] min-w-0 flex-col overflow-hidden p-5",
         className
       )}
     >
@@ -42,14 +42,12 @@ export function KpiCard({
           <span className="h-8 w-[72px] shrink-0" aria-hidden />
         )}
       </div>
-      <p className="mt-3 font-mono text-[1.625rem] font-semibold leading-none tracking-tight text-foreground tabular-nums">
-        {value}
-      </p>
+      <p className="text-metric mt-3 truncate text-[1.75rem] leading-none">{value}</p>
       <div className="mt-auto flex min-h-5 flex-wrap items-center gap-2 pt-3">
         {change !== undefined && (
           <span
             className={cn(
-              "inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 font-mono text-[11px] font-medium tabular-nums",
+              "inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[11px] font-semibold tabular-nums",
               isPositive && "bg-[var(--tint-success-bg)] text-[var(--tint-success-fg)]",
               isNegative && "bg-[var(--tint-danger-bg)] text-[var(--tint-danger-fg)]",
               !isPositive && !isNegative && "bg-[var(--tint-neutral-bg)] text-[var(--tint-neutral-fg)]"
@@ -61,10 +59,10 @@ export function KpiCard({
           </span>
         )}
         {footnote && (
-          <span className="text-[11px] leading-5 text-muted-foreground">{footnote}</span>
+          <span className="truncate text-[11.5px] leading-5 text-muted-foreground">{footnote}</span>
         )}
         {description && change === undefined && !footnote && (
-          <span className="text-helper">{description}</span>
+          <span className="truncate text-helper">{description}</span>
         )}
       </div>
     </div>
@@ -75,7 +73,7 @@ export function KpiGrid({ children, className }: { children: React.ReactNode; cl
   return (
     <StaggerGrid
       className={cn(
-        "grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-4",
+        "grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4",
         className
       )}
     >

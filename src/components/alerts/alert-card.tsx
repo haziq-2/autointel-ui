@@ -38,12 +38,12 @@ export function AlertCard({ alert, index, onOpen, onDismiss, onSave }: AlertCard
       exit={{ opacity: 0, x: -20 }}
       transition={{ delay: Math.min(index * 0.03, 0.3) }}
       className={cn(
-        "card-interactive group relative overflow-hidden rounded-xl border bg-card shadow-card",
-        !alert.read ? "border-primary/30" : "border-border"
+        "surface-card card-interactive group relative overflow-hidden",
+        !alert.read && "[box-shadow:0_0_0_1px_color-mix(in_oklab,var(--primary)_30%,var(--border)),var(--shadow-card)]"
       )}
     >
       {!alert.read && (
-        <span className="absolute left-0 top-0 h-full w-1 bg-primary" />
+        <span className="absolute left-0 top-0 h-full w-[3px] bg-primary" />
       )}
 
       <div className="p-4 sm:p-5">
@@ -59,7 +59,7 @@ export function AlertCard({ alert, index, onOpen, onDismiss, onSave }: AlertCard
             <div className="flex flex-wrap items-center gap-2">
               <span
                 className={cn(
-                  "rounded-md px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide",
+                  "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide",
                   style.badgeClass
                 )}
               >
@@ -178,7 +178,7 @@ function AlertTypeBody({ alert }: { alert: IntelligenceAlert }) {
                   <Line
                     type="monotone"
                     dataKey="v"
-                    stroke="#0891b2"
+                    stroke="var(--chart-2)"
                     strokeWidth={2}
                     dot={false}
                   />
@@ -193,17 +193,17 @@ function AlertTypeBody({ alert }: { alert: IntelligenceAlert }) {
     case "risk":
       if (d.riskType === "repair") {
         return (
-          <div className="mt-3 rounded-xl border border-red-200 bg-red-50/50 p-3 dark:border-red-900/50 dark:bg-red-950/30">
-            <p className="text-[12px] font-semibold text-red-700 dark:text-red-400">Repair Risk High</p>
-            <p className="mt-1 font-mono text-[14px] font-semibold tabular-nums text-red-800 dark:text-red-300">
+          <div className="mt-3 rounded-xl bg-[var(--tint-danger-bg)] p-3">
+            <p className="text-[12px] font-semibold text-[var(--tint-danger-fg)]">Repair Risk High</p>
+            <p className="text-metric mt-1 text-[14px] text-[var(--tint-danger-fg)]">
               Est. Repairs {formatCurrency(Number(d.estimatedRepairs))}
             </p>
           </div>
         );
       }
       return (
-        <div className="mt-3 rounded-xl border border-orange-200 bg-orange-50/50 p-3 dark:border-orange-900/50 dark:bg-orange-950/30">
-          <p className="text-[12px] font-semibold text-orange-700 dark:text-orange-400">Holding Time</p>
+        <div className="mt-3 rounded-xl bg-[var(--tint-warning-bg)] p-3">
+          <p className="text-[12px] font-semibold text-[var(--tint-warning-fg)]">Holding Time</p>
           <p className="mt-1 text-[13px]">
             <span className="font-mono font-semibold tabular-nums">{String(d.holdingDays)}</span> days · Above
             target ({String(d.targetDays)})
@@ -245,8 +245,8 @@ function Metric({
 
 function MiniCompareChart({ current, market }: { current: number; market: number }) {
   const data = [
-    { name: "Listed", value: current, fill: "#16a34a" },
-    { name: "Market", value: market, fill: "#94a3b8" },
+    { name: "Listed", value: current, fill: "var(--success)" },
+    { name: "Market", value: market, fill: "var(--chart-8)" },
   ];
   return (
     <div className="h-14 w-24">
@@ -281,12 +281,12 @@ function ActionButton({
       type="button"
       onClick={onClick}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[12px] font-medium transition-colors",
+        "inline-flex items-center gap-1.5 rounded-[10px] px-3 py-1.5 text-[12.5px] font-medium transition-colors",
         primary
           ? "bg-primary text-primary-foreground hover:opacity-90"
           : active
-            ? "bg-primary/10 text-primary"
-            : "border border-border bg-card text-muted-foreground hover:bg-surface hover:text-foreground"
+            ? "bg-primary-soft text-primary"
+            : "text-muted-foreground ring-1 ring-border hover:bg-surface hover:text-foreground"
       )}
     >
       <Icon className="h-3.5 w-3.5" />

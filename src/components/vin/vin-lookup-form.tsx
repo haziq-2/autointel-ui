@@ -50,7 +50,7 @@ export function VinLookupForm({ initialVin = "", className }: VinLookupFormProps
 
   return (
     <div className={cn("space-y-6", className)}>
-      <form onSubmit={handleSubmit} className="rounded-xl border border-border bg-card p-5 shadow-card">
+      <form onSubmit={handleSubmit} className="surface-card p-5">
         <label htmlFor="vin-input" className="text-[13px] font-semibold">
           Vehicle identification number
         </label>
@@ -99,7 +99,7 @@ export function VinLookupForm({ initialVin = "", className }: VinLookupFormProps
       </form>
 
       {loading && !vehicle && (
-        <div className="rounded-xl border border-dashed border-border bg-surface px-6 py-12 text-center">
+        <div className="rounded-xl border border-dashed border-border-strong bg-surface/50 px-6 py-12 text-center">
           <Loader2 className="mx-auto h-6 w-6 animate-spin text-primary" />
           <p className="mt-3 text-[13px] text-muted-foreground">Decoding vehicle information...</p>
         </div>

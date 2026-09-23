@@ -49,7 +49,7 @@ export function ContinuousScrapePanel() {
             />
           </span>
           <div>
-            <p className="text-card-title font-medium">Live Monitoring</p>
+            <p className="text-card-title">Live Monitoring</p>
             <p className="text-helper">
               {active
                 ? `Polling ${sourceCount} sources ${rateLabel.toLowerCase()}`
@@ -60,7 +60,7 @@ export function ContinuousScrapePanel() {
 
         <div className="flex items-center gap-2">
           <Select value={rate} onValueChange={(v) => setRate(v ?? "300")} disabled={active}>
-            <SelectTrigger className="h-8 w-[168px] rounded-lg border-border bg-card text-[13px] shadow-none">
+            <SelectTrigger className="h-9 w-[168px] text-[13px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -94,7 +94,7 @@ export function ContinuousScrapePanel() {
             <Stat label="Next poll" value={formatCountdown(remaining)} mono />
           </div>
 
-          <div className="mt-4 h-1 overflow-hidden rounded-full bg-accent">
+          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-surface-hover">
             <div
               className="h-full rounded-full bg-primary transition-all duration-1000 ease-linear"
               style={{ width: `${pollProgress}%` }}
@@ -124,7 +124,7 @@ function Stat({ label, value, mono }: { label: string; value: string; mono?: boo
   return (
     <div>
       <p className="text-label">{label}</p>
-      <p className={cn("mt-1 text-[15px] font-medium", mono && "font-mono tabular-nums")}>{value}</p>
+      <p className={cn("mt-1.5 text-[16px] font-medium", mono && "text-metric")}>{value}</p>
     </div>
   );
 }

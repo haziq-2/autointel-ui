@@ -22,9 +22,9 @@ interface VinVehicleDetailsProps {
 
 export function VinVehicleDetails({ vehicle, className }: VinVehicleDetailsProps) {
   return (
-    <div className={cn("rounded-xl border border-border bg-card shadow-card", className)}>
+    <div className={cn("surface-card overflow-hidden", className)}>
       <div className="border-b border-border px-5 py-4">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
           Decoded vehicle
         </p>
         <h3 className="mt-1 text-[18px] font-semibold tracking-tight">

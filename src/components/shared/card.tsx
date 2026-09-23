@@ -10,7 +10,7 @@ export function Card({ children, className, padding = true }: CardProps) {
   return (
     <div
       className={cn(
-        "rounded-xl border border-border bg-card shadow-card",
+        "surface-card min-w-0 max-w-full overflow-hidden",
         padding && "p-5",
         className
       )}
@@ -31,9 +31,9 @@ export function CardHeader({
 }) {
   return (
     <div className="mb-4 flex items-start justify-between gap-3">
-      <div>
-        <h3 className="text-card-title font-medium">{title}</h3>
-        {description && <p className="mt-0.5 text-helper">{description}</p>}
+      <div className="min-w-0">
+        <h3 className="text-card-title">{title}</h3>
+        {description && <p className="mt-1 text-helper">{description}</p>}
       </div>
       {action}
     </div>

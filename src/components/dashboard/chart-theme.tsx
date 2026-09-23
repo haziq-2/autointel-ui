@@ -35,7 +35,7 @@ export function ChartTooltipShell({
   return (
     <div
       className={cn(
-        "rounded-xl border border-border/70 bg-popover px-3 py-2 shadow-popover",
+        "rounded-xl bg-popover px-3 py-2 shadow-popover ring-1 ring-border",
         className
       )}
     >
@@ -55,7 +55,7 @@ export function ChartEmpty({
 }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border/70 bg-surface text-muted-foreground">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface text-muted-foreground ring-1 ring-border">
         <BarChart3 className="h-4 w-4" strokeWidth={1.75} />
       </div>
       <p className="text-helper">{message}</p>
@@ -95,16 +95,16 @@ export function RangeToggle({
   onChange: (value: number) => void;
 }) {
   return (
-    <div className="inline-flex items-center rounded-lg bg-muted/80 p-0.5">
+    <div className="inline-flex items-center rounded-[10px] bg-surface p-[3px] ring-1 ring-border">
       {options.map((opt) => (
         <button
           key={opt.value}
           type="button"
           onClick={() => onChange(opt.value)}
           className={cn(
-            "rounded-md px-2.5 py-1 text-[11px] font-medium transition-all duration-150",
+            "rounded-[7px] px-2.5 py-1 text-[11.5px] font-medium transition-all duration-150",
             value === opt.value
-              ? "bg-card text-foreground shadow-sm"
+              ? "bg-card text-foreground shadow-card"
               : "text-muted-foreground hover:text-foreground"
           )}
         >

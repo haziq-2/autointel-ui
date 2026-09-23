@@ -14,14 +14,14 @@ const REPORTS = [
 
 export default function ReportsPage() {
   return (
-    <div>
+    <div className="animate-fade-in">
       <PageHeader title="Reports" description="Executive reporting center" />
 
-      <div className="divide-y divide-border border-y border-border">
+      <div className="surface-card divide-y divide-border overflow-hidden">
           {REPORTS.map((report) => (
             <div
               key={report.name}
-              className="flex flex-col gap-4 py-5 sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-4 px-5 py-5 transition-colors hover:bg-surface sm:flex-row sm:items-center sm:justify-between"
             >
               <div>
                 <p className="text-card-title">{report.name}</p>
@@ -33,7 +33,7 @@ export default function ReportsPage() {
                   <button
                     key={fmt}
                     type="button"
-                    className={cn(buttonVariants({ variant: "outline", size: "sm" }), "h-8 min-w-[56px]")}
+                    className={cn(buttonVariants({ variant: "outline", size: "sm" }), "min-w-[58px]")}
                   >
                     {fmt}
                   </button>

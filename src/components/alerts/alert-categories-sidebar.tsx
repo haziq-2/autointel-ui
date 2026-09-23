@@ -28,16 +28,14 @@ export function AlertCategoriesSidebar({
             type="button"
             onClick={() => onSelect(cat.id)}
             className={cn(
-              "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all",
-              isActive
-                ? "bg-primary-soft shadow-card"
-                : "hover:bg-surface"
+              "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors",
+              isActive ? "bg-primary-soft" : "hover:bg-surface"
             )}
           >
             <div
               className={cn(
                 "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors",
-                isActive ? cat.bg : "bg-surface group-hover:bg-accent"
+                isActive ? cat.bg : "bg-surface group-hover:bg-surface-hover"
               )}
             >
               <Icon className={cn("h-4 w-4", isActive ? cat.color : "text-muted-foreground")} />
@@ -53,8 +51,10 @@ export function AlertCategoriesSidebar({
             {count > 0 && (
               <span
                 className={cn(
-                  "flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 font-mono text-[10px] font-semibold tabular-nums",
-                  isActive ? "bg-primary text-primary-foreground" : "bg-accent text-muted-foreground"
+                  "flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[10.5px] font-semibold tabular-nums",
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-[var(--tint-neutral-bg)] text-muted-foreground"
                 )}
               >
                 {count}

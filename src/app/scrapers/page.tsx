@@ -40,7 +40,7 @@ export default function ScrapersPage() {
               <div className="flex items-start gap-3">
                 <MarketplaceMark id={scraper.id} name={scraper.name} />
                 <div className="min-w-0 flex-1">
-                  <p className="text-card-title font-medium truncate">{scraper.name}</p>
+                  <p className="text-card-title truncate">{scraper.name}</p>
                 </div>
               </div>
               <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-border pt-4">
@@ -56,10 +56,10 @@ export default function ScrapersPage() {
                 >
                   Collect Data
                 </Link>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0" title="Edit">
+                <Button variant="outline" size="sm" className="size-8 p-0" title="Edit">
                   <Pencil className="h-3.5 w-3.5" />
                 </Button>
-                <Button variant="outline" size="sm" className="h-8 w-8 p-0" title="Pause">
+                <Button variant="outline" size="sm" className="size-8 p-0" title="Pause">
                   <Pause className="h-3.5 w-3.5" />
                 </Button>
               </div>
@@ -74,28 +74,28 @@ export default function ScrapersPage() {
           <DataTableHead>
             <tr>
               <DataTableHeaderCell>Name</DataTableHeaderCell>
-              <DataTableHeaderCell>Marketplace</DataTableHeaderCell>
-              <DataTableHeaderCell>Criteria</DataTableHeaderCell>
-              <DataTableHeaderCell>Location</DataTableHeaderCell>
-              <DataTableHeaderCell>Frequency</DataTableHeaderCell>
+              <DataTableHeaderCell className="hidden md:table-cell">Marketplace</DataTableHeaderCell>
+              <DataTableHeaderCell className="hidden xl:table-cell">Criteria</DataTableHeaderCell>
+              <DataTableHeaderCell className="hidden lg:table-cell">Location</DataTableHeaderCell>
+              <DataTableHeaderCell className="hidden xl:table-cell">Frequency</DataTableHeaderCell>
               <DataTableHeaderCell>Status</DataTableHeaderCell>
-              <DataTableHeaderCell align="right">Found</DataTableHeaderCell>
-              <DataTableHeaderCell>Last run</DataTableHeaderCell>
-              <DataTableHeaderCell>Actions</DataTableHeaderCell>
+              <DataTableHeaderCell align="right" className="hidden sm:table-cell">Found</DataTableHeaderCell>
+              <DataTableHeaderCell className="hidden lg:table-cell">Last run</DataTableHeaderCell>
+              <DataTableHeaderCell className="w-24">Actions</DataTableHeaderCell>
             </tr>
           </DataTableHead>
           <tbody>
             {SCRAPING_JOBS.map((job) => (
               <DataTableRow key={job.id}>
-                <DataTableCell className="font-medium">{job.name}</DataTableCell>
-                <DataTableCell className="text-muted-foreground">{job.marketplace}</DataTableCell>
-                <DataTableCell className="max-w-[160px] truncate text-muted-foreground">{job.searchCriteria}</DataTableCell>
-                <DataTableCell className="text-muted-foreground">{job.location}</DataTableCell>
-                <DataTableCell className="text-muted-foreground">{job.frequency}</DataTableCell>
+                <DataTableCell className="truncate font-medium">{job.name}</DataTableCell>
+                <DataTableCell className="hidden truncate text-muted-foreground md:table-cell">{job.marketplace}</DataTableCell>
+                <DataTableCell className="hidden truncate text-muted-foreground xl:table-cell">{job.searchCriteria}</DataTableCell>
+                <DataTableCell className="hidden truncate text-muted-foreground lg:table-cell">{job.location}</DataTableCell>
+                <DataTableCell className="hidden text-muted-foreground xl:table-cell">{job.frequency}</DataTableCell>
                 <DataTableCell><JobStatusBadge status={job.status} /></DataTableCell>
-                <DataTableCell align="right" className="font-mono tabular-nums">{job.vehiclesFound}</DataTableCell>
-                <DataTableCell className="text-muted-foreground">{job.lastRun}</DataTableCell>
-                <DataTableCell>
+                <DataTableCell align="right" className="text-metric hidden text-[13px] sm:table-cell">{job.vehiclesFound}</DataTableCell>
+                <DataTableCell className="hidden text-muted-foreground lg:table-cell">{job.lastRun}</DataTableCell>
+                <DataTableCell className="overflow-visible">
                   <div className="flex items-center justify-end gap-2">
                     <Link href={`/scrapers/${job.id}/live`} className="text-[13px] font-medium text-primary hover:underline">
                       Run

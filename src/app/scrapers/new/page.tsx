@@ -23,13 +23,13 @@ export default function NewScraperPage() {
   };
 
   return (
-    <div>
+    <div className="animate-fade-in">
       <PageHeader title="New scraper" description="Configure search criteria and schedule" />
 
-      <div className="max-w-md space-y-6">
+      <div className="surface-card max-w-md space-y-6 p-6">
         <FormField label="Marketplace">
           <Select defaultValue={MARKETPLACES[0]}>
-            <SelectTrigger className="h-9 border-border text-[13px] shadow-none"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
             <SelectContent>
               {MARKETPLACES.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
             </SelectContent>
@@ -41,48 +41,47 @@ export default function NewScraperPage() {
             value={city}
             onChange={(e) => setCity(e.target.value)}
             placeholder="e.g. Dallas, TX"
-            className="h-9 border-border text-[13px] shadow-none"
           />
         </FormField>
 
         <FormField label="Radius (miles)">
-          <Input type="number" defaultValue="50" className="h-9 border-border text-[13px] shadow-none" />
+          <Input type="number" defaultValue="50" />
         </FormField>
 
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Make">
-            <Input defaultValue="Ford" className="h-9 border-border text-[13px] shadow-none" />
+            <Input defaultValue="Ford" />
           </FormField>
           <FormField label="Model">
-            <Input defaultValue="F-150" className="h-9 border-border text-[13px] shadow-none" />
+            <Input defaultValue="F-150" />
           </FormField>
         </div>
 
         <FormField label="Year range">
           <div className="flex gap-2">
-            <Input type="number" defaultValue="2018" className="h-9 border-border text-[13px] shadow-none" />
-            <Input type="number" defaultValue="2024" className="h-9 border-border text-[13px] shadow-none" />
+            <Input type="number" defaultValue="2018" />
+            <Input type="number" defaultValue="2024" />
           </div>
         </FormField>
 
         <FormField label="Price range">
           <div className="flex gap-2">
-            <Input type="number" defaultValue="15000" className="h-9 border-border text-[13px] shadow-none" />
-            <Input type="number" defaultValue="45000" className="h-9 border-border text-[13px] shadow-none" />
+            <Input type="number" defaultValue="15000" />
+            <Input type="number" defaultValue="45000" />
           </div>
         </FormField>
 
         <FormField label="Max mileage">
-          <Input type="number" defaultValue="80000" className="h-9 border-border text-[13px] shadow-none" />
+          <Input type="number" defaultValue="80000" />
         </FormField>
 
         <FormField label="Keywords">
-          <Input placeholder="Optional" className="h-9 border-border text-[13px] shadow-none" />
+          <Input placeholder="Optional" />
         </FormField>
 
         <FormField label="Seller type">
           <Select defaultValue="all">
-            <SelectTrigger className="h-9 border-border text-[13px] shadow-none"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All</SelectItem>
               <SelectItem value="dealer">Dealer</SelectItem>
@@ -93,7 +92,7 @@ export default function NewScraperPage() {
 
         <FormField label="Sort order">
           <Select defaultValue="newest">
-            <SelectTrigger className="h-9 border-border text-[13px] shadow-none"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="newest">Newest first</SelectItem>
               <SelectItem value="price_asc">Price: low to high</SelectItem>
@@ -104,7 +103,7 @@ export default function NewScraperPage() {
 
         <FormField label="Frequency">
           <Select defaultValue="30min">
-            <SelectTrigger className="h-9 border-border text-[13px] shadow-none"><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
             <SelectContent>
               <SelectItem value="30min">Every 30 minutes</SelectItem>
               <SelectItem value="1hr">Every hour</SelectItem>
@@ -115,7 +114,7 @@ export default function NewScraperPage() {
         </FormField>
 
         <FormField label="Maximum results">
-          <Input type="number" defaultValue="500" className="h-9 border-border text-[13px] shadow-none" />
+          <Input type="number" defaultValue="500" />
         </FormField>
 
         <div className="flex gap-2 border-t border-border pt-6">

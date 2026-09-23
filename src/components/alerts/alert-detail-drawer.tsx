@@ -70,7 +70,7 @@ export function AlertDetailDrawer({
       >
         <SheetHeader className="shrink-0 gap-1 border-b border-border px-5 pb-4 pt-5">
           <div className="flex items-center gap-2 pr-8">
-            <span className={`rounded-md px-2 py-0.5 text-[10px] font-bold uppercase ${style.badgeClass}`}>
+            <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${style.badgeClass}`}>
               {style.badge}
             </span>
             <PriorityBadge priority={alert.priority} />
@@ -89,7 +89,7 @@ export function AlertDetailDrawer({
                   {formatMileage(vehicle.mileage)} · {vehicle.location}
                 </p>
                 <p className="mt-1 text-[12px] text-muted-foreground">{vehicle.marketplace}</p>
-                <p className="mt-2 font-mono text-[18px] font-semibold tabular-nums">
+                <p className="text-metric mt-2 text-[19px]">
                   {formatCurrency(vehicle.price)}
                 </p>
               </div>
@@ -112,7 +112,7 @@ export function AlertDetailDrawer({
                     <XAxis dataKey="date" tick={{ fontSize: 9 }} />
                     <YAxis tick={{ fontSize: 9 }} tickFormatter={(v) => `$${(Number(v) / 1000).toFixed(0)}k`} />
                     <Tooltip formatter={(v) => formatCurrency(Number(v))} />
-                    <Line type="monotone" dataKey="price" stroke="#2563eb" strokeWidth={2} dot={false} />
+                    <Line type="monotone" dataKey="price" stroke="var(--primary)" strokeWidth={2} dot={false} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -141,7 +141,7 @@ export function AlertDetailDrawer({
                 {related.map((r) => (
                   <li
                     key={r.id}
-                    className="rounded-lg border border-border px-3 py-2 text-[12px]"
+                    className="rounded-xl bg-surface px-3 py-2 text-[12px] ring-1 ring-border"
                   >
                     <p className="font-medium">{r.title}</p>
                     <p className="text-muted-foreground">{r.postedAgo}</p>

@@ -58,15 +58,15 @@ const SELLER_LABELS: Record<string, string> = {
 };
 
 const FUEL_COLORS = [
-  "var(--primary)",
-  "#0ea5e9",
-  "#14b8a6",
-  "#8b5cf6",
-  "#f59e0b",
-  "#64748b",
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-3)",
+  "var(--chart-6)",
+  "var(--chart-4)",
+  "var(--chart-8)",
 ];
 
-const SELLER_COLORS = ["#2563eb", "#0ea5e9", "#f59e0b"];
+const SELLER_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-4)"];
 
 function toShareSlices(
   counts: Map<string, number>,
@@ -222,7 +222,7 @@ export default function DashboardPage() {
   } = getInventoryCharts();
 
   return (
-    <div className="animate-fade-in flex flex-col gap-4 md:gap-6">
+    <div className="animate-fade-in flex min-w-0 flex-col gap-7 lg:gap-9">
       <PageHeader
         className="mb-0"
         title="Dashboard"
@@ -265,7 +265,7 @@ export default function DashboardPage() {
       </KpiGrid>
 
       {/* Primary charts — 8 / 4 */}
-      <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:items-stretch">
+      <div className="grid min-w-0 grid-cols-1 gap-5 lg:gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:items-stretch">
         <DashboardSection className="lg:col-span-8 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-0">
           <SectionTitle
             className="lg:mb-0 lg:pb-4"
@@ -285,7 +285,7 @@ export default function DashboardPage() {
             action={
               <Link
                 href="/scrapers"
-                className="text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+                className="text-[13px] font-medium text-primary transition-colors hover:text-primary/80"
               >
                 Manage →
               </Link>
@@ -299,7 +299,7 @@ export default function DashboardPage() {
                 <li key={scraper.id} className="flex min-h-0 flex-1">
                   <Link
                     href={`/scrapers/${scraper.id}/live`}
-                    className="flex w-full items-center gap-3 px-5 py-4 transition-colors hover:bg-primary-soft/50"
+                    className="flex w-full items-center gap-3 px-5 py-4 transition-colors hover:bg-surface"
                   >
                     <MarketplaceMark id={scraper.id} name={scraper.name} />
                     <div className="min-w-0 flex-1">
@@ -309,7 +309,7 @@ export default function DashboardPage() {
                       <p className="text-helper">Last run {scraper.lastRun}</p>
                     </div>
                     <div className="shrink-0 text-right">
-                      <p className="font-mono text-[13px] font-medium tabular-nums text-foreground">
+                      <p className="text-metric text-[13.5px]">
                         {scraper.vehiclesFound.toLocaleString()}
                       </p>
                       <p className="mt-0.5 text-[11px] text-muted-foreground">found</p>
@@ -323,7 +323,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Inventory charts — 6 / 6 */}
-      <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:items-stretch">
+      <div className="grid min-w-0 grid-cols-1 gap-5 lg:gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:items-stretch">
         <DashboardSection className="lg:col-span-6 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-0">
           <SectionTitle
             className="lg:mb-0 lg:pb-4"
@@ -349,7 +349,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Marketplace + year mix — 6 / 6 */}
-      <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:items-stretch">
+      <div className="grid min-w-0 grid-cols-1 gap-5 lg:gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:items-stretch">
         <DashboardSection className="lg:col-span-6 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-0">
           <SectionTitle
             className="lg:mb-0 lg:pb-4"
@@ -375,7 +375,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Top markets + seller + fuel — 4 / 4 / 4 */}
-      <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:items-stretch">
+      <div className="grid min-w-0 grid-cols-1 gap-5 lg:gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:items-stretch">
         <DashboardSection className="lg:col-span-4 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-0">
           <SectionTitle
             className="lg:mb-0 lg:pb-4"
@@ -412,7 +412,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Listing age + price distribution — 6 / 6 */}
-      <div className="grid grid-cols-1 gap-4 md:gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:items-stretch">
+      <div className="grid min-w-0 grid-cols-1 gap-5 lg:gap-6 lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:items-stretch">
         <DashboardSection className="lg:col-span-6 lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:gap-0">
           <SectionTitle
             className="lg:mb-0 lg:pb-4"

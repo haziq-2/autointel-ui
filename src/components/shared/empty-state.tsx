@@ -25,14 +25,14 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface/60 px-6 py-16 text-center",
+        "flex flex-col items-center justify-center rounded-xl border border-dashed border-border-strong bg-surface/50 px-6 py-16 text-center",
         className
       )}
     >
-      <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl border border-primary/15 bg-primary-soft text-primary shadow-card">
-        <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-soft text-primary ring-1 ring-primary/10">
+        <Icon className="h-5 w-5" strokeWidth={1.75} />
       </div>
-      <p className="text-card-title font-medium">{title}</p>
+      <p className="text-card-title">{title}</p>
       <p className="mt-1.5 max-w-sm text-[13px] leading-relaxed text-muted-foreground">{description}</p>
       {actionLabel && actionHref && (
         <Link href={actionHref} className={cn(buttonVariants({ size: "sm" }), "mt-5")}>

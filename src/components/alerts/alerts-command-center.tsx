@@ -115,7 +115,7 @@ export function AlertsCommandCenter() {
       >
         <Link
           href="/alerts/rules"
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-[13px] font-medium transition-colors hover:bg-surface"
+          className="shadow-card inline-flex items-center gap-1.5 rounded-[10px] bg-card px-3 py-2 text-[13.5px] font-medium ring-1 ring-border transition-colors hover:bg-surface"
         >
           <Settings className="h-3.5 w-3.5" />
           Alert rules
@@ -126,8 +126,8 @@ export function AlertsCommandCenter() {
 
       <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[220px_1fr]">
         <aside className="hidden xl:block">
-          <div className="sticky top-6 rounded-xl border border-border bg-card p-3 shadow-card">
-            <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="surface-card sticky top-6 p-3">
+            <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               Categories
             </p>
             <AlertCategoriesSidebar
@@ -146,7 +146,7 @@ export function AlertsCommandCenter() {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as AlertCategory)}
-              className="h-9 w-full rounded-lg border border-border bg-card px-3 text-[13px]"
+              className="h-9 w-full rounded-[10px] bg-card px-3 text-[13px] ring-1 ring-border"
             >
               <option value="all">All Alerts</option>
               <option value="price_drop">Price Drops</option>
@@ -169,7 +169,7 @@ export function AlertsCommandCenter() {
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-40 animate-pulse rounded-xl border border-border bg-surface"
+                  className="h-40 animate-pulse rounded-xl bg-surface ring-1 ring-border"
                 />
               ))}
             </div>

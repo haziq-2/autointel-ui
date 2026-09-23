@@ -10,18 +10,11 @@ interface ChartCardProps {
 
 export function ChartCard({ title, description, children, className, action }: ChartCardProps) {
   return (
-    <div
-      className={cn(
-        "rounded-xl border border-border bg-card p-5 shadow-card",
-        className
-      )}
-    >
-      <div className="mb-4 flex items-start justify-between gap-2">
-        <div>
+    <div className={cn("surface-card min-w-0 p-5", className)}>
+      <div className="mb-5 flex items-start justify-between gap-3">
+        <div className="min-w-0">
           <h3 className="text-card-title">{title}</h3>
-          {description && (
-            <p className="mt-0.5 text-helper">{description}</p>
-          )}
+          {description && <p className="mt-1 text-helper">{description}</p>}
         </div>
         {action}
       </div>

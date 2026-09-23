@@ -38,8 +38,8 @@ export function ListingAgeChart({ data }: { data: AgeBucket[] }) {
           <BarChart data={data} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
             <defs>
               <linearGradient id="listingAgeBar" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#14b8a6" stopOpacity={1} />
-                <stop offset="100%" stopColor="#14b8a6" stopOpacity={0.55} />
+                <stop offset="0%" stopColor="var(--chart-3)" stopOpacity={1} />
+                <stop offset="100%" stopColor="var(--chart-3)" stopOpacity={0.5} />
               </linearGradient>
             </defs>
             <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="3 3" vertical={false} />
@@ -63,7 +63,7 @@ export function ListingAgeChart({ data }: { data: AgeBucket[] }) {
                 const point = payload[0].payload as AgeBucket;
                 const share = total > 0 ? Math.round((point.count / total) * 100) : 0;
                 return (
-                  <div className="rounded-lg border border-border bg-popover px-3 py-2 shadow-popover">
+                  <div className="rounded-xl bg-popover px-3 py-2 shadow-popover ring-1 ring-border">
                     <p className="text-[12px] font-medium text-foreground">{point.label}</p>
                     <p className="font-mono text-[13px] tabular-nums text-muted-foreground">
                       {point.count.toLocaleString()} listings · {share}%

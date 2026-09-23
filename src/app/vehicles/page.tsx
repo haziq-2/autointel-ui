@@ -24,9 +24,9 @@ import { formatCurrency, formatMileage } from "@/lib/format";
 import { Input } from "@/components/ui/input";
 import { buttonVariants } from "@/components/ui/button";
 import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger,
 } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight, Search, ArrowUpDown, Car } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, Car } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { VehicleStatus } from "@/lib/types";
 
@@ -62,7 +62,7 @@ export default function VehiclesPage() {
   const to = Math.min(page * PAGE_SIZE, total);
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in min-w-0">
       <PageHeader
         title="Vehicles"
         description={`${TOTAL_VEHICLES.toLocaleString()} live listings across ${VEHICLE_MARKETPLACES.length} sources`}
@@ -72,37 +72,57 @@ export default function VehiclesPage() {
         </button>
       </PageHeader>
 
-      <Card className="mb-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative min-w-[220px] flex-1">
+      <Card className="mb-5" padding={false}>
+        <div className="flex flex-wrap items-center gap-2 p-3">
+          <div className="relative min-w-0 flex-1 basis-full sm:min-w-[220px] sm:basis-auto">
             <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search make, model, location..."
-              className="h-8 rounded-lg border-border/60 bg-surface pl-9 text-[13px] shadow-none transition-all focus-visible:border-primary/40 focus-visible:bg-card focus-visible:ring-2 focus-visible:ring-primary/15"
+              className="h-9 border-transparent bg-surface pl-9 text-[13px] shadow-none transition-all focus-visible:bg-card"
               value={search}
               onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             />
           </div>
-          <FilterSelect value={marketplace} onChange={(v) => { setMarketplace(v); setPage(1); }} label="Source" width="w-[168px]">
-            <SelectItem value="all">All sources</SelectItem>
-            {VEHICLE_MARKETPLACES.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
-          </FilterSelect>
-          <FilterSelect value={make} onChange={(v) => { setMake(v); setPage(1); }} label="Make" width="w-[128px]">
-            <SelectItem value="all">All makes</SelectItem>
-            {VEHICLE_MAKES.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
-          </FilterSelect>
-          <FilterSelect value={status} onChange={(v) => { setStatus(v as VehicleStatus | "all"); setPage(1); }} label="Status" width="w-[128px]">
-            <SelectItem value="all">All status</SelectItem>
-            <SelectItem value="new">New</SelectItem>
-            <SelectItem value="reviewed">Reviewed</SelectItem>
-            <SelectItem value="saved">Saved</SelectItem>
-            <SelectItem value="archived">Archived</SelectItem>
-          </FilterSelect>
-          <FilterSelect value={sortBy} onChange={(v) => setSortBy(v as typeof sortBy)} label="Sort" width="w-[148px]">
-            <SelectItem value="dateFound">Date found</SelectItem>
-            <SelectItem value="price">Price</SelectItem>
-            <SelectItem value="opportunityScore">Opportunity</SelectItem>
-          </FilterSelect>
+          <FilterSelect
+            value={marketplace}
+            onChange={(v) => { setMarketplace(v); setPage(1); }}
+            label="Source"
+            options={[
+              { value: "all", label: "All sources" },
+              ...VEHICLE_MARKETPLACES.map((m) => ({ value: m, label: m })),
+            ]}
+          />
+          <FilterSelect
+            value={make}
+            onChange={(v) => { setMake(v); setPage(1); }}
+            label="Make"
+            options={[
+              { value: "all", label: "All makes" },
+              ...VEHICLE_MAKES.map((m) => ({ value: m, label: m })),
+            ]}
+          />
+          <FilterSelect
+            value={status}
+            onChange={(v) => { setStatus(v as VehicleStatus | "all"); setPage(1); }}
+            label="Status"
+            options={[
+              { value: "all", label: "All statuses" },
+              { value: "new", label: "New" },
+              { value: "reviewed", label: "Reviewed" },
+              { value: "saved", label: "Saved" },
+              { value: "archived", label: "Archived" },
+            ]}
+          />
+          <FilterSelect
+            value={sortBy}
+            onChange={(v) => setSortBy(v as typeof sortBy)}
+            label="Sort"
+            options={[
+              { value: "dateFound", label: "Date found" },
+              { value: "price", label: "Price" },
+              { value: "opportunityScore", label: "Opportunity" },
+            ]}
+          />
         </div>
       </Card>
 
@@ -126,20 +146,12 @@ export default function VehiclesPage() {
         <DataTable maxHeight="calc(100vh - 300px)">
           <DataTableHead>
             <tr>
-              <DataTableHeaderCell>
-                <span className="inline-flex items-center gap-1.5">
-                  Vehicle
-                  <ArrowUpDown className="h-3 w-3 text-muted-foreground" />
-                </span>
-              </DataTableHeaderCell>
-              <DataTableHeaderCell>Year</DataTableHeaderCell>
-              <DataTableHeaderCell>Make</DataTableHeaderCell>
-              <DataTableHeaderCell>Model</DataTableHeaderCell>
-              <DataTableHeaderCell align="right">Price</DataTableHeaderCell>
-              <DataTableHeaderCell align="right">Mileage</DataTableHeaderCell>
-              <DataTableHeaderCell>Location</DataTableHeaderCell>
-              <DataTableHeaderCell>Source</DataTableHeaderCell>
-              <DataTableHeaderCell>Found</DataTableHeaderCell>
+              <DataTableHeaderCell>Vehicle</DataTableHeaderCell>
+              <DataTableHeaderCell align="right" className="w-[6.25rem]">Price</DataTableHeaderCell>
+              <DataTableHeaderCell align="right" className="hidden w-[6.5rem] sm:table-cell">Mileage</DataTableHeaderCell>
+              <DataTableHeaderCell className="hidden w-[9.5rem] lg:table-cell">Location</DataTableHeaderCell>
+              <DataTableHeaderCell className="hidden w-[11.5rem] md:table-cell">Source</DataTableHeaderCell>
+              <DataTableHeaderCell className="hidden w-[8rem] xl:table-cell">Found</DataTableHeaderCell>
             </tr>
           </DataTableHead>
           <tbody>
@@ -148,32 +160,29 @@ export default function VehiclesPage() {
                 <DataTableCell>
                   <Link
                     href={`/vehicles/${v.id}`}
-                    className="group flex items-center gap-3"
+                    className="group flex w-full min-w-0 items-center gap-3"
                   >
                     <VehicleImage
                       title={v.title}
                       bodyStyle={v.bodyStyle}
                       imageUrl={v.imageUrl}
-                      className="h-9 w-12 shrink-0 rounded-md border border-border"
+                      className="h-9 w-12 shrink-0 rounded-lg ring-1 ring-border"
                       iconClassName="h-4 w-4"
                     />
-                    <span className="font-medium text-foreground transition-colors group-hover:text-primary">
+                    <span className="min-w-0 flex-1 truncate font-medium text-foreground transition-colors group-hover:text-primary">
                       {v.title}
                     </span>
                   </Link>
                 </DataTableCell>
-                <DataTableCell className="font-mono tabular-nums text-muted-foreground">{v.year}</DataTableCell>
-                <DataTableCell className="text-muted-foreground">{v.make}</DataTableCell>
-                <DataTableCell className="text-muted-foreground">{v.model}</DataTableCell>
-                <DataTableCell align="right" className="font-mono font-medium tabular-nums">
+                <DataTableCell align="right" className="text-metric whitespace-nowrap text-[13px]">
                   {v.price > 0 ? formatCurrency(v.price) : "—"}
                 </DataTableCell>
-                <DataTableCell align="right" className="font-mono tabular-nums text-muted-foreground">
+                <DataTableCell align="right" className="hidden whitespace-nowrap font-mono tabular-nums text-muted-foreground sm:table-cell">
                   {v.mileage > 0 ? formatMileage(v.mileage) : "—"}
                 </DataTableCell>
-                <DataTableCell className="text-muted-foreground">{v.location}</DataTableCell>
-                <DataTableCell className="text-muted-foreground">{v.marketplace}</DataTableCell>
-                <DataTableCell className="font-mono text-muted-foreground tabular-nums">{v.dateFound}</DataTableCell>
+                <DataTableCell className="hidden truncate text-muted-foreground lg:table-cell">{v.location}</DataTableCell>
+                <DataTableCell className="hidden truncate text-muted-foreground md:table-cell">{v.marketplace}</DataTableCell>
+                <DataTableCell className="hidden whitespace-nowrap font-mono text-muted-foreground tabular-nums xl:table-cell">{v.dateFound}</DataTableCell>
               </DataTableRow>
             ))}
           </tbody>
@@ -181,7 +190,7 @@ export default function VehiclesPage() {
       )}
 
       {!loading && vehicles.length > 0 && (
-        <div className="mt-4 flex items-center justify-between">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
           <p className="text-helper">
             Showing {from}–{to} of {total.toLocaleString()}
           </p>
@@ -190,7 +199,7 @@ export default function VehiclesPage() {
               type="button"
               disabled={page <= 1}
               onClick={() => setPage((p) => p - 1)}
-              className={cn(buttonVariants({ variant: "outline", size: "sm" }), "h-8 w-8 p-0")}
+              className={cn(buttonVariants({ variant: "outline", size: "sm" }), "size-8 p-0")}
             >
               <ChevronLeft className="h-3.5 w-3.5" />
             </button>
@@ -201,7 +210,7 @@ export default function VehiclesPage() {
               type="button"
               disabled={page >= totalPages}
               onClick={() => setPage((p) => p + 1)}
-              className={cn(buttonVariants({ variant: "outline", size: "sm" }), "h-8 w-8 p-0")}
+              className={cn(buttonVariants({ variant: "outline", size: "sm" }), "size-8 p-0")}
             >
               <ChevronRight className="h-3.5 w-3.5" />
             </button>
@@ -216,25 +225,31 @@ function FilterSelect({
   value,
   onChange,
   label,
-  width,
-  children,
+  options,
 }: {
   value: string;
   onChange: (v: string) => void;
   label: string;
-  width: string;
-  children: React.ReactNode;
+  options: { value: string; label: string }[];
 }) {
+  const selected = options.find((option) => option.value === value)?.label ?? value;
+
   return (
-    <Select value={value} onValueChange={(v) => onChange(v ?? "all")}>
-      <SelectTrigger className={cn("h-8 rounded-lg border-border bg-card text-[13px] shadow-none", width)}>
-        <span className="flex w-full items-center gap-1.5 overflow-hidden">
+    <Select value={value} onValueChange={(v) => onChange(v ?? options[0]?.value ?? "all")}>
+      <SelectTrigger className="h-9 w-full min-w-0 max-w-full border-transparent bg-surface text-[13px] shadow-none hover:bg-surface-hover sm:w-auto">
+        <span className="flex min-w-0 items-center gap-1.5">
           <span className="shrink-0 text-muted-foreground">{label}</span>
-          <span className="shrink-0 text-border">·</span>
-          <SelectValue />
+          <span className="shrink-0 text-border-strong">·</span>
+          <span className="truncate text-foreground">{selected}</span>
         </span>
       </SelectTrigger>
-      <SelectContent>{children}</SelectContent>
+      <SelectContent>
+        {options.map((option) => (
+          <SelectItem key={option.value} value={option.value}>
+            {option.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
     </Select>
   );
 }

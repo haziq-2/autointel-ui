@@ -16,11 +16,11 @@ const MARKETPLACE_COLORS: Record<string, string> = {
 };
 
 const FALLBACK_COLORS = [
-  "var(--primary)",
-  "#0ea5e9",
-  "#f59e0b",
-  "#f43f5e",
-  "#64748b",
+  "var(--chart-1)",
+  "var(--chart-2)",
+  "var(--chart-4)",
+  "var(--chart-5)",
+  "var(--chart-8)",
 ];
 
 function colorForMarketplace(name: string, index: number): string {
@@ -55,7 +55,7 @@ export function MarketplaceChart({ data }: { data: MarketplaceSlice[] }) {
                 if (!active || !payload?.length) return null;
                 const point = payload[0].payload as MarketplaceSlice;
                 return (
-                  <div className="rounded-lg border border-border bg-popover px-3 py-2 shadow-popover">
+                  <div className="rounded-xl bg-popover px-3 py-2 shadow-popover ring-1 ring-border">
                     <p className="text-[12px] font-medium text-foreground">{point.name}</p>
                     <p className="font-mono text-[13px] tabular-nums text-muted-foreground">
                       {point.count.toLocaleString()} · {point.share}%

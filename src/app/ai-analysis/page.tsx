@@ -47,10 +47,10 @@ export default function AiAnalysisPage() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-7rem)] flex-col">
+    <div className="flex h-[calc(100vh-7rem)] min-w-0 flex-col">
       <PageHeader title="AI Assistant" description="Natural language intelligence across your automotive data" />
 
-      <div className="flex min-h-0 flex-1 gap-8">
+      <div className="flex min-h-0 min-w-0 flex-1 gap-8">
         <div className="hidden w-56 shrink-0 md:block">
           <p className="mb-3 text-label">Suggested</p>
           <div className="space-y-0.5">
@@ -59,7 +59,7 @@ export default function AiAnalysisPage() {
                 key={p}
                 type="button"
                 onClick={() => send(p)}
-                className="w-full rounded-lg px-2.5 py-2 text-left text-[13px] leading-snug text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
+                className="w-full rounded-[10px] px-3 py-2 text-left text-[13px] leading-snug text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground"
               >
                 {p}
               </button>
@@ -67,7 +67,7 @@ export default function AiAnalysisPage() {
           </div>
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col rounded-xl border border-border">
+        <div className="surface-card flex min-w-0 flex-1 flex-col">
           <ScrollArea className="flex-1 p-6">
             <div className="mx-auto max-w-2xl space-y-6">
               {messages.map((msg, i) => (
@@ -75,7 +75,7 @@ export default function AiAnalysisPage() {
                   <div
                     className={
                       msg.role === "user"
-                        ? "max-w-[85%] rounded-2xl rounded-br-md bg-accent px-4 py-2.5 text-[13px] leading-relaxed"
+                        ? "max-w-[85%] rounded-2xl rounded-br-md bg-primary px-4 py-2.5 text-[13px] leading-relaxed text-primary-foreground"
                         : "max-w-[90%] text-[13px] leading-relaxed text-foreground whitespace-pre-wrap"
                     }
                   >
@@ -93,10 +93,10 @@ export default function AiAnalysisPage() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && send(input)}
                 placeholder="Ask a question..."
-                className="h-9 border-border text-[13px] shadow-none"
+                className="h-10 rounded-xl bg-surface text-[13.5px]"
                 disabled={loading}
               />
-              <Button size="sm" className="h-9 px-3" onClick={() => send(input)} disabled={loading || !input.trim()}>
+              <Button className="h-10 w-10 rounded-xl p-0" onClick={() => send(input)} disabled={loading || !input.trim()}>
                 <Send className="h-3.5 w-3.5" />
               </Button>
             </div>

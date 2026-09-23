@@ -21,7 +21,7 @@ export function NotificationCenter() {
       <SheetTrigger
         className={cn(
           buttonVariants({ variant: "ghost", size: "icon" }),
-          "relative h-8 w-8 text-muted-foreground"
+          "relative h-9 w-9 text-muted-foreground"
         )}
       >
         <Bell className="h-4 w-4" />
@@ -76,8 +76,8 @@ export function NotificationCenter() {
                   <Link
                     href={`/vehicles/${alert.vehicleId}`}
                     className={cn(
-                      "block rounded-xl border p-4 transition-colors hover:bg-surface",
-                      alert.read ? "border-border bg-card" : "border-primary/30 bg-primary-soft/50"
+                      "block rounded-xl p-4 ring-1 transition-colors hover:bg-surface",
+                      alert.read ? "bg-card ring-border" : "bg-primary-soft/60 ring-primary/25"
                     )}
                   >
                     <div className="flex items-start justify-between gap-2">
@@ -90,7 +90,7 @@ export function NotificationCenter() {
                     </div>
                     <p className="mt-2 text-[14px] font-semibold text-foreground">{alert.title}</p>
                     {price != null && (
-                      <p className="mt-2 font-mono text-[13px] font-semibold tabular-nums">
+                      <p className="text-metric mt-2 text-[14px]">
                         {formatCurrency(price)}
                       </p>
                     )}

@@ -37,11 +37,11 @@ export const OPPORTUNITY_LABEL_DISPLAY: Record<
   OpportunityLabel,
   { label: string; emoji: string; className: string }
 > = {
-  excellent_buy: { label: "Excellent Buy", emoji: "🔥", className: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-  strong_opportunity: { label: "Strong Opportunity", emoji: "🟢", className: "bg-green-50 text-green-700 border-green-200" },
-  worth_reviewing: { label: "Worth Reviewing", emoji: "🟡", className: "bg-amber-50 text-amber-700 border-amber-200" },
-  high_risk: { label: "High Risk", emoji: "🟠", className: "bg-orange-50 text-orange-700 border-orange-200" },
-  avoid: { label: "Avoid", emoji: "🔴", className: "bg-red-50 text-red-700 border-red-200" },
+  excellent_buy: { label: "Excellent Buy", emoji: "🔥", className: "bg-[var(--tint-success-bg)] text-[var(--tint-success-fg)] border-transparent" },
+  strong_opportunity: { label: "Strong Opportunity", emoji: "🟢", className: "bg-[var(--tint-success-bg)] text-[var(--tint-success-fg)] border-transparent" },
+  worth_reviewing: { label: "Worth Reviewing", emoji: "🟡", className: "bg-[var(--tint-warning-bg)] text-[var(--tint-warning-fg)] border-transparent" },
+  high_risk: { label: "High Risk", emoji: "🟠", className: "bg-[var(--tint-warning-bg)] text-[var(--tint-warning-fg)] border-transparent" },
+  avoid: { label: "Avoid", emoji: "🔴", className: "bg-[var(--tint-danger-bg)] text-[var(--tint-danger-fg)] border-transparent" },
 };
 
 export function getVehicleOpportunityIntel(vehicleId: string): VehicleOpportunityIntel | null {

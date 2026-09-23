@@ -105,7 +105,7 @@ export const SELLER_PROFILES: SellerProfile[] = [
 export const MARKETPLACE_METRICS: MarketplaceMetrics[] = [
   { id: "craigslist", name: "Craigslist", listings: 6950, growthRate: 4.2, avgPriceChange: -1.8, qualityScore: 68, duplicateRate: 8.6, regionsCovered: 10, dailyVolume: 232, health: "good" },
   { id: "cargurus", name: "CarGurus", listings: 2107, growthRate: 6.1, avgPriceChange: -0.9, qualityScore: 91, duplicateRate: 1.8, regionsCovered: 12, dailyVolume: 70, health: "excellent" },
-  { id: "facebook", name: "Facebook Marketplace", listings: 1635, growthRate: 8.4, avgPriceChange: -1.2, qualityScore: 78, duplicateRate: 4.2, regionsCovered: 12, dailyVolume: 55, health: "excellent" },
+  { id: "facebook", name: "Facebook Marketplace", listings: 1673, growthRate: 8.4, avgPriceChange: -1.2, qualityScore: 78, duplicateRate: 4.2, regionsCovered: 12, dailyVolume: 56, health: "excellent" },
 ];
 
 export const FLEET_VEHICLES: FleetVehicle[] = [

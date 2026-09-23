@@ -47,7 +47,7 @@ export default async function VehicleDetailPage({
         title={vehicle.title}
         bodyStyle={vehicle.bodyStyle}
         imageUrl={vehicle.imageUrl}
-        className="mb-8 h-72 w-full rounded-xl border border-border"
+        className="shadow-card mb-8 h-72 w-full rounded-2xl ring-1 ring-border"
         iconClassName="h-20 w-20"
       />
 
@@ -57,7 +57,7 @@ export default async function VehicleDetailPage({
           <p className="mt-2 text-body text-muted-foreground">
             {vehicle.marketplace} · Found {vehicle.dateFound}
           </p>
-          <p className="mt-4 font-mono text-2xl font-semibold tracking-tight tabular-nums">
+          <p className="text-metric mt-4 text-[1.75rem]">
             {vehicle.price > 0 ? formatCurrency(vehicle.price) : "—"}
           </p>
         </div>
@@ -82,7 +82,7 @@ export default async function VehicleDetailPage({
         <div className="space-y-10 lg:col-span-2">
           <section>
             <SectionTitle>Vehicle information</SectionTitle>
-            <dl className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
+            <dl className="surface-card grid grid-cols-2 gap-x-8 gap-y-5 p-5 sm:grid-cols-3">
               <Field label="Year" value={vehicle.year ? String(vehicle.year) : "—"} mono />
               <Field label="Make" value={vehicle.make || "—"} />
               <Field label="Model" value={vehicle.model || "—"} />
@@ -124,7 +124,7 @@ export default async function VehicleDetailPage({
                 {vehicle.priceHistory?.map((p, i) => (
                   <DataTableRow key={`${p.date}-${p.price}-${i}`}>
                     <DataTableCell className="font-mono text-muted-foreground">{p.date}</DataTableCell>
-                    <DataTableCell align="right" className="font-mono font-medium tabular-nums">
+                    <DataTableCell align="right" className="text-metric text-[13px]">
                       {formatCurrency(p.price)}
                     </DataTableCell>
                   </DataTableRow>
@@ -143,25 +143,25 @@ export default async function VehicleDetailPage({
 
           <section>
             <SectionTitle>Similar vehicles</SectionTitle>
-            <div className="divide-y divide-border border-y border-border">
+            <div className="surface-card divide-y divide-border overflow-hidden">
               {similar.map((v) => (
                 <Link
                   key={v.id}
                   href={`/vehicles/${v.id}`}
-                  className="flex items-center gap-4 py-3 transition-colors hover:bg-surface"
+                  className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-surface"
                 >
                   <VehicleImage
                     title={v.title}
                     bodyStyle={v.bodyStyle}
                     imageUrl={v.imageUrl}
-                    className="h-9 w-12 shrink-0 rounded-md border border-border"
+                    className="h-9 w-12 shrink-0 rounded-lg ring-1 ring-border"
                     iconClassName="h-4 w-4"
                   />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[13px] font-medium">{v.title}</p>
                     <p className="text-label">{v.location}</p>
                   </div>
-                  <p className="font-mono text-[13px] tabular-nums">{formatCurrency(v.price)}</p>
+                  <p className="text-metric text-[13px]">{formatCurrency(v.price)}</p>
                 </Link>
               ))}
             </div>
@@ -169,12 +169,12 @@ export default async function VehicleDetailPage({
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-xl border border-border bg-card p-5 shadow-card">
+          <div className="surface-card p-5">
             <SectionTitle>Seller</SectionTitle>
             <dl className="mt-3 space-y-2 text-[13px]">
-              <div className="flex justify-between">
-                <dt className="text-muted-foreground">Name</dt>
-                <dd className="font-medium">{vehicle.seller}</dd>
+              <div className="flex min-w-0 justify-between gap-3">
+                <dt className="shrink-0 text-muted-foreground">Name</dt>
+                <dd className="min-w-0 truncate text-right font-medium">{vehicle.seller}</dd>
               </div>
               <div className="flex justify-between capitalize">
                 <dt className="text-muted-foreground">Type</dt>
@@ -192,7 +192,7 @@ function Field({ label, value, mono }: { label: string; value: string; mono?: bo
   return (
     <div>
       <dt className="text-label">{label}</dt>
-      <dd className={cn("mt-1 text-[13px] font-medium capitalize text-foreground", mono && "font-mono normal-case")}>
+      <dd className={cn("mt-1 truncate text-[13px] font-medium capitalize text-foreground", mono && "font-mono normal-case")}>
         {value}
       </dd>
     </div>
