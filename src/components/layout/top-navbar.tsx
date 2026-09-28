@@ -52,7 +52,7 @@ export function TopNavbar() {
                     href={item.href}
                     className={cn(
                       "block rounded-[10px] px-3 py-[7px] text-[13.5px] transition-colors",
-                      pathname.startsWith(item.href) || (item.href === "/" && pathname === "/")
+                      item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)
                         ? "bg-primary-soft font-medium text-primary"
                         : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
                     )}

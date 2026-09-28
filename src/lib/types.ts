@@ -277,10 +277,17 @@ export interface VehicleFilters {
   search?: string;
   marketplace?: string;
   make?: string;
+  bodyStyle?: string;
+  fuelType?: string;
+  sellerType?: string;
   status?: VehicleStatus | "all";
   minPrice?: number;
   maxPrice?: number;
-  sortBy?: "dateFound" | "price" | "opportunityScore" | "aiScore";
+  minYear?: number;
+  maxYear?: number;
+  maxMileage?: number;
+  minMileage?: number;
+  sortBy?: "dateFound" | "price" | "year" | "mileage" | "opportunityScore" | "aiScore";
   sortDir?: "asc" | "desc";
 }
 

@@ -29,8 +29,9 @@ const SOURCE_ALIASES: Record<string, string> = {
   facebook: "Facebook Marketplace",
   "facebook marketplace": "Facebook Marketplace",
   craigslist: "Craigslist",
-  autotrader: "CarGurus",
-  cargurus: "CarGurus",
+  autotrader: "OfferUp",
+  cargurus: "OfferUp",
+  offerup: "OfferUp",
 };
 
 const KNOWN_MAKES: Record<string, string> = {
@@ -230,7 +231,7 @@ function inferSellerType(
 ): "dealer" | "private" | "auction" {
   if (/auction/i.test(seller)) return "auction";
   if (
-    marketplace === "CarGurus" ||
+    marketplace === "OfferUp" ||
     /dealer|motors|auto\b|sales|group|of dallas|of houston|of austin/i.test(seller)
   ) {
     return "dealer";
@@ -310,8 +311,8 @@ function mapListing(raw: RawListing): VehicleListing {
     raw.seller ||
     (marketplace === "Craigslist"
       ? "Private seller"
-      : marketplace === "CarGurus"
-        ? "Dealer"
+      : marketplace === "OfferUp"
+        ? "Private Seller"
         : "Private Seller");
   const condition = normalizeCondition(raw.condition);
   const transmission = normalizeTransmission(raw.transmission);
@@ -384,6 +385,33 @@ export const VEHICLE_MARKETPLACES = Array.from(
   new Set(getAllVehicles().map((v) => v.marketplace).filter(Boolean))
 ).sort();
 
+const BODY_ORDER = ["Sedan", "Coupe", "SUV", "Truck", "Van", "Motorcycle", "ATV", "RV", "Boat"];
+const FUEL_ORDER = ["Gasoline", "Diesel", "Hybrid", "Plug-in Hybrid", "Electric"];
+
+function orderedUnique(values: string[], preferred: string[]) {
+  const present = new Set(values.filter((value) => value && value !== "—"));
+  const ranked = preferred.filter((value) => present.has(value));
+  const rest = [...present].filter((value) => !preferred.includes(value)).sort();
+  return [...ranked, ...rest];
+}
+
+export const VEHICLE_BODY_STYLES = orderedUnique(
+  getAllVehicles().map((v) => v.bodyStyle),
+  BODY_ORDER
+);
+
+export const VEHICLE_FUELS = orderedUnique(
+  getAllVehicles().map((v) => v.fuelType),
+  FUEL_ORDER
+);
+
+const listingYears = getAllVehicles()
+  .map((v) => v.year)
+  .filter((year) => year >= 1980);
+
+export const VEHICLE_YEAR_MIN = listingYears.length ? Math.min(...listingYears) : 1980;
+export const VEHICLE_YEAR_MAX = listingYears.length ? Math.max(...listingYears) : new Date().getFullYear();
+
 const LOCATIONS = Array.from(new Set(getAllVehicles().map((v) => v.location).filter((l) => l && l !== "—")));
 
 export const SCRAPE_CITIES = LOCATIONS;
@@ -417,6 +445,18 @@ export function getVehicleById(id: string): VehicleListing | undefined {
   return getAllVehicles().find((v) => v.id === id);
 }
 
+function sortValue(
+  vehicle: VehicleListing,
+  sortBy: NonNullable<VehicleFilters["sortBy"]>,
+  sortDir: "asc" | "desc"
+): string | number {
+  const missing = sortDir === "asc" ? Number.POSITIVE_INFINITY : Number.NEGATIVE_INFINITY;
+  if (sortBy === "price") return vehicle.price > 0 ? vehicle.price : missing;
+  if (sortBy === "mileage") return vehicle.mileage > 0 ? vehicle.mileage : missing;
+  if (sortBy === "year") return vehicle.year >= 1980 ? vehicle.year : missing;
+  return vehicle[sortBy] as string | number;
+}
+
 export function queryVehicles(
   filters: VehicleFilters,
   page: number,
@@ -441,17 +481,52 @@ export function queryVehicles(
   if (filters.make && filters.make !== "all") {
     items = items.filter((v) => v.make === filters.make);
   }
+  if (filters.bodyStyle && filters.bodyStyle !== "all") {
+    items = items.filter((v) => v.bodyStyle === filters.bodyStyle);
+  }
+  if (filters.fuelType && filters.fuelType !== "all") {
+    items = items.filter((v) => v.fuelType === filters.fuelType);
+  }
+  if (filters.sellerType && filters.sellerType !== "all") {
+    items = items.filter((v) => v.sellerType === filters.sellerType);
+  }
   if (filters.status && filters.status !== "all") {
     items = items.filter((v) => v.status === filters.status);
   }
-  if (filters.minPrice) items = items.filter((v) => v.price >= filters.minPrice!);
-  if (filters.maxPrice) items = items.filter((v) => v.price <= filters.maxPrice!);
+  if (filters.minPrice != null || filters.maxPrice != null) {
+    items = items.filter((v) => {
+      if (v.price <= 0) return false;
+      if (filters.minPrice != null && v.price < filters.minPrice) return false;
+      if (filters.maxPrice != null && v.price > filters.maxPrice) return false;
+      return true;
+    });
+  }
+  if (filters.minYear != null || filters.maxYear != null) {
+    const minYear = filters.minYear;
+    const maxYear = filters.maxYear;
+    const low = minYear != null && maxYear != null ? Math.min(minYear, maxYear) : minYear;
+    const high = minYear != null && maxYear != null ? Math.max(minYear, maxYear) : maxYear;
+    items = items.filter((v) => {
+      if (!v.year || v.year < 1980) return false;
+      if (low != null && v.year < low) return false;
+      if (high != null && v.year > high) return false;
+      return true;
+    });
+  }
+  if (filters.minMileage != null || filters.maxMileage != null) {
+    items = items.filter((v) => {
+      if (v.mileage <= 0) return false;
+      if (filters.minMileage != null && v.mileage < filters.minMileage) return false;
+      if (filters.maxMileage != null && v.mileage > filters.maxMileage) return false;
+      return true;
+    });
+  }
 
   const sortBy = filters.sortBy ?? "dateFound";
   const sortDir = filters.sortDir ?? "desc";
   items = [...items].sort((a, b) => {
-    const av = a[sortBy] as string | number;
-    const bv = b[sortBy] as string | number;
+    const av = sortValue(a, sortBy, sortDir);
+    const bv = sortValue(b, sortBy, sortDir);
     if (av < bv) return sortDir === "asc" ? -1 : 1;
     if (av > bv) return sortDir === "asc" ? 1 : -1;
     return 0;

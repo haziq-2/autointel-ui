@@ -57,11 +57,11 @@ const MESSAGE_TEMPLATES: Record<string, string[]> = {
     "Matched private seller in {city}",
     "Enriched listing from {city}",
   ],
-  cargurus: [
-    "Loading CarGurus results — {city}",
-    "Found 2020 Honda CR-V in {city} — $24,800",
-    "Dealer listing updated in {city}",
-    "Scanned result pages for {city}",
+  offerup: [
+    "Scanning OfferUp — {city}",
+    "Found 2018 Toyota Camry in {city} — $14,500",
+    "New private seller listing in {city}",
+    "Indexed OfferUp results for {city}",
   ],
 };
 

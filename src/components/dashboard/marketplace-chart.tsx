@@ -12,7 +12,7 @@ export interface MarketplaceSlice {
 const MARKETPLACE_COLORS: Record<string, string> = {
   Craigslist: "#5B21B6",
   "Facebook Marketplace": "#1877F2",
-  CarGurus: "#3DCD58",
+  OfferUp: "#00A87E",
 };
 
 const FALLBACK_COLORS = [

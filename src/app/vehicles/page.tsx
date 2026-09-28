@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { VehicleImage } from "@/components/shared/vehicle-image";
@@ -17,8 +18,12 @@ import {
 import {
   queryVehicles,
   TOTAL_VEHICLES,
+  VEHICLE_BODY_STYLES,
+  VEHICLE_FUELS,
   VEHICLE_MAKES,
   VEHICLE_MARKETPLACES,
+  VEHICLE_YEAR_MAX,
+  VEHICLE_YEAR_MIN,
 } from "@/lib/mock-data/generate-vehicles";
 import { formatCurrency, formatMileage } from "@/lib/format";
 import { Input } from "@/components/ui/input";
@@ -32,29 +37,117 @@ import type { VehicleStatus } from "@/lib/types";
 
 const PAGE_SIZE = 50;
 
+const YEAR_OPTIONS = Array.from(
+  { length: VEHICLE_YEAR_MAX - VEHICLE_YEAR_MIN + 1 },
+  (_, index) => VEHICLE_YEAR_MAX - index
+);
+
+const SORT_OPTIONS = [
+  { value: "dateFound:desc", label: "Newest found" },
+  { value: "dateFound:asc", label: "Oldest found" },
+  { value: "price:asc", label: "Price: low to high" },
+  { value: "price:desc", label: "Price: high to low" },
+  { value: "year:desc", label: "Year: newest" },
+  { value: "year:asc", label: "Year: oldest" },
+  { value: "mileage:asc", label: "Mileage: low to high" },
+  { value: "mileage:desc", label: "Mileage: high to low" },
+  { value: "opportunityScore:desc", label: "Opportunity" },
+] as const;
+
+const MILEAGE_OPTIONS = [
+  { value: "all", label: "Any mileage" },
+  { value: "30000", label: "Under 30k mi" },
+  { value: "60000", label: "Under 60k mi" },
+  { value: "100000", label: "Under 100k mi" },
+  { value: "150000", label: "Under 150k mi" },
+  { value: "150000+", label: "150k+ mi" },
+];
+
+function parseMoney(value: string): number | undefined {
+  const digits = value.replace(/[^\d]/g, "");
+  if (!digits) return undefined;
+  return Number(digits);
+}
+
+function moneyParam(value: string | null): string {
+  if (!value) return "";
+  const n = Number(value);
+  return Number.isFinite(n) && n > 0 ? String(Math.round(n)) : "";
+}
+
 export default function VehiclesPage() {
+  const params = useSearchParams();
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [marketplace, setMarketplace] = useState("all");
-  const [make, setMake] = useState("all");
-  const [status, setStatus] = useState<VehicleStatus | "all">("all");
-  const [sortBy, setSortBy] = useState<"dateFound" | "price" | "opportunityScore">("dateFound");
+  const [search, setSearch] = useState(() => params.get("search") ?? "");
+  const [marketplace, setMarketplace] = useState(() => params.get("marketplace") ?? "all");
+  const [make, setMake] = useState(() => params.get("make") ?? "all");
+  const [bodyStyle, setBodyStyle] = useState(() => params.get("bodyStyle") ?? "all");
+  const [fuelType, setFuelType] = useState(() => params.get("fuelType") ?? "all");
+  const [sellerType, setSellerType] = useState(() => params.get("sellerType") ?? "all");
+  const [status, setStatus] = useState<VehicleStatus | "all">(() => (params.get("status") as VehicleStatus) ?? "all");
+  const [minYear, setMinYear] = useState(() => params.get("minYear") ?? "all");
+  const [maxYear, setMaxYear] = useState(() => params.get("maxYear") ?? "all");
+  const [mileage, setMileage] = useState("all");
+  const [sort, setSort] = useState(() => {
+    const by = params.get("sortBy") ?? "dateFound";
+    const dir = params.get("sortDir") ?? "desc";
+    const value = `${by}:${dir}`;
+    return SORT_OPTIONS.some((option) => option.value === value) ? value : "dateFound:desc";
+  });
+  const [minPriceText, setMinPriceText] = useState(() => moneyParam(params.get("minPrice")));
+  const [maxPriceText, setMaxPriceText] = useState(() => moneyParam(params.get("maxPrice")));
+  const [minPrice, setMinPrice] = useState<number | undefined>(() => parseMoney(moneyParam(params.get("minPrice"))));
+  const [maxPrice, setMaxPrice] = useState<number | undefined>(() => parseMoney(moneyParam(params.get("maxPrice"))));
   const [loading, setLoading] = useState(true);
+  const priceReady = useRef(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMinPrice(parseMoney(minPriceText));
+      setMaxPrice(parseMoney(maxPriceText));
+      if (priceReady.current) setPage(1);
+      priceReady.current = true;
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [minPriceText, maxPriceText]);
+
+  const [sortBy, sortDir] = sort.split(":") as [
+    "dateFound" | "price" | "year" | "mileage" | "opportunityScore",
+    "asc" | "desc",
+  ];
+  const mileageMax = mileage.endsWith("+") ? undefined : mileage === "all" ? undefined : Number(mileage);
+  const mileageMin = mileage.endsWith("+") ? Number(mileage.replace("+", "")) : undefined;
 
   useEffect(() => {
     setLoading(true);
     const t = setTimeout(() => setLoading(false), 280);
     return () => clearTimeout(t);
-  }, [search, marketplace, make, status, sortBy, page]);
+  }, [search, marketplace, make, bodyStyle, fuelType, sellerType, status, sort, minYear, maxYear, mileage, minPrice, maxPrice, page]);
 
   const { vehicles, total } = useMemo(
     () =>
       queryVehicles(
-        { search, marketplace, make, status, sortBy, sortDir: "desc" },
+        {
+          search,
+          marketplace,
+          make,
+          bodyStyle,
+          fuelType,
+          sellerType,
+          status,
+          sortBy,
+          sortDir,
+          minPrice,
+          maxPrice,
+          minYear: minYear === "all" ? undefined : Number(minYear),
+          maxYear: maxYear === "all" ? undefined : Number(maxYear),
+          minMileage: mileageMin,
+          maxMileage: mileageMax,
+        },
         page,
         PAGE_SIZE
       ),
-    [search, marketplace, make, status, sortBy, page]
+    [search, marketplace, make, bodyStyle, fuelType, sellerType, status, sortBy, sortDir, minPrice, maxPrice, minYear, maxYear, mileageMin, mileageMax, page]
   );
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -102,6 +195,24 @@ export default function VehiclesPage() {
             ]}
           />
           <FilterSelect
+            value={bodyStyle}
+            onChange={(v) => { setBodyStyle(v); setPage(1); }}
+            label="Body"
+            options={[
+              { value: "all", label: "All bodies" },
+              ...VEHICLE_BODY_STYLES.map((style) => ({ value: style, label: style })),
+            ]}
+          />
+          <FilterSelect
+            value={fuelType}
+            onChange={(v) => { setFuelType(v); setPage(1); }}
+            label="Fuel"
+            options={[
+              { value: "all", label: "All fuels" },
+              ...VEHICLE_FUELS.map((fuel) => ({ value: fuel, label: fuel })),
+            ]}
+          />
+          <FilterSelect
             value={status}
             onChange={(v) => { setStatus(v as VehicleStatus | "all"); setPage(1); }}
             label="Status"
@@ -113,15 +224,64 @@ export default function VehiclesPage() {
               { value: "archived", label: "Archived" },
             ]}
           />
+        </div>
+        <div className="flex flex-wrap items-center gap-2 border-t border-border px-3 py-3">
+          <Input
+            inputMode="numeric"
+            aria-label="Minimum price"
+            placeholder="Min price"
+            className="h-9 w-full border-transparent bg-surface text-[13px] shadow-none sm:w-[7.5rem]"
+            value={minPriceText}
+            onChange={(e) => setMinPriceText(e.target.value)}
+          />
+          <Input
+            inputMode="numeric"
+            aria-label="Maximum price"
+            placeholder="Max price"
+            className="h-9 w-full border-transparent bg-surface text-[13px] shadow-none sm:w-[7.5rem]"
+            value={maxPriceText}
+            onChange={(e) => setMaxPriceText(e.target.value)}
+          />
           <FilterSelect
-            value={sortBy}
-            onChange={(v) => setSortBy(v as typeof sortBy)}
-            label="Sort"
+            value={minYear}
+            onChange={(v) => { setMinYear(v); setPage(1); }}
+            label="Year from"
             options={[
-              { value: "dateFound", label: "Date found" },
-              { value: "price", label: "Price" },
-              { value: "opportunityScore", label: "Opportunity" },
+              { value: "all", label: "Any" },
+              ...YEAR_OPTIONS.map((year) => ({ value: String(year), label: String(year) })),
             ]}
+          />
+          <FilterSelect
+            value={maxYear}
+            onChange={(v) => { setMaxYear(v); setPage(1); }}
+            label="Year to"
+            options={[
+              { value: "all", label: "Any" },
+              ...YEAR_OPTIONS.map((year) => ({ value: String(year), label: String(year) })),
+            ]}
+          />
+          <FilterSelect
+            value={mileage}
+            onChange={(v) => { setMileage(v); setPage(1); }}
+            label="Mileage"
+            options={MILEAGE_OPTIONS}
+          />
+          <FilterSelect
+            value={sellerType}
+            onChange={(v) => { setSellerType(v); setPage(1); }}
+            label="Seller"
+            options={[
+              { value: "all", label: "Anyone" },
+              { value: "dealer", label: "Dealer" },
+              { value: "private", label: "Private" },
+              { value: "auction", label: "Auction" },
+            ]}
+          />
+          <FilterSelect
+            value={sort}
+            onChange={(v) => { setSort(v); setPage(1); }}
+            label="Sort"
+            options={[...SORT_OPTIONS]}
           />
         </div>
       </Card>
@@ -138,12 +298,21 @@ export default function VehiclesPage() {
             setSearch("");
             setMarketplace("all");
             setMake("all");
+            setBodyStyle("all");
+            setFuelType("all");
+            setSellerType("all");
             setStatus("all");
+            setMinYear("all");
+            setMaxYear("all");
+            setMileage("all");
+            setSort("dateFound:desc");
+            setMinPriceText("");
+            setMaxPriceText("");
             setPage(1);
           }}
         />
       ) : (
-        <DataTable maxHeight="calc(100vh - 300px)">
+        <DataTable maxHeight="calc(100vh - 380px)">
           <DataTableHead>
             <tr>
               <DataTableHeaderCell>Vehicle</DataTableHeaderCell>

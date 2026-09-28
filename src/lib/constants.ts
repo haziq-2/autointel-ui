@@ -2,6 +2,7 @@ import {
   LayoutDashboard,
   Radar,
   Car,
+  Map,
   Sparkles,
   FileText,
   Bell,
@@ -17,6 +18,7 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { title: "Data Collection", href: "/scrapers", icon: Radar, badge: "3 active" },
       { title: "Vehicles", href: "/vehicles", icon: Car },
+      { title: "Markets", href: "/markets", icon: Map },
     ],
   },
   {
@@ -39,5 +41,5 @@ export const ORGANIZATIONS = [
 export const MARKETPLACES = [
   "Facebook Marketplace",
   "Craigslist",
-  "CarGurus",
+  "OfferUp",
 ];

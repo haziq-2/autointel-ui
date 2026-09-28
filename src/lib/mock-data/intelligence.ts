@@ -103,9 +103,9 @@ export const SELLER_PROFILES: SellerProfile[] = [
 ];
 
 export const MARKETPLACE_METRICS: MarketplaceMetrics[] = [
-  { id: "craigslist", name: "Craigslist", listings: 6950, growthRate: 4.2, avgPriceChange: -1.8, qualityScore: 68, duplicateRate: 8.6, regionsCovered: 10, dailyVolume: 232, health: "good" },
-  { id: "cargurus", name: "CarGurus", listings: 2107, growthRate: 6.1, avgPriceChange: -0.9, qualityScore: 91, duplicateRate: 1.8, regionsCovered: 12, dailyVolume: 70, health: "excellent" },
-  { id: "facebook", name: "Facebook Marketplace", listings: 1673, growthRate: 8.4, avgPriceChange: -1.2, qualityScore: 78, duplicateRate: 4.2, regionsCovered: 12, dailyVolume: 56, health: "excellent" },
+  { id: "craigslist", name: "Craigslist", listings: 27565, growthRate: 4.2, avgPriceChange: -1.8, qualityScore: 68, duplicateRate: 8.6, regionsCovered: 10, dailyVolume: 919, health: "good" },
+  { id: "facebook", name: "Facebook Marketplace", listings: 22273, growthRate: 8.4, avgPriceChange: -1.2, qualityScore: 78, duplicateRate: 4.2, regionsCovered: 12, dailyVolume: 742, health: "excellent" },
+  { id: "offerup", name: "OfferUp", listings: 17943, growthRate: 12.1, avgPriceChange: -2.4, qualityScore: 72, duplicateRate: 5.1, regionsCovered: 12, dailyVolume: 598, health: "good" },
 ];
 
 export const FLEET_VEHICLES: FleetVehicle[] = [
@@ -337,10 +337,10 @@ export function getPageInsights(page: string): AiInsight[] {
     ],
     marketplaces: [
       {
-        what: "CarGurus highest quality score at 91",
-        why: "Low duplicate rate and complete listing metadata",
-        impact: "Best source for pricing intelligence calibration",
-        action: "Weight CarGurus comparables at 40% in pricing model",
+        what: "OfferUp highest velocity score at 91",
+        why: "Fast private-seller turnover and complete listing metadata",
+        impact: "Best source for local acquisition signals",
+        action: "Weight OfferUp comparables at 40% in pricing model",
         confidence: 94,
       },
     ],
